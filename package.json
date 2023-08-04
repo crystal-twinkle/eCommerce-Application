@@ -9,6 +9,8 @@
   "author": "Kristina Volodko <autoro1@mail.ru>, Roman Kravchenko <Gemer_31@mail.ru>, Siarhei Yarotski <sadjoebright@gmail.com>",
   "license": "ISC",
   "devDependencies": {
+    "ts-loader": "^9.4.4",
+    "typescript": "^5.1.6",
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4"
   }
