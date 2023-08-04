@@ -1,0 +1,15 @@
+{
+  "name": "ecommerce-application",
+  "version": "1.0.0",
+  "description": "RSS School final task",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kristina Volodko <autoro1@mail.ru>, Roman Kravchenko <Gemer_31@mail.ru>, Siarhei Yarotski <sadjoebright@gmail.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  }
+}
