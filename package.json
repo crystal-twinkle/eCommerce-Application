@@ -9,7 +9,8 @@
     "build": "webpack build --config webpack.prod.js",
     "lint": "eslint src",
     "format": "npx prettier --write  \"src/**/*.{ts,html,css,scss,sass}\"",
-    "prepare": "husky install && husky add .husky/pre-commit \"npx lint-staged\""
+    "prepare": "husky install && husky add .husky/pre-commit \"npx lint-staged\"",
+    "deploy": "npm run build && npx gh-pages -d dist"
   },
   "author": "Kristina Volodko <autoro1@mail.ru>, Roman Kravchenko <Gemer_31@mail.ru>, Siarhei Yarotski <sadjoebright@gmail.com>",
   "license": "ISC",
@@ -24,6 +25,7 @@
     "eslint-plugin-import": "^2.28.0",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-webpack-plugin": "^4.0.1",
+    "gh-pages": "^5.0.0",
     "html-webpack-plugin": "^5.5.3",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.3",
