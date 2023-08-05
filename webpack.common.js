@@ -31,7 +31,7 @@ const config = {
       },
 
       {
-        test: /\.(png|jpg|gif)$/,
+        test: /\.(png|jpg|jpeg|gif)$/,
         type: 'asset/resource',
         generator: {
           filename: 'assets/images/[name][ext]',
