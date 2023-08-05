@@ -11,17 +11,17 @@ const config = {
   },
 
   module: {
-    rules: [  
+    rules: [
       {
         test: /\.ts$/i,
         use: 'ts-loader',
       },
-  
+
       {
         test: /\.(scss|css)$/,
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
-  
+
       {
         test: /\.svg$/,
         type: 'asset/resource',
@@ -29,7 +29,7 @@ const config = {
           filename: 'assets/icons/[name][ext]',
         },
       },
-  
+
       {
         test: /\.(png|jpg|gif)$/,
         type: 'asset/resource',
@@ -37,29 +37,28 @@ const config = {
           filename: 'assets/images/[name][ext]',
         },
       },
-  
+
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
-          type: 'asset/resource',
-          generator: {
-            filename: 'assets/fonts/[name][ext]',
-          },
-      }
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/fonts/[name][ext]',
+        },
+      },
     ],
   },
-
 
   resolve: {
     extensions: ['.ts', '.js'],
   },
 
   plugins: [
-    new HtmlWebpackPlugin ({
+    new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src', 'index.html'),
     }),
 
     new EslintPlugin({ extensions: 'ts' }),
-  ]
+  ],
 };
 
 module.exports = config;
