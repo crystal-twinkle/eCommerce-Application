@@ -9,7 +9,7 @@
     "build": "webpack build --config webpack.prod.js",
     "lint": "eslint src",
     "format": "npx prettier --write  \"src/**/*.{ts,html,css,scss,sass}\"",
-    "prepare": "husky install && husky add .husky/pre-commit \"npx lint-staged\"",
+    "prepare": "husky install && npx husky add .husky/pre-commit \"npx lint-staged exec >/dev/tty 2>&1\"",
     "deploy": "npm run build && npx gh-pages -d dist"
   },
   "author": "Kristina Volodko <autoro1@mail.ru>, Roman Kravchenko <Gemer_31@mail.ru>, Siarhei Yarotski <sadjoebright@gmail.com>",
