@@ -1,0 +1,9 @@
+export enum Page {
+  OVERVIEW = 'overview',
+  PRODUCT = 'product',
+  LOGIN = 'login',
+  REGISTRATION = 'registration',
+  NOT_FOUND = 'not-found',
+}
+
+export const ID_SELECTOR = '{id}';
