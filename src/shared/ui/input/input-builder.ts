@@ -1,8 +1,8 @@
 import ElementBuilder from '../../lib/element-builder';
 
 interface IInputBuilderConfig {
-  type: string;
-  placeholder: string;
+  type?: string;
+  placeholder?: string;
 }
 
 export default class InputBuilder extends ElementBuilder {

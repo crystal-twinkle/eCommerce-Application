@@ -15,8 +15,11 @@ module.exports = {
   coverageDirectory: 'coverage',
   reporters: [
     'default',
-    ['jest-html-reporter', {
-      outputPath: 'test-report.html',
-    }],
+    [
+      'jest-html-reporter',
+      {
+        outputPath: 'test-report.html',
+      },
+    ],
   ],
 };
