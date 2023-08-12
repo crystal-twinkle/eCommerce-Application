@@ -50,12 +50,12 @@ export default class ElementBuilder {
     return this;
   }
 
-  public append(nodes: Node[]): ElementBuilder {
+  public append(nodes: HTMLElement[]): ElementBuilder {
     this.element.append(...nodes);
     return this;
   }
 
-  public prepend(nodes: Node[]): ElementBuilder {
+  public prepend(nodes: HTMLElement[]): ElementBuilder {
     this.element.prepend(...nodes);
     return this;
   }
@@ -70,7 +70,7 @@ export default class ElementBuilder {
     return this;
   }
 
-  public getElement(): Element {
+  public getElement(): HTMLElement {
     return this.element;
   }
 }
