@@ -17,7 +17,7 @@ const iconsFactory: Map<string, string> = new Map<string, string>([
   [
     'arrow-right',
     '<svg width="30" height="15" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">\n' +
-      '<path d="M2 8H21M21 8L15 2M21 8L15 14" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>\n' +
+      '<path d="M2 8H21M21 8L15 2M21 8L15 14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>\n' +
       '</svg>\n',
   ],
 ]);

@@ -1,7 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const EslintPlugin = require('eslint-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
 
 const config = {
   entry: path.resolve(__dirname, 'src/index'),
@@ -58,11 +57,6 @@ const config = {
       template: path.resolve(__dirname, 'src', 'index.html'),
     }),
     new EslintPlugin({ extensions: 'ts' }),
-    new CopyPlugin({
-      patterns: [
-        { from: path.resolve(__dirname, 'src', 'shared', 'assets'), to: path.resolve(__dirname, 'dist', 'assets')},
-      ],
-    }),
   ],
 };
 
