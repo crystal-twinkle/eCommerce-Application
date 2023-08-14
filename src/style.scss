@@ -1,6 +1,13 @@
+@font-face {
+  font-family: 'Roboto';
+  src: url('./shared/assets/fonts/Roboto-Light.ttf');
+}
+
 html,
 body {
+  font-family: 'Roboto';
   height: 100%;
+  font-weight: 600;
 }
 
 body {

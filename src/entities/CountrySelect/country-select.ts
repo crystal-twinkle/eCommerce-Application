@@ -1,26 +1,19 @@
-import ElementBuilder from '../../shared/lib/element-builder';
-import OptionBuilder from '../../shared/ui/option/option-builder';
+import Dropdown, { DropdownItem } from '../../shared/ui/dropdown/dropdown';
 
-const countrySelectBuild = new ElementBuilder({
-  tag: 'select',
-  tagSettings: { id: 'country', name: 'country' },
-});
+const countryItems: DropdownItem[] = [
+  {
+    value: '',
+    content: 'Select country:',
+  },
+  {
+    value: 'USA',
+    content: 'USA',
+  },
+  {
+    value: 'Canada',
+    content: 'Canada',
+  },
+];
 
-const defaultOption = new OptionBuilder({
-  content: 'Select country:',
-}).getElement();
-
-const usaOption = new OptionBuilder({
-  value: 'USA',
-  content: 'USA',
-}).getElement();
-
-const canadaOption = new OptionBuilder({
-  value: 'Canada',
-  content: 'Canada',
-}).getElement();
-
-defaultOption.setAttribute('disabled', 'disabled');
-defaultOption.setAttribute('selected', 'selected');
-const countrySelect = countrySelectBuild.append([defaultOption, usaOption, canadaOption]).getElement();
-export default countrySelect;
+const countryDropdown = new Dropdown(countryItems).getElement();
+export default countryDropdown;

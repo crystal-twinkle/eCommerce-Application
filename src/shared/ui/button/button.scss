@@ -1,0 +1,63 @@
+@import '../../../colors';
+
+.button {
+  border: 1px solid $purple-2;
+  box-shadow: 0 4px 10px 0 $purple-3;
+  padding: 6px 10px;
+  margin: 0;
+  color: $purple-2;
+  fill: $purple-2;
+  cursor: pointer;
+  transition:
+    color,
+    background-color 0.1s linear;
+
+  width: auto;
+  overflow: visible;
+  background: transparent;
+  line-height: normal;
+
+  &:hover {
+    background-color: $purple-2;
+    color: white;
+    fill: white;
+  }
+
+  &._rounded {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    padding: 10px 10px;
+
+    & > span {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      line-break: anywhere;
+
+      & > svg:not(:first-child) {
+        margin-left: 4px;
+      }
+    }
+
+    &._small {
+      width: 20px;
+      height: 20px;
+    }
+
+    &._medium {
+      width: 50px;
+      height: 50px;
+    }
+
+    &._big {
+      width: 100px;
+      height: 100px;
+    }
+  }
+
+  &._colored {
+    background-color: $purple-2;
+    color: white;
+  }
+}
