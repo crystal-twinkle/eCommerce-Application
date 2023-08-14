@@ -9,7 +9,15 @@ function validateAddress() {
   };
 
   const postalCode = (checkPostalCode: string): boolean => {
-    const postalCodePattern = /^\d{5}(?:-\d{4})?$/;
+    const selectCountry = <HTMLSelectElement>document.querySelector('.select-country');
+    const selectCountryText = selectCountry.options[selectCountry.selectedIndex].textContent;
+    let postalCodePattern: RegExp;
+    if (selectCountryText === 'USA') {
+      postalCodePattern = /^\d{5}(-\d{4})?$/;
+    }
+    if (selectCountryText === 'Canada') {
+      postalCodePattern = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
+    }
     return postalCodePattern.test(checkPostalCode);
   };
 

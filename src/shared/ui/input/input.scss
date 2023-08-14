@@ -1,11 +1,17 @@
+@import '../../../colors';
+
 .form__input {
   border: none;
-  border-bottom: 1px solid #211b1b;
+  background-color: $primary;
+  border-bottom: 2px solid $medium-gray;
   outline: none;
   height: 30px;
+  width: 225px;
+  font-size: 18px;
 }
 
 .form__input::placeholder {
+  color: $medium-gray;
   position: absolute;
   bottom: 5px;
   font-size: 18px;

@@ -1,6 +1,26 @@
+@import '../../assets/style/flex-column';
 .form {
-  display: flex;
-  flex-direction: column;
-  width: 200px;
+  @extend %flex-column;
   margin: 0 auto 50px;
+  width: 335px;
+  gap: 30px;
+  padding: 20px;
+  &__title {
+    margin: 35px auto 0;
+  }
+  &__field-container {
+    @extend %flex-column;
+    width: 225px;
+    gap: 20px;
+    margin: auto;
+  }
+  &__btn-container {
+    display: flex;
+    gap: 20px;
+  }
+  &__btn {
+    width: 148px;
+    height: 37px;
+    margin: auto;
+  }
 }
