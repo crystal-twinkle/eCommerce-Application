@@ -1,4 +1,4 @@
-import Dropdown, { DropdownItem } from '../../shared/ui/dropdown/dropdown';
+import Dropdown, { DropdownItem } from '../../../shared/ui/dropdown/dropdown';
 
 const countryItems: DropdownItem[] = [
   {

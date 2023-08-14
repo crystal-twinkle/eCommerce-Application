@@ -1,8 +1,10 @@
 import InputBuilder from './input-builder';
+import './input.scss';
 
-const inputPassword = new InputBuilder({
+const inputPasswordBuild = new InputBuilder({
   type: 'password',
   placeholder: 'Password',
-}).getElement();
+  name: 'password',
+});
 
-export default inputPassword;
+export default inputPasswordBuild;
