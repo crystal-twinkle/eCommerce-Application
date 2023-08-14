@@ -1,8 +1,10 @@
 import InputBuilder from './input-builder';
+import './input.scss';
 
-const inputEmail = new InputBuilder({
+const inputEmailBuild = new InputBuilder({
   type: 'email',
   placeholder: 'Email',
-}).getElement();
+  name: 'email',
+});
 
-export default inputEmail;
+export default inputEmailBuild;
