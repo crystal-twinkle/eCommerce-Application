@@ -2,6 +2,7 @@ import ElementBuilder from '../../shared/lib/element-builder';
 import Router from '../../app/router/router';
 import { Page } from '../../app/router/pages';
 import './header.css';
+import Button, { ButtonSize } from '../../shared/ui/button/button';
 
 export default class Header {
   private builder: ElementBuilder;
@@ -16,38 +17,17 @@ export default class Header {
       styleClass: 'container',
     });
 
-    const overviewButton = new ElementBuilder({
-      tag: 'button',
-      content: 'Overview',
-      event: {
-        type: 'click',
-        callback: () => {
-          this.router.navigate(Page.OVERVIEW);
-        },
-      },
-    });
-    const loginButton = new ElementBuilder({
-      tag: 'button',
-      content: 'Login',
-      event: {
-        type: 'click',
-        callback: () => {
-          this.router.navigate(Page.LOGIN);
-        },
-      },
-    });
-    const registerButton = new ElementBuilder({
-      tag: 'button',
-      content: 'Registration',
-      event: {
-        type: 'click',
-        callback: () => {
-          this.router.navigate(Page.REGISTRATION);
-        },
-      },
-    });
+    const overviewButton = new Button(() => this.router.navigate(Page.OVERVIEW), 'Overview');
+    const loginButton = new Button(() => this.router.navigate(Page.LOGIN), 'Login', true);
+    const registerButton = new Button(() => this.router.navigate(Page.REGISTRATION), 'Registration');
+    const crossButton = new Button(() => {}, 'adsgasdgasgdsd', false, 'cross', true, ButtonSize.BIG);
 
-    navBuilder.append([overviewButton.getElement(), loginButton.getElement(), registerButton.getElement()]);
+    navBuilder.append([
+      overviewButton.getElement(),
+      loginButton.getElement(),
+      registerButton.getElement(),
+      crossButton.getElement(),
+    ]);
 
     this.builder.append([navBuilder.getElement()]);
   }

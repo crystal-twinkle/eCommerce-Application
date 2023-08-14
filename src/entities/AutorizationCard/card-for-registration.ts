@@ -1,7 +1,7 @@
 import FormBuilder from '../../shared/ui/form/form-builder';
 import inputEmail from '../../shared/ui/input/input-email';
 import inputPassword from '../../shared/ui/input/input-password';
-import countrySelect from '../CountrySelect/country-select';
+import countryDropdown from '../CountrySelect/country-select';
 import InputBuilder from '../../shared/ui/input/input-builder';
 import validateAge from '../../shared/lib/validate/validate-age';
 
@@ -18,7 +18,7 @@ const inputDOB = new InputBuilder({
 }).getElement();
 inputDOB.setAttribute('max', validateAge());
 const registrationCard = registrationFormBuild
-  .append([inputEmail, inputPassword, inputFirstName, inputLastName, inputDOB, countrySelect])
+  .append([inputEmail, inputPassword, inputFirstName, inputLastName, inputDOB, countryDropdown])
   .getElement();
 
 document.body.appendChild(registrationCard);

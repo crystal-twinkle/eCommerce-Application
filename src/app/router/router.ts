@@ -15,19 +15,36 @@ export default class Router {
 
   constructor(private routes: IRouterLink[]) {
     this.notFoundRouterLink = this.routes.find((item) => item.path === Page.NOT_FOUND);
+    window.addEventListener('DOMContentLoaded', () => {
+      this.navigate(this.getCurrentPath());
+    });
+    window.addEventListener('popstate', this.browserChangeHandler.bind(this));
+    window.addEventListener('hashchange', this.browserChangeHandler.bind(this));
   }
 
   public navigate(url: string): void {
     const request: IParseUrl = this.parseURL(url);
     const pathForFind = request.resource === '' ? request.path : `${request.path}/${request.resource}`;
     const route = this.routes.find((item) => item.path === pathForFind) || this.notFoundRouterLink;
+    window.history.pushState({}, '', route.path);
     route.callback();
   }
 
-  public parseURL(url: string): IParseUrl {
+  private parseURL(url: string): IParseUrl {
     const result: IParseUrl = {};
     const path: string[] = url.split('/');
     [result.path = '', result.resource = ''] = path;
     return result;
+  }
+
+  private browserChangeHandler(): void {
+    this.navigate(this.getCurrentPath());
+  }
+
+  private getCurrentPath(): string {
+    if (window.location.hash) {
+      return window.location.hash.slice(1);
+    }
+    return window.location.pathname.slice(1);
   }
 }

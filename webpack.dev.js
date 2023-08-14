@@ -6,8 +6,12 @@ const devConfig = {
   mode: 'development',
   devtool: 'inline-source-map',
   devServer: {
-    watchFiles: path.resolve(__dirname, 'src'),
+    open: true,
+    host: 'localhost',
     port: 9000,
+    hot: true,
+    watchFiles: path.resolve(__dirname, 'src'),
+    historyApiFallback: true,
   },
 };
 
