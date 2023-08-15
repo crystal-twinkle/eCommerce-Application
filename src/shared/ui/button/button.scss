@@ -7,6 +7,7 @@
   margin: 0;
   color: $purple-2;
   fill: $purple-2;
+  stroke: $purple-2;
   cursor: pointer;
   transition:
     color,
@@ -21,43 +22,57 @@
     background-color: $purple-2;
     color: white;
     fill: white;
+    stroke: white;
   }
 
-  &._rounded {
+  &._without-border {
+    border: none;
+    box-shadow: none;
+  }
+
+  &._circle {
     border-radius: 50%;
     width: 50px;
     height: 50px;
     padding: 10px 10px;
+  }
 
-    & > span {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      line-break: anywhere;
+  & > span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-break: anywhere;
 
-      & > svg:not(:first-child) {
+    & > svg {
+      &:not(:first-child) {
         margin-left: 4px;
       }
-    }
 
-    &._small {
-      width: 20px;
-      height: 20px;
+      &:not(:last-child) {
+        margin-right: 4px;
+      }
     }
+  }
 
-    &._medium {
-      width: 50px;
-      height: 50px;
-    }
+  &._small {
+    width: 40px;
+    height: 40px;
+  }
 
-    &._big {
-      width: 100px;
-      height: 100px;
-    }
+  &._medium {
+    width: 70px;
+    height: 70px;
+  }
+
+  &._big {
+    width: 120px;
+    height: 120px;
   }
 
   &._colored {
     background-color: $purple-2;
+    fill: white;
+    stroke: white;
     color: white;
   }
 }
