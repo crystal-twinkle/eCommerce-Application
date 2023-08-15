@@ -18,15 +18,15 @@ export default class Header {
     });
 
     const overviewButton = new Button(() => this.router.navigate(Page.OVERVIEW), 'Overview');
-    const loginButton = new Button(() => this.router.navigate(Page.LOGIN), 'Login', true);
+    const loginButton = new Button(() => this.router.navigate(Page.LOGIN), 'Login');
     const registerButton = new Button(() => this.router.navigate(Page.REGISTRATION), 'Registration');
-    const crossButton = new Button(() => {}, 'adsgasdgasgdsd', false, 'cross', true, ButtonSize.BIG);
+    const showCases = new Button(() => this.router.navigate(Page.SHOWCASES), 'Show cases');
 
     navBuilder.append([
       overviewButton.getElement(),
       loginButton.getElement(),
       registerButton.getElement(),
-      crossButton.getElement(),
+      showCases.getElement(),
     ]);
 
     this.builder.append([navBuilder.getElement()]);
