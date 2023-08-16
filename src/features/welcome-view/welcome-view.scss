@@ -1,10 +1,10 @@
 .welcome-view {
   &__wrapper {
-    margin: 0 auto;
     display: grid;
     grid-template-rows: auto;
     grid-template-columns: 1fr 1fr;
     grid-auto-flow: column;
+    padding-top: 0;
   }
 
   &__content-container {

@@ -21,6 +21,7 @@ body {
   display: flex;
   flex-direction: column;
   align-content: center;
+  background: #fffdf5;
 }
 
 header {
@@ -35,8 +36,19 @@ main {
   flex: 1 1 auto;
 }
 
+section {
+  padding: 0 9.64%;
+}
+
+.page {
+  padding: 0;
+  margin: 0;
+}
+
 .wrapper {
   max-width: 1170px;
+  margin: auto;
+  padding: 75px 0;
 }
 
 .container {
