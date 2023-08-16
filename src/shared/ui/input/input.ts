@@ -1,5 +1,4 @@
 import ElementBuilder from '../../lib/element-builder';
-import './input.scss';
 import CommonBuilderWrapper from '../../lib/common-builder-wrapper';
 
 interface IInputConfig {

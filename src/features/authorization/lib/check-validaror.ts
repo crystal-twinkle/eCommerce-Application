@@ -22,7 +22,7 @@ export default function checkValidator(inputElements: HTMLInputElement[]) {
       if (!field.element) {
         return;
       }
-      newField.element.style.borderBottom = '4px solid red';
+      newField.element.style.borderBottom = '2px solid red';
       isValid = false;
     } else {
       newField.element.style.borderBottom = '';
