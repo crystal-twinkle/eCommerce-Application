@@ -1,7 +1,7 @@
 import ElementBuilder from '../../lib/element-builder';
 import CommonBuilderWrapper from '../../lib/common-builder-wrapper';
 import './form.scss';
-import Button, { ButtonSize } from '../button/button';
+import Button, { ButtonIconPosition, ButtonSize, ButtonType } from '../button/button';
 
 interface FormButton {
   text: string;
@@ -45,10 +45,16 @@ export default class Form extends CommonBuilderWrapper {
     config.buttons.forEach((button: FormButton) => {
       let createButton: HTMLElement;
       if (button.text === 'Submit') {
-        createButton = new Button(() => {}, button.text, true, 'arrow-right', false, ButtonSize.SMALL).getElement();
+        createButton = new Button(
+          () => {},
+          button.text,
+          ButtonType.DEFAULT_COLORED,
+          { name: 'arrow-right', position: ButtonIconPosition.RIGHT },
+          ButtonSize.SMALL,
+        ).getElement();
         createButton.setAttribute('type', 'submit');
       } else {
-        createButton = new Button(() => {}, button.text, false, undefined, false, ButtonSize.SMALL).getElement();
+        createButton = new Button(() => {}, button.text, ButtonType.DEFAULT, undefined, ButtonSize.SMALL).getElement();
       }
       createButton.classList.add('form__btn');
       btnContainer.append(createButton);
