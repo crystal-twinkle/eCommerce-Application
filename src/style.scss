@@ -3,6 +3,11 @@
   src: url('./shared/assets/fonts/Roboto-Light.ttf');
 }
 
+@font-face {
+  font-family: 'Bad Script';
+  src: url('./shared/assets/fonts/BadScript-Regular.ttf');
+}
+
 html,
 body {
   font-family: 'Roboto';
@@ -13,16 +18,25 @@ body {
 body {
   width: 100%;
   margin: 0;
-}
-
-body > * {
-  border-bottom: 1px solid gray;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
 }
 
 header {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+.wrapper {
+  max-width: 1170px;
 }
 
 .container {

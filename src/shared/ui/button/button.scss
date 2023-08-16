@@ -18,6 +18,12 @@
   background: transparent;
   line-height: normal;
 
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+
   &:hover {
     background-color: $purple-2;
     color: white;
@@ -65,8 +71,9 @@
   }
 
   &._big {
-    width: 120px;
-    height: 120px;
+    width: 190px;
+    height: 190px;
+    font-size: 20px;
   }
 
   &._colored {

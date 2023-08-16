@@ -50,5 +50,8 @@
   "lint-staged": {
     "src/**/*.{ts,html,css,scss,sass}": "npx prettier --write",
     "src/**/*.ts": "eslint"
+  },
+  "dependencies": {
+    "normalize.css": "^8.0.1"
   }
 }

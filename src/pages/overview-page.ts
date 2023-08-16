@@ -1,16 +1,18 @@
+import WelcomeView from '../features/welcome-view/welcome-view';
 import ElementBuilder from '../shared/lib/element-builder';
+import ViewBuilder from '../shared/lib/view-builder';
 
-export default class OverviewPage {
-  private builder: ElementBuilder;
-
+export default class OverviewPage extends ViewBuilder {
   constructor() {
-    this.builder = new ElementBuilder({
-      tag: 'div',
-      content: 'Overview Page',
-    });
+    super('main-page');
   }
 
-  public getElement(): HTMLElement {
-    return this.builder.getElement();
+  public configureView(): HTMLElement[] {
+    const welcomeView = new WelcomeView();
+    return [welcomeView.getElement()];
+  }
+
+  public buildView(): void {
+    this.view.getElement().append(...this.configureView());
   }
 }
