@@ -15,7 +15,7 @@ const countryItems: DropdownItem[] = [
   },
 ];
 
-const countryDropdown = <HTMLSelectElement>new Dropdown(countryItems).getElement();
+const countryDropdown = new Dropdown(countryItems).getElement() as HTMLSelectElement;
 countryDropdown.required = true;
 countryDropdown.classList.add('select-country');
 export default countryDropdown;
