@@ -1,4 +1,12 @@
 .dropdown {
-  color: red;
-  width: 225px;
+  border: none;
+  border-bottom: 1px solid #211b1b;
+  outline: none;
+  height: 30px;
+
+  &::placeholder {
+    position: absolute;
+    bottom: 5px;
+    font-size: 18px;
+  }
 }

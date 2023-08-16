@@ -7,6 +7,7 @@ import LoginPage from '../pages/login-page';
 import ProductPage from '../pages/product-page';
 import Main from '../features/main/main';
 import RegisterPage from '../pages/register-page';
+import ShowcasesPage from '../pages/showcases/showcases-page';
 
 export default class App {
   private router: Router;
@@ -42,6 +43,12 @@ export default class App {
         path: Page.LOGIN,
         callback: () => {
           this.main.setContent([new LoginPage().getElement()]);
+        },
+      },
+      {
+        path: Page.SHOWCASES,
+        callback: () => {
+          this.main.setContent([new ShowcasesPage().getElement()]);
         },
       },
       {
