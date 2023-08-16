@@ -1,5 +1,4 @@
-import InputBuilder from './input-builder';
-import './input.scss';
+import InputBuilder from './input';
 
 const inputEmailBuild = new InputBuilder({
   type: 'email',

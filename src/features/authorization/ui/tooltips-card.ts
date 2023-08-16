@@ -1,9 +1,12 @@
 import ElementBuilder from '../../../shared/lib/element-builder';
-import './tooltips.scss';
+import validationTooltips from '../lib/validation-tooltips';
+import './tooltip.scss';
 
 const tooltipsCard = new ElementBuilder({
   tag: 'div',
-  styleClass: 'tooltips',
+  styleClass: 'tooltip',
 }).getElement();
-
+window.addEventListener('load', () => {
+  validationTooltips();
+});
 document.body.appendChild(tooltipsCard);
