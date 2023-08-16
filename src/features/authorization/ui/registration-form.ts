@@ -43,7 +43,7 @@ dob.setAttribute('max', validateAge());
 const registrationForm = new Form({
   title: 'Registration',
   id: 'form-registration',
-  fields: [emailReg, passwordReg, firstName, lastName, countryDropdown, dob, city, street, pCode],
+  fields: [emailReg, passwordReg, firstName, lastName, countryDropdown.getElement(), dob, city, street, pCode],
   buttons: [{ text: 'Submit' }],
   callback: (event) => {
     event.preventDefault();

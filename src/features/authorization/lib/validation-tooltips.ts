@@ -3,7 +3,7 @@ import countryDropdown from '../ui/country-dropdown';
 function tooltipsText(input: Element) {
   const inputName = input.getAttribute('name');
   const tooltip = document.querySelector(`.tooltip`);
-  const countryDropdownText = countryDropdown.options[countryDropdown.selectedIndex].textContent;
+  const countryDropdownText = countryDropdown?.getSelectedItem()?.content;
   if (inputName === 'email') {
     tooltip.textContent = 'Enter a properly formatted email address (like "example@email.com")';
   }
