@@ -1,6 +1,7 @@
 import ElementBuilder from '../../shared/lib/element-builder';
 import Button, { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/button';
 import './showcases.scss';
+import Dropdown, { DropdownType, IDropdownItem } from '../../shared/ui/dropdown/dropdown';
 
 export default class ShowcasesPage {
   private builder: ElementBuilder;
@@ -11,7 +12,25 @@ export default class ShowcasesPage {
       styleClass: 'showcases',
     });
 
-    const defaultButtom = new Button(() => {}, 'Default button');
+    const dropdownItems: IDropdownItem[] = [
+      {
+        value: 'USA',
+        content: 'USA',
+      },
+      {
+        value: 'Canada',
+        content: 'Canada',
+      },
+    ];
+    const defaultDropdown = new Dropdown({
+      items: dropdownItems,
+      type: DropdownType.DEFAULT,
+    });
+    const formDropdown = new Dropdown({
+      items: dropdownItems,
+      type: DropdownType.FORM,
+    });
+    const defaultButton = new Button(() => {}, 'Default button');
     const buttonWithoutBorders = new Button(() => {}, 'Button without borders', ButtonType.DEFAULT_WITHOUT_BORDER);
     const buttonWithIconAndLeftPosition = new Button(
       () => {},
@@ -48,7 +67,9 @@ export default class ShowcasesPage {
     );
 
     this.builder.append([
-      defaultButtom.getElement(),
+      formDropdown.getElement(),
+      defaultDropdown.getElement(),
+      defaultButton.getElement(),
       buttonWithoutBorders.getElement(),
       buttonWithIconAndLeftPosition.getElement(),
       buttonWithIconAndRightPosition.getElement(),
