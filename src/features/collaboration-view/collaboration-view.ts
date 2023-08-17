@@ -20,7 +20,7 @@ export default class CollaborationView extends ViewBuilder {
       tag: 'p',
       styleClass: 'collaboration-view__text',
       content:
-        'Наша компания постоянно растёт и расширяет рынок, поэтому мы заинтересованы вновых партнёрах и рассматриваем новые проекты, которые могут быть привлекательны и интересны с коммерческой точки зрения. ',
+        'Our company is in a constant state of growth and market expansion. As a result, we are actively seeking new partners and evaluating fresh projects that hold commercial appeal and interest',
     });
 
     const collaborationContent = new ElementBuilder({
@@ -30,27 +30,27 @@ export default class CollaborationView extends ViewBuilder {
 
     const textItems = [
       {
-        heading: 'Становитесь партнёром',
-        text: 'Регистрируйтесь и переходите в свой кабинет',
+        heading: 'Become a partner',
+        text: 'Register and proceed to your account',
       },
       {
-        heading: 'Рекламируйте товары',
-        text: 'Рекламируйте наши товары на форумах, сайтах, в социальных сетях',
+        heading: 'Promote products',
+        text: 'Promote our products on forums, websites, and social media platforms.',
       },
       {
-        heading: 'Приводите покупателей',
-        text: 'Приводите покупателей на наш сайт по уникальной ссылке',
+        heading: 'Bring in customers',
+        text: 'Bring customers to our website through a unique link',
       },
       {
-        heading: 'Получайте бонусы',
-        text: 'Копите бонусы от каждого оплаченного заказа',
+        heading: 'Receive bonuses',
+        text: 'Accumulate bonuses from every paid order',
       },
     ];
 
     textItems.forEach((item) => {
       const textItem = new ElementBuilder({
         tag: 'div',
-        styleClass: 'collaboration-view__text-item',
+        styleClass: 'collaboration-view__content-item',
       });
 
       const heading = new ElementBuilder({
@@ -70,31 +70,31 @@ export default class CollaborationView extends ViewBuilder {
     });
 
     const subheading = new ElementBuilder({
-      tag: 'h2',
+      tag: 'h3',
       styleClass: 'collaboration-view__subheading',
       content: "It 's advantageous. What are the benefits?",
     });
 
     const benefitsContent = new ElementBuilder({
       tag: 'div',
-      styleClass: 'collaboration-view__benefits-content',
+      styleClass: 'collaboration-view__content',
     });
 
     const benefitsData = [
       {
-        iconLink: './src/shared/assets/icons/logo.svg',
+        iconLink: '/../../assets/icons/automation-of-processes.svg',
         text: 'Automation of processes',
       },
       {
-        iconLink: '',
+        iconLink: '/../../assets/icons/expanding-the-assortment.svg',
         text: 'Expanding the assortment',
       },
       {
-        iconLink: '',
+        iconLink: '/../../assets/icons/support-and-training.svg',
         text: 'Support and training',
       },
       {
-        iconLink: '',
+        iconLink: '/../../assets/icons/bonuses-for-new-clients.svg',
         text: 'Bonuses for new clients',
       },
     ];
@@ -102,18 +102,18 @@ export default class CollaborationView extends ViewBuilder {
     benefitsData.forEach((item) => {
       const benefitsItem = new ElementBuilder({
         tag: 'div',
-        styleClass: 'benefits-content__item',
+        styleClass: 'collaboration-view__content-item',
       });
 
       const icon = new ElementBuilder({
         tag: 'img',
-        styleClass: 'benefits-content__icon',
+        styleClass: 'benefits-content__item-icon',
         tagSettings: { src: `${item.iconLink}`, alt: `${item.text}-icon` },
       });
 
       const text = new ElementBuilder({
         tag: 'p',
-        styleClass: 'benefits-content__text',
+        styleClass: 'collaboration-view__item-text',
         content: `${item.text}`,
       });
 

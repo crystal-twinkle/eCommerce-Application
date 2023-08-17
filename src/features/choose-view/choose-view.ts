@@ -22,13 +22,12 @@ export default class ChooseView extends ViewBuilder {
     });
 
     const paragraphs = [
-      'Скидки постоянным клиентам от 5%',
-      'Предлагаем самые выгодные цены',
-      'Наши покупатели всегда остаются довольны',
-      'Наши покупатели всегда остаются довольны',
-      'Ширикий ассортимент товаров для всей семьи',
-      'Возможность доставки в любой город Беларуси',
-      'Пункты выдачи заказов рядом с домом',
+      'Loyal customers enjoy discounts starting from 5%',
+      'We offer the most competitive prices',
+      'Our customers are always happy with their experience',
+      'Extensive range of products for the entire family',
+      'Delivery available across the USA and Canada',
+      'Order pickup points near your home.',
     ];
 
     paragraphs.forEach((paragraph) => {

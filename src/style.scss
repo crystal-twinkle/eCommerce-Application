@@ -8,6 +8,12 @@
   src: url('./shared/assets/fonts/BadScript-Regular.ttf');
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 html,
 body {
   font-family: 'Roboto', serif;
