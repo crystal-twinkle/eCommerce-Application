@@ -17,7 +17,6 @@
 html,
 body {
   font-family: 'Roboto', serif;
-  height: 100%;
   font-weight: 600;
   background-color: #fffdf5;
 }
@@ -43,7 +42,9 @@ main {
   flex: 1 1 auto;
 }
 
-section {
+header,
+section,
+footer {
   padding: 0 9.64%;
 }
 

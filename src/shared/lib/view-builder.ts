@@ -4,9 +4,9 @@ export default abstract class ViewBuilder {
   view: ElementBuilder;
   wrapper: ElementBuilder;
 
-  constructor(viewClassName: string) {
+  constructor(viewClassName: string = '', tag: string = 'section') {
     this.view = new ElementBuilder({
-      tag: 'section',
+      tag,
       styleClass: viewClassName,
     });
 
