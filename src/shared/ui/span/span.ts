@@ -12,6 +12,7 @@ export default class Span extends CommonBuilderWrapper {
 
     this.builder = new ElementBuilder({
       tag: 'span',
+      content: config.content || '',
     });
 
     if (config.class) {

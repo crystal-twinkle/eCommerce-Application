@@ -1,10 +1,6 @@
-import Dropdown, { DropdownItem } from '../../../shared/ui/dropdown/dropdown';
+import Dropdown, { DropdownType, IDropdownItem } from '../../../shared/ui/dropdown/dropdown';
 
-const countryItems: DropdownItem[] = [
-  {
-    value: '',
-    content: 'Select country:',
-  },
+const countryItems: IDropdownItem[] = [
   {
     value: 'USA',
     content: 'USA',
@@ -15,5 +11,11 @@ const countryItems: DropdownItem[] = [
   },
 ];
 
-const countryDropdown = new Dropdown(countryItems).getElement();
+const countryDropdown: Dropdown = new Dropdown({
+  items: countryItems,
+  selectedItemIndex: 0,
+  required: true,
+  type: DropdownType.FORM,
+  styleClass: 'select-country',
+});
 export default countryDropdown;
