@@ -1,7 +1,7 @@
+import ViewBuilder from '../shared/lib/view-builder';
 import ChooseView from '../features/choose-view/choose-view';
 import WelcomeView from '../features/welcome-view/welcome-view';
-import ElementBuilder from '../shared/lib/element-builder';
-import ViewBuilder from '../shared/lib/view-builder';
+import CollaborationView from '../features/collaboration-view/collaboration-view';
 
 export default class OverviewPage extends ViewBuilder {
   constructor() {
@@ -11,8 +11,9 @@ export default class OverviewPage extends ViewBuilder {
   public configureView(): HTMLElement[] {
     const welcomeView = new WelcomeView();
     const chooseView = new ChooseView();
+    const collaborationView = new CollaborationView();
 
-    return [welcomeView.getElement(), chooseView.getElement()];
+    return [welcomeView.getElement(), chooseView.getElement(), collaborationView.getElement()];
   }
 
   public buildView(): void {

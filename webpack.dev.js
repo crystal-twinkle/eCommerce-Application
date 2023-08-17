@@ -6,6 +6,9 @@ const devConfig = {
   mode: 'development',
   devtool: 'inline-source-map',
   devServer: {
+    static: {
+      directory: path.join(__dirname, 'dist'),
+    },
     open: true,
     host: 'localhost',
     port: 9000,
