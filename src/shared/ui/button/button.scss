@@ -12,17 +12,38 @@
   transition:
     color,
     background-color 0.1s linear;
-
   width: auto;
   overflow: visible;
   background: transparent;
   line-height: normal;
+  position: relative;
 
   &:hover {
     background-color: $purple-2;
     color: white;
     fill: white;
     stroke: white;
+  }
+
+  &-badge {
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    right: 0;
+    top: -5px;
+    transition: opacity 0.1s linear;
+    opacity: 1;
+    font-family: inherit;
+    border-radius: 50%;
+    display: inline-block;
+    background: $purple-2;
+    padding: 4px;
+    color: white;
+
+    &__hide {
+      opacity: 0;
+      display: none;
+    }
   }
 
   &._without-border {
