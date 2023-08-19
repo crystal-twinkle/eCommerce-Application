@@ -1,3 +1,5 @@
+import countryDropdown from '../../../features/authorization/ui/country-dropdown';
+
 function validateAddress() {
   const street = (checkStreet: string): boolean => {
     return checkStreet.trim().length > 0;
@@ -9,13 +11,12 @@ function validateAddress() {
   };
 
   const postalCode = (checkPostalCode: string): boolean => {
-    const selectCountry = <HTMLSelectElement>document.querySelector('.select-country');
-    const selectCountryText = selectCountry.options[selectCountry.selectedIndex].textContent;
+    const countryDropdownText = countryDropdown?.getSelectedItem()?.content;
     let postalCodePattern: RegExp;
-    if (selectCountryText === 'USA') {
+    if (countryDropdownText === 'USA') {
       postalCodePattern = /^\d{5}(-\d{4})?$/;
     }
-    if (selectCountryText === 'Canada') {
+    if (countryDropdownText === 'Canada') {
       postalCodePattern = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
     }
     return postalCodePattern.test(checkPostalCode);

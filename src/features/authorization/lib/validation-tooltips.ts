@@ -5,7 +5,8 @@ import tooltipsCard from '../ui/tooltips-card';
 export function tooltipsText(input: Element) {
   const inputName = input.getAttribute('name');
   const tooltip = document.querySelector(`.tooltip`);
-  const countryDropdownText = countryDropdown.options[countryDropdown.selectedIndex].textContent;
+  const countryDropdownText = countryDropdown?.getSelectedItem()?.content;
+
   if (inputName === 'email' && requestCustomer.text) {
     tooltip.textContent = requestCustomer.text;
   }
@@ -31,9 +32,7 @@ export function tooltipsText(input: Element) {
   if (inputName === 'dob') {
     tooltip.textContent = 'You must be over 13 years old';
   }
-  if (inputName === 'postalCode' && countryDropdownText === 'Select country:') {
-    tooltip.textContent = 'You should choose country';
-  }
+
   if (inputName === 'postalCode' && countryDropdownText === 'USA') {
     tooltip.textContent = "The format for the USA should be like '12345'";
   }
