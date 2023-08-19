@@ -2,6 +2,7 @@ import validateEmail from '../../../shared/lib/validate/validate-email';
 import validatePassword from '../../../shared/lib/validate/validate-password';
 import validateName from '../../../shared/lib/validate/validate-name';
 import validateAddress from '../../../shared/lib/validate/validate-address';
+import validationTooltip, { tooltipRegistry } from './validation-tooltips';
 
 export default function checkValidator(inputElements: HTMLInputElement[]) {
   let isValid = true;
@@ -22,9 +23,14 @@ export default function checkValidator(inputElements: HTMLInputElement[]) {
       if (!field.element) {
         return;
       }
+      const inputName = field.element.getAttribute('name');
+      if (!Object.prototype.hasOwnProperty.call(tooltipRegistry, inputName)) {
+        validationTooltip(field.element).add();
+      }
       newField.element.style.borderBottom = '2px solid red';
       isValid = false;
     } else {
+      validationTooltip(field.element).remove();
       newField.element.style.borderBottom = '';
     }
   });

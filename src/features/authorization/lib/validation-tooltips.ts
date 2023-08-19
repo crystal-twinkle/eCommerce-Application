@@ -1,10 +1,14 @@
 import countryDropdown from '../ui/country-dropdown';
+import requestCustomer from '../../../shared/const/request-customer';
 
-function tooltipsText(input: Element) {
+export function tooltipsText(input: Element) {
   const inputName = input.getAttribute('name');
   const tooltip = document.querySelector(`.tooltip`);
   const countryDropdownText = countryDropdown.options[countryDropdown.selectedIndex].textContent;
-  if (inputName === 'email') {
+  if (inputName === 'email' && requestCustomer.text) {
+    tooltip.textContent = requestCustomer.text;
+  }
+  if (inputName === 'email' && !requestCustomer.text) {
     tooltip.textContent = 'Enter a properly formatted email address (like "example@email.com")';
   }
   if (inputName === 'password') {
@@ -37,28 +41,55 @@ function tooltipsText(input: Element) {
   }
 }
 
-export default function validationTooltip() {
-  const inputs = document.querySelectorAll('.form__input');
+export const tooltipRegistry: Record<string, () => void> = {};
+
+export default function validationTooltip(input: HTMLInputElement) {
+  const inputName = input.getAttribute('name');
+  const pos = input.getBoundingClientRect();
   const tooltips: HTMLElement = document.querySelector('.tooltip');
-  const showTooltip = (input: Element) => {
-    const pos = input.getBoundingClientRect();
+
+  const showTooltip = () => {
     tooltipsText(input);
-    tooltips.style.display = 'block';
+    tooltips.classList.add('visible');
     tooltips.style.top = `${pos.top + 35}px`;
     tooltips.style.left = `${pos.left + 7}px`;
   };
 
   const hideTooltip = () => {
-    tooltips.style.display = 'none';
+    tooltips.classList.remove('visible');
   };
-  inputs.forEach((input) => {
-    input.addEventListener('mouseenter', () => {
-      showTooltip(input);
-    });
-    input.addEventListener('mouseleave', hideTooltip);
-    input.addEventListener('focus', () => {
-      showTooltip(input);
-    });
+
+  const add = () => {
+    tooltipRegistry[inputName] = showTooltip;
+    input.addEventListener('focus', tooltipRegistry[inputName]);
     input.addEventListener('blur', hideTooltip);
-  });
+  };
+
+  const remove = () => {
+    input.removeEventListener('focus', tooltipRegistry[inputName]);
+    delete tooltipRegistry[inputName];
+  };
+
+  return { add, remove };
 }
+
+// export default function validationTooltip(input: HTMLInputElement) {
+//   const inputs = document.querySelectorAll('.input');
+//   console.log(document.querySelectorAll('.input'));
+//   const tooltips: HTMLElement = document.querySelector('.tooltip');
+//   const showTooltip = (input: Element) => {
+//     const pos = input.getBoundingClientRect();
+//     tooltipsText(input);
+//     tooltips.classList.add('visible');
+//     tooltips.style.top = `${pos.top + 35}px`;
+//     tooltips.style.left = `${pos.left + 7}px`;
+//   };
+//
+//   const hideTooltip = () => {
+//     tooltips.classList.remove('visible');
+//   };
+//   inputs.forEach((input) => {
+//     input.addEventListener('focus', showTooltip());
+//     input.addEventListener('blur', hideTooltip);
+//   });
+// }

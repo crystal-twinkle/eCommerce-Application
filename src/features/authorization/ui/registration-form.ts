@@ -1,14 +1,24 @@
 import Input from '../../../shared/ui/input/input';
-import inputEmail from '../../../shared/ui/input/input-email';
-import inputPassword from '../../../shared/ui/input/input-password';
 import validateAge from '../../../shared/lib/validate/validate-age';
 import countryDropdown from './country-dropdown';
 import checkAllValidator from '../lib/check-validaror';
 import Form from '../../../shared/ui/form/form';
 import './tooltip.scss';
+import customer from '../../../entities/api/customer';
+import resultCreateCustomer from '../lib/result-create-customer';
 
-const emailReg = inputEmail.getElement();
-const passwordReg = inputPassword.getElement();
+const emailReg = new Input({
+  type: 'email',
+  placeholder: 'Email',
+  name: 'email',
+}).getElement();
+
+const passwordReg = new Input({
+  type: 'password',
+  placeholder: 'Password',
+  name: 'password',
+}).getElement();
+
 const firstName = new Input({
   placeholder: 'First Name',
   name: 'firstName',
@@ -45,12 +55,14 @@ const registrationForm = new Form({
   id: 'form-registration',
   fields: [emailReg, passwordReg, firstName, lastName, countryDropdown, dob, city, street, pCode],
   buttons: [{ text: 'Submit' }],
-  callback: (event) => {
+  callback: async (event) => {
     event.preventDefault();
-    if (checkAllValidator([emailReg, passwordReg, firstName, lastName, city, street, pCode])) {
-      console.log("It's ok");
+    const isValid = checkAllValidator([emailReg, passwordReg, firstName, lastName, city, street, pCode]);
+    if (isValid) {
+      const resultRequest = await customer().create(emailReg.value, passwordReg.value, firstName.value, lastName.value);
+      resultCreateCustomer(resultRequest, emailReg);
     }
   },
 }).getElement();
 
-document.body.appendChild(registrationForm);
+export default registrationForm;
