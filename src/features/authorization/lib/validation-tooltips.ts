@@ -9,7 +9,7 @@ function tooltipsText(input: Element) {
   }
   if (inputName === 'password') {
     tooltip.innerHTML =
-      'Must be at least 8 characters long, contain at least 1 uppercase letter,<br>1 lowercase letter, and 1 number';
+      'Must be at least 8 characters long, contain at least 1 uppercase letter,<br>1 lowercase letter, 1 special character (e.g., !@#$%^&*) and 1 number';
   }
   if (inputName === 'firstName') {
     tooltip.textContent = 'Must contain at least one character and no special characters or numbers';

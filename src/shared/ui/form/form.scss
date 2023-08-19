@@ -57,21 +57,23 @@
 
 [name='password'] {
   padding-right: 25px;
+  &::placeholder {
+    position: relative;
+    left: 12.5px;
+  }
 }
 
 .show-password-button {
   position: absolute;
-  transform: translatey(280%);
+  transform: translateY(280%);
   align-self: flex-end;
-  z-index: 100;
-
-  cursor: pointer;
   width: 20px;
   height: 20px;
-  background-image: url('../../assets/icons/visible.png');
+  background-image: url('../../assets/icons/invisible.png');
   background-size: contain;
   background-position: center center;
   background-repeat: no-repeat;
+  cursor: pointer;
   transition: all 0.2s;
 }
 
@@ -80,5 +82,5 @@
 }
 
 .show-password-button_hidden {
-  background-image: url('../../assets/icons/invisible.png');
+  background-image: url('../../assets/icons/visible.png');
 }
