@@ -1,5 +1,6 @@
 import countryDropdown from '../ui/country-dropdown';
 import requestCustomer from '../../../shared/const/request-customer';
+import tooltipsCard from '../ui/tooltips-card';
 
 export function tooltipsText(input: Element) {
   const inputName = input.getAttribute('name');
@@ -45,18 +46,16 @@ export const tooltipRegistry: Record<string, () => void> = {};
 
 export default function validationTooltip(input: HTMLInputElement) {
   const inputName = input.getAttribute('name');
-  const pos = input.getBoundingClientRect();
-  const tooltips: HTMLElement = document.querySelector('.tooltip');
-
   const showTooltip = () => {
+    const pos = input.getBoundingClientRect();
     tooltipsText(input);
-    tooltips.classList.add('visible');
-    tooltips.style.top = `${pos.top + 35}px`;
-    tooltips.style.left = `${pos.left + 7}px`;
+    tooltipsCard.classList.add('visible');
+    tooltipsCard.style.top = `${pos.bottom + pos.height + 30}px`;
+    tooltipsCard.style.left = `${pos.left + 10}px`;
   };
 
   const hideTooltip = () => {
-    tooltips.classList.remove('visible');
+    tooltipsCard.classList.remove('visible');
   };
 
   const add = () => {
