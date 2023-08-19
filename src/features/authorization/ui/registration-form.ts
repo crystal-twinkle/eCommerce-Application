@@ -1,6 +1,6 @@
 import Input from '../../../shared/ui/input/input';
 import inputEmail from '../../../shared/ui/input/input-email';
-import inputPassword from '../../../shared/ui/input/input-password';
+import PasswordInput from '../../../shared/ui/input/input-password';
 import validateAge from '../../../shared/lib/validate/validate-age';
 import countryDropdown from './country-dropdown';
 import checkAllValidator from '../lib/check-validaror';
@@ -8,7 +8,7 @@ import Form from '../../../shared/ui/form/form';
 import './tooltip.scss';
 
 const emailReg = inputEmail.getElement();
-const passwordReg = inputPassword.getElement();
+const passwordReg = new PasswordInput();
 const firstName = new Input({
   placeholder: 'First Name',
   name: 'firstName',
@@ -43,14 +43,25 @@ dob.setAttribute('max', validateAge());
 const registrationForm = new Form({
   title: 'Registration',
   id: 'form-registration',
-  fields: [emailReg, passwordReg, firstName, lastName, countryDropdown.getElement(), dob, city, street, pCode],
+  fields: [
+    emailReg,
+    passwordReg.getElement(),
+    firstName,
+    lastName,
+    countryDropdown.getElement(),
+    dob,
+    city,
+    street,
+    pCode,
+  ],
   buttons: [{ text: 'Submit' }],
   callback: (event) => {
     event.preventDefault();
-    if (checkAllValidator([emailReg, passwordReg, firstName, lastName, city, street, pCode])) {
+    if (checkAllValidator([emailReg, passwordReg.getElement(), firstName, lastName, city, street, pCode])) {
       console.log("It's ok");
     }
   },
 }).getElement();
+passwordReg.addShowButton();
 
 document.body.appendChild(registrationForm);

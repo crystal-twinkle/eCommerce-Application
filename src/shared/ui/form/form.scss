@@ -37,6 +37,7 @@
   }
 
   &__input {
+    position: relative;
     border: none;
     background-color: $primary;
     border-bottom: 2px solid $medium-gray;
@@ -52,4 +53,32 @@
       font-weight: 100;
     }
   }
+}
+
+[name='password'] {
+  padding-right: 25px;
+}
+
+.show-password-button {
+  position: absolute;
+  transform: translatey(280%);
+  align-self: flex-end;
+  z-index: 100;
+
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  background-image: url('../../assets/icons/visible.png');
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+  transition: all 0.2s;
+}
+
+.show-password-button:hover {
+  filter: contrast(10%);
+}
+
+.show-password-button_hidden {
+  background-image: url('../../assets/icons/invisible.png');
 }

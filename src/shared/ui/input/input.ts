@@ -24,6 +24,6 @@ export default class Input extends CommonBuilderWrapper {
     });
   }
   getElement(): HTMLInputElement {
-    return super.getElement() as HTMLInputElement;
+    return this.builder.getElement() as HTMLInputElement;
   }
 }
