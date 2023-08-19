@@ -72,24 +72,3 @@ export default function validationTooltip(input: HTMLInputElement) {
 
   return { add, remove };
 }
-
-// export default function validationTooltip(input: HTMLInputElement) {
-//   const inputs = document.querySelectorAll('.input');
-//   console.log(document.querySelectorAll('.input'));
-//   const tooltips: HTMLElement = document.querySelector('.tooltip');
-//   const showTooltip = (input: Element) => {
-//     const pos = input.getBoundingClientRect();
-//     tooltipsText(input);
-//     tooltips.classList.add('visible');
-//     tooltips.style.top = `${pos.top + 35}px`;
-//     tooltips.style.left = `${pos.left + 7}px`;
-//   };
-//
-//   const hideTooltip = () => {
-//     tooltips.classList.remove('visible');
-//   };
-//   inputs.forEach((input) => {
-//     input.addEventListener('focus', showTooltip());
-//     input.addEventListener('blur', hideTooltip);
-//   });
-// }
