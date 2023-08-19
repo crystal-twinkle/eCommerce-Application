@@ -28,7 +28,13 @@ export default class Header extends CommonBuilderWrapper {
     const overviewButton = new Button(() => this.router.navigate(Page.OVERVIEW), 'Overview');
     const registerButton = new Button(() => this.router.navigate(Page.REGISTRATION), 'Registration');
     const showCases = new Button(() => this.router.navigate(Page.SHOWCASES), 'Show cases');
-    stubButtons.append([overviewButton.getElement(), registerButton.getElement(), showCases.getElement()]);
+    const loginButton = new Button(() => this.router.navigate(Page.LOGIN), 'Login');
+    stubButtons.append([
+      overviewButton.getElement(),
+      registerButton.getElement(),
+      showCases.getElement(),
+      loginButton.getElement(),
+    ]);
 
     const userHeaderButton = new UserHeaderButton();
 
