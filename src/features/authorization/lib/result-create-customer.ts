@@ -15,7 +15,8 @@ export default function resultCreateCustomer(resultRequest: IResultCreateCustome
       requestCustomer.text = resultRequest.message;
       updateEmailReg.style.borderBottom = '2px solid red';
     } else {
-      requestMessage.classList.add('visible');
+      requestMessage.style.display = 'block';
+      requestCustomer.text = '';
       requestMessage.textContent = 'Something went wrong, try again later :)';
       blackout.classList.add('blackout_show');
       updateEmailReg.style.borderBottom = '';
@@ -23,7 +24,7 @@ export default function resultCreateCustomer(resultRequest: IResultCreateCustome
   }
 
   if (resultRequest.customer) {
-    requestMessage.classList.add('visible');
+    requestMessage.style.display = 'block';
     blackout.classList.add('blackout_show');
     requestMessage.textContent = 'Account created successfully! 🎉';
     requestCustomer.text = '';

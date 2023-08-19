@@ -1,7 +1,8 @@
 import validateEmail from '../../../shared/lib/validate/validate-email';
 import validatePassword from '../../../shared/lib/validate/validate-password';
-import validateName from '../../../shared/lib/validate/validate-name';
-import validateAddress from '../../../shared/lib/validate/validate-address';
+import validatePostalCode from '../../../shared/lib/validate/validate-postal-code';
+import notEmpty from '../../../shared/lib/validate/not-empty';
+
 import validationTooltip, { tooltipRegistry } from './validation-tooltips';
 
 export default function checkValidator(inputElements: HTMLInputElement[]) {
@@ -10,11 +11,11 @@ export default function checkValidator(inputElements: HTMLInputElement[]) {
   const fieldsToValidate = [
     { element: email, value: email.value, validator: validateEmail },
     { element: password, value: password.value, validator: validatePassword },
-    { element: firstName, value: firstName.value, validator: validateName },
-    { element: lastName, value: lastName.value, validator: validateName },
-    { element: city, value: city.value, validator: validateAddress.city },
-    { element: street, value: street.value, validator: validateAddress.street },
-    { element: pCode, value: pCode.value, validator: validateAddress.postalCode },
+    { element: firstName, value: firstName.value, validator: notEmpty },
+    { element: lastName, value: lastName.value, validator: notEmpty },
+    { element: city, value: city.value, validator: notEmpty },
+    { element: street, value: street.value, validator: notEmpty },
+    { element: pCode, value: pCode.value, validator: validatePostalCode },
   ];
 
   fieldsToValidate.forEach((field) => {

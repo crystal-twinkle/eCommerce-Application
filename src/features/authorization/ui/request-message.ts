@@ -11,7 +11,7 @@ const requestMessage = new ElementBuilder({
 
 const requestMessageCross = new Button(
   () => {
-    requestMessage.classList.remove('visible');
+    requestMessage.style.display = 'none';
     blackout.classList.remove('blackout_show');
   },
   '',
