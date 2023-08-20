@@ -1,6 +1,10 @@
 .header {
   height: 50px;
 
+  &__logo {
+    width: 45px;
+  }
+
   &-container {
     width: 100%;
     display: flex;
