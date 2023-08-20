@@ -1,6 +1,6 @@
 @import '../../colors';
 
-.welcome-view {
+.not-found-view {
   &__wrapper {
     display: grid;
     grid-template-rows: auto;
@@ -36,19 +36,13 @@
   &__heading {
     margin: 0;
     padding: 60px 0;
-    color: #121212;
+    color: $black-1;
     text-shadow: 0 4px 4px $black-2;
     font-family: Roboto;
     font-size: 60px;
     font-style: normal;
     font-weight: 300;
-    line-height: 87.305%;
-
-    &-logo {
-      color: #514a7e;
-      font-family: Bad Script;
-      font-weight: 400;
-    }
+    line-height: 87%;
   }
 
   &__text {

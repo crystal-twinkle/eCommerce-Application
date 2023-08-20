@@ -23,8 +23,6 @@ export default class App {
     this.main = new Main();
     this.footer = new Footer();
 
-    this.router.navigate(Page.OVERVIEW);
-
     document.body.append(this.header.getElement(), this.main.getElement(), this.footer.getElement());
   }
 
@@ -63,7 +61,7 @@ export default class App {
       {
         path: Page.NOT_FOUND,
         callback: () => {
-          this.main.setContent([new NotFoundPage().getElement()]);
+          this.main.setContent([new NotFoundPage(this.router).getElement()]);
         },
       },
     ];

@@ -3,11 +3,13 @@ import ElementBuilder from '../../shared/lib/element-builder';
 import Button, { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/button';
 import Avatar from '../../shared/ui/avatar/avatar';
 import './user-header-button.scss';
+import Router from '../../app/router/router';
+import { Page } from '../../app/router/pages';
 
 export default class UserHeaderButton extends CommonBuilderWrapper {
   private avatarButton: Button;
 
-  constructor() {
+  constructor(private router: Router) {
     super();
 
     this.builder = new ElementBuilder({
@@ -27,7 +29,7 @@ export default class UserHeaderButton extends CommonBuilderWrapper {
       styleClass: 'user-header-button__popup',
     });
     const avatar = new Avatar('default-avatar.png', () => {});
-    const loginButton = new Button(() => {}, 'Login', ButtonType.DEFAULT_COLORED);
+    const loginButton = new Button(() => this.router.navigate(Page.LOGIN), 'Login', ButtonType.DEFAULT_COLORED);
 
     popup.append([avatar.getElement(), loginButton.getElement()]);
     this.builder.append([this.avatarButton.getElement(), popup.getElement()]);
