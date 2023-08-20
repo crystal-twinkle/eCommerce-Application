@@ -1,10 +1,16 @@
 import countryDropdown from '../ui/country-dropdown';
+import requestCustomer from '../../../shared/const/request-customer';
+import tooltipsCard from '../ui/tooltips-card';
 
-function tooltipsText(input: Element) {
+export function tooltipsText(input: Element) {
   const inputName = input.getAttribute('name');
   const tooltip = document.querySelector(`.tooltip`);
-  const countryDropdownText = countryDropdown?.getSelectedItem()?.content;
-  if (inputName === 'email') {
+  const countryDropdownText: string = countryDropdown?.getSelectedItem()?.content;
+
+  if (inputName === 'email' && requestCustomer.text) {
+    tooltip.textContent = requestCustomer.text;
+  }
+  if (inputName === 'email' && !requestCustomer.text) {
     tooltip.textContent = 'Enter a properly formatted email address (like "example@email.com")';
   }
   if (inputName === 'password') {
@@ -26,9 +32,7 @@ function tooltipsText(input: Element) {
   if (inputName === 'dob') {
     tooltip.textContent = 'You must be over 13 years old';
   }
-  if (inputName === 'postalCode' && countryDropdownText === 'Select country:') {
-    tooltip.textContent = 'You should choose country';
-  }
+
   if (inputName === 'postalCode' && countryDropdownText === 'USA') {
     tooltip.textContent = "The format for the USA should be like '12345'";
   }
@@ -37,28 +41,32 @@ function tooltipsText(input: Element) {
   }
 }
 
-export default function validationTooltip() {
-  const inputs = document.querySelectorAll('.form__input');
-  const tooltips: HTMLElement = document.querySelector('.tooltip');
-  const showTooltip = (input: Element) => {
+export const tooltipRegistry: Record<string, () => void> = {};
+
+export default function validationTooltip(input: HTMLInputElement) {
+  const inputName = input.getAttribute('name');
+  const showTooltip = () => {
     const pos = input.getBoundingClientRect();
     tooltipsText(input);
-    tooltips.style.display = 'block';
-    tooltips.style.top = `${pos.top + 35}px`;
-    tooltips.style.left = `${pos.left + 7}px`;
+    tooltipsCard.classList.add('visible');
+    tooltipsCard.style.top = `${pos.bottom + pos.height + 30}px`;
+    tooltipsCard.style.left = `${pos.left + 10}px`;
   };
 
   const hideTooltip = () => {
-    tooltips.style.display = 'none';
+    tooltipsCard.classList.remove('visible');
   };
-  inputs.forEach((input) => {
-    input.addEventListener('mouseenter', () => {
-      showTooltip(input);
-    });
-    input.addEventListener('mouseleave', hideTooltip);
-    input.addEventListener('focus', () => {
-      showTooltip(input);
-    });
+
+  const add = () => {
+    tooltipRegistry[inputName] = showTooltip;
+    input.addEventListener('focus', tooltipRegistry[inputName]);
     input.addEventListener('blur', hideTooltip);
-  });
+  };
+
+  const remove = () => {
+    input.removeEventListener('focus', tooltipRegistry[inputName]);
+    delete tooltipRegistry[inputName];
+  };
+
+  return { add, remove };
 }

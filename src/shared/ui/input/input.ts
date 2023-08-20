@@ -7,10 +7,6 @@ interface IInputConfig {
   name?: string;
 }
 
-// interface IValidateFunction {
-//   (value: string): boolean;
-// }
-
 export default class Input extends CommonBuilderWrapper {
   message: ElementBuilder;
   errorMessage: string;

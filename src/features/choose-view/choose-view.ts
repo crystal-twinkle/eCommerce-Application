@@ -21,7 +21,7 @@ export default class ChooseView extends ViewBuilder {
       styleClass: 'choose-view__content',
     });
 
-    const paragraphs = [
+    const paragraphs: string[] = [
       'Loyal customers enjoy discounts starting from 5%',
       'We offer the most competitive prices',
       'Our customers are always happy with their experience',

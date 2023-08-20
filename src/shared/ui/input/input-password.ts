@@ -27,8 +27,8 @@ export default class PasswordInput extends Input {
     });
   }
 
-  public addShowButton() {
-    this.builder.getElement().after(this.showButton.getElement());
+  public addShowButton(): void {
+    this.builder.getElement().before(this.showButton.getElement());
   }
 
   private showPassword(): void {

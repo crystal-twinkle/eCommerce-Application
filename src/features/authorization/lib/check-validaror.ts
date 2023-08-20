@@ -1,33 +1,31 @@
 import validateEmail from '../../../shared/lib/validate/validate-email';
 import validatePassword from '../../../shared/lib/validate/validate-password';
-import validateName from '../../../shared/lib/validate/validate-name';
-import validateAddress from '../../../shared/lib/validate/validate-address';
+import validatePostalCode from '../../../shared/lib/validate/validate-postal-code';
+import notEmpty from '../../../shared/lib/validate/not-empty';
 
-export default function checkValidator(inputElements: HTMLInputElement[]) {
+export default function checkValidator(inputElement: HTMLInputElement) {
   let isValid = true;
-  const [email, password, firstName, lastName, city, street, pCode] = inputElements;
-  const fieldsToValidate = [
-    { element: email, value: email.value, validator: validateEmail },
-    { element: password, value: password.value, validator: validatePassword },
-    { element: firstName, value: firstName.value, validator: validateName },
-    { element: lastName, value: lastName.value, validator: validateName },
-    { element: city, value: city.value, validator: validateAddress.city },
-    { element: street, value: street.value, validator: validateAddress.street },
-    { element: pCode, value: pCode.value, validator: validateAddress.postalCode },
-  ];
+  const updateInput = inputElement;
+  const inputName = inputElement.getAttribute('name');
+  const validationRules: Record<string, (value: string) => boolean> = {
+    email: validateEmail,
+    password: validatePassword,
+    firstName: notEmpty,
+    lastName: notEmpty,
+    city: notEmpty,
+    street: notEmpty,
+    postalCode: validatePostalCode,
+  };
 
-  fieldsToValidate.forEach((field) => {
-    const newField = { ...field };
-    if (!field.validator(field.value)) {
-      if (!field.element) {
-        return;
-      }
-      newField.element.style.borderBottom = '2px solid red';
+  if (inputName in validationRules) {
+    const validationFunction = validationRules[inputName];
+    if (!validationFunction(inputElement.value)) {
+      updateInput.style.borderBottom = '2px solid red';
       isValid = false;
     } else {
-      newField.element.style.borderBottom = '';
+      updateInput.style.borderBottom = '';
     }
-  });
+  }
 
   return isValid;
 }

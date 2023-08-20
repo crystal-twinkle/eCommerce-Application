@@ -1,5 +1,4 @@
 import inputEmailBuild from '../../shared/ui/input/input-email';
-import checkValidator from '../authorization/lib/check-validaror';
 import Form from '../../shared/ui/form/form';
 import ViewBuilder from '../../shared/lib/view-builder';
 import PasswordInput from '../../shared/ui/input/input-password';
@@ -14,20 +13,20 @@ export default class LoginForm extends ViewBuilder {
     const emailReg = inputEmailBuild.getElement();
     const passwordReg = new PasswordInput();
 
-    const registrationForm = new Form({
+    const loginForm = new Form({
       title: 'Login',
       id: 'login',
       fields: [emailReg, passwordReg.getElement()],
       buttons: [{ text: 'Submit' }],
       callback: (event) => {
         event.preventDefault();
-        if (checkValidator([emailReg, passwordReg.getElement()])) {
-          console.log("It's ok");
-        }
+        // if (checkValidator([emailReg, passwordReg.getElement()])) {
+        //   console.log("It's ok");
+        // }
       },
     });
     passwordReg.addShowButton();
 
-    return [registrationForm.getElement()];
+    return [loginForm.getElement()];
   }
 }
