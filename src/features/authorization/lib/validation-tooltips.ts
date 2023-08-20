@@ -5,7 +5,7 @@ import tooltipsCard from '../ui/tooltips-card';
 export function tooltipsText(input: Element) {
   const inputName = input.getAttribute('name');
   const tooltip = document.querySelector(`.tooltip`);
-  const countryDropdownText = countryDropdown?.getSelectedItem()?.content;
+  const countryDropdownText: string = countryDropdown?.getSelectedItem()?.content;
 
   if (inputName === 'email' && requestCustomer.text) {
     tooltip.textContent = requestCustomer.text;

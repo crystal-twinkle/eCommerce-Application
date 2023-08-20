@@ -1,7 +1,7 @@
 import countryDropdown from '../../../features/authorization/ui/country-dropdown';
 
 export default function validatePostalCode(checkPostalCode: string): boolean {
-  const countryDropdownText = countryDropdown?.getSelectedItem()?.content;
+  const countryDropdownText: string = countryDropdown?.getSelectedItem()?.content;
   let postalCodePattern: RegExp;
   if (countryDropdownText === 'USA') {
     postalCodePattern = /^\d{5}(-\d{4})?$/;
