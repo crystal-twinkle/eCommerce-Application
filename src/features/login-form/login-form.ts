@@ -20,9 +20,6 @@ export default class LoginForm extends ViewBuilder {
       buttons: [{ text: 'Submit' }],
       callback: (event) => {
         event.preventDefault();
-        // if (checkValidator([emailReg, passwordReg.getElement()])) {
-        //   console.log("It's ok");
-        // }
       },
     });
     passwordReg.addShowButton();
