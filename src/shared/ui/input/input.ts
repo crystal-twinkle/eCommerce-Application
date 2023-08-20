@@ -1,5 +1,6 @@
 import ElementBuilder from '../../lib/element-builder';
 import CommonBuilderWrapper from '../../lib/common-builder-wrapper';
+import './input.scss';
 
 interface IInputConfig {
   type?: string;
@@ -17,7 +18,7 @@ export default class Input extends CommonBuilderWrapper {
 
     this.builder = new ElementBuilder({
       tag: 'input',
-      styleClass: 'form__input',
+      styleClass: 'input',
       tagSettings: {
         type: config.type || 'text',
         placeholder: config.placeholder || '',

@@ -2,7 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const EslintPlugin = require('eslint-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 const config = {
   entry: path.resolve(__dirname, 'src/index'),
@@ -61,7 +61,7 @@ const config = {
     new EslintPlugin({ extensions: 'ts' }),
     new CopyPlugin({
       patterns: [
-        { from: path.resolve(__dirname, 'src', 'shared', 'assets'), to: path.resolve(__dirname, 'dist', 'assets')},
+        { from: path.resolve(__dirname, 'src', 'shared', 'assets'), to: path.resolve(__dirname, 'dist', 'assets') },
       ],
     }),
     new FaviconsWebpackPlugin({
@@ -69,9 +69,8 @@ const config = {
       mode: 'webapp',
       devMode: 'light',
       prefix: 'assets/icons/favicons/',
-      cache: true,      
-  }),
-
+      cache: true,
+    }),
   ],
 };
 
