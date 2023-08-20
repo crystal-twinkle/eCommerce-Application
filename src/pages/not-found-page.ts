@@ -1,16 +1,19 @@
-import ElementBuilder from '../shared/lib/element-builder';
+import ViewBuilder from '../shared/lib/view-builder';
+import Router from '../app/router/router';
+import NotFoundView from '../features/not-found-view/not-found-view';
 
-export default class NotFoundPage {
-  private builder: ElementBuilder;
-
-  constructor() {
-    this.builder = new ElementBuilder({
-      tag: 'div',
-      content: 'Not Found',
-    });
+export default class NotFoundPage extends ViewBuilder {
+  constructor(private router: Router) {
+    super('page main-page');
   }
 
-  public getElement(): HTMLElement {
-    return this.builder.getElement();
+  public configureView(): HTMLElement[] {
+    const notFoundView = new NotFoundView();
+
+    return [notFoundView.getElement()];
+  }
+
+  public buildView(): void {
+    this.view.getElement().append(...this.configureView());
   }
 }

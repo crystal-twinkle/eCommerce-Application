@@ -18,6 +18,13 @@ export default class Header extends CommonBuilderWrapper {
       tag: 'div',
       styleClass: 'container header-container',
     });
+    const logo = new ElementBuilder({
+      tag: 'img',
+      styleClass: 'header__logo',
+      tagSettings: {
+        src: '../../assets/icons/logo.svg',
+      },
+    });
     const stubButtons = new ElementBuilder({
       tag: 'div',
     });
@@ -25,18 +32,18 @@ export default class Header extends CommonBuilderWrapper {
       tag: 'nav',
     });
 
+    const notFoundPageButton = new Button(() => this.router.navigate(Page.NOT_FOUND), 'Not Found');
     const overviewButton = new Button(() => this.router.navigate(Page.OVERVIEW), 'Overview');
     const registerButton = new Button(() => this.router.navigate(Page.REGISTRATION), 'Registration');
     const showCases = new Button(() => this.router.navigate(Page.SHOWCASES), 'Show cases');
-    const loginButton = new Button(() => this.router.navigate(Page.LOGIN), 'Login');
     stubButtons.append([
+      notFoundPageButton.getElement(),
       overviewButton.getElement(),
       registerButton.getElement(),
       showCases.getElement(),
-      loginButton.getElement(),
     ]);
 
-    const userHeaderButton = new UserHeaderButton();
+    const userHeaderButton = new UserHeaderButton(this.router);
 
     const favoritesButton = new Button(
       () => {},
@@ -55,8 +62,7 @@ export default class Header extends CommonBuilderWrapper {
     cartButton.setBadge(4);
 
     navigation.append([userHeaderButton.getElement(), favoritesButton.getElement(), cartButton.getElement()]);
-
-    container.append([stubButtons.getElement(), navigation.getElement()]);
+    container.append([logo.getElement(), stubButtons.getElement(), navigation.getElement()]);
 
     this.builder.append([container.getElement()]);
   }
