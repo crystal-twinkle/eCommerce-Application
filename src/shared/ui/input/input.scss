@@ -1,0 +1,17 @@
+@import '../../../colors';
+
+.input {
+  border: none;
+  background-color: $primary;
+  border-bottom: 2px solid $medium-gray;
+  outline: none;
+  height: 30px;
+  font-size: 18px;
+
+  &::placeholder {
+    text-align: center;
+    color: $medium-gray;
+    font-size: 18px;
+    font-weight: 100;
+  }
+}

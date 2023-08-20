@@ -4,7 +4,7 @@ import checkLocalToken from './check-local-token';
 const apiCustomers = `${config.CTP_API_URL}/${config.CTP_PROJECT_KEY}/customers`;
 
 export default function customer() {
-  const OptionalForGet = {
+  const customerOptional = {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -24,17 +24,24 @@ export default function customer() {
   } as RequestInit;
 
   const getById = async (id: string) => {
-    const res = await fetch(`${apiCustomers}/${id}`, OptionalForGet);
+    const res = await fetch(`${apiCustomers}/${id}`, customerOptional);
     return res.json();
   };
 
   const create = async (email: string, password: string, firstName: string, lastName: string) => {
     await checkLocalToken();
     OptionalForPost.body = JSON.stringify({ email, password, firstName, lastName });
-    await fetch(`${apiCustomers}`, OptionalForPost);
+    const response = await fetch(`${apiCustomers}`, OptionalForPost);
+    return response.json();
   };
 
-  return { getById, create };
+  const deleteById = async (id: string) => {
+    await checkLocalToken();
+    customerOptional.method = 'DELETE';
+    await fetch(`${apiCustomers}/${id}?version=1`, customerOptional);
+  };
+
+  return { getById, create, deleteById };
 }
 
 export const getCustomers = async () => {
