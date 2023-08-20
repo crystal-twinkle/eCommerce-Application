@@ -17,12 +17,16 @@ export default class Input extends CommonBuilderWrapper {
       styleClass: 'input',
       tagSettings: {
         type: config.type || 'text',
-        placeholder: config.placeholder || '',
-        name: config.name || '',
-        autocomplete: 'off',
-        // required: '',
       },
     });
+
+    if (config.placeholder && config.name) {
+      this.builder.setTagSettings({
+        placeholder: config.placeholder,
+        name: config.name,
+        autocomplete: 'off',
+      });
+    }
   }
   getElement(): HTMLInputElement {
     return super.getElement() as HTMLInputElement;
