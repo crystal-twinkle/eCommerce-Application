@@ -6,39 +6,65 @@ import countryDropdown from './country-dropdown';
 import checkAllValidator from '../lib/check-validaror';
 import Form from '../../../shared/ui/form/form';
 import './tooltip.scss';
+import validateName from '../../../shared/lib/validate/validate-name';
+import validateAddress from '../../../shared/lib/validate/validate-address';
 
 const emailReg = inputEmail.getElement();
 const passwordReg = new PasswordInput();
-const firstName = new Input({
-  placeholder: 'First Name',
-  name: 'firstName',
-}).getElement();
+const firstName = new Input(
+  {
+    placeholder: 'First Name',
+    name: 'firstName',
+  },
+  'invalid first name',
+  validateName,
+).getElement();
 
-const lastName = new Input({
-  placeholder: 'Last Name',
-  name: 'lastName',
-}).getElement();
+const lastName = new Input(
+  {
+    placeholder: 'Last Name',
+    name: 'lastName',
+  },
+  'invalid last name',
+  validateName,
+).getElement();
 
-const city = new Input({
-  placeholder: 'City',
-  name: 'city',
-}).getElement();
+const city = new Input(
+  {
+    placeholder: 'City',
+    name: 'city',
+  },
+  'invalid city',
+  validateAddress.city,
+).getElement();
 
-const street = new Input({
-  placeholder: 'Street',
-  name: 'street',
-}).getElement();
+const street = new Input(
+  {
+    placeholder: 'Street',
+    name: 'street',
+  },
+  'invalid street',
+  validateAddress.street,
+).getElement();
 
-const pCode = new Input({
-  placeholder: 'PostalCode',
-  name: 'postalCode',
-}).getElement();
+const pCode = new Input(
+  {
+    placeholder: 'PostalCode',
+    name: 'postalCode',
+  },
+  'invalid postalCode',
+  validateAddress.postalCode,
+).getElement();
 
-const dob = new Input({
-  type: 'date',
-  name: 'dob',
-}).getElement();
-dob.setAttribute('max', validateAge());
+const dob = new Input(
+  {
+    type: 'date',
+    name: 'dob',
+  },
+  'invalid age',
+  validateAge,
+).getElement();
+// dob.setAttribute('max', validateAge());
 
 const registrationForm = new Form({
   title: 'Registration',

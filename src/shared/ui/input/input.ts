@@ -7,8 +7,16 @@ interface IInputConfig {
   name?: string;
 }
 
+// interface IValidateFunction {
+//   (value: string): boolean;
+// }
+
 export default class Input extends CommonBuilderWrapper {
-  constructor(config: IInputConfig) {
+  message: ElementBuilder;
+  errorMessage: string;
+  validateFunction: (value: string) => boolean;
+
+  constructor(config: IInputConfig, errorMessage: string, validateFunction?: (value: string) => boolean) {
     super();
 
     this.builder = new ElementBuilder({
@@ -22,6 +30,34 @@ export default class Input extends CommonBuilderWrapper {
         required: '',
       },
     });
+    this.errorMessage = errorMessage;
+
+    this.validateFunction = validateFunction;
+
+    this.showErrorMessage = this.showErrorMessage.bind(this);
+
+    this.builder.setEventHandler({ type: 'input', callback: this.showErrorMessage });
+    this.builder.setEventHandler({ type: 'input', callback: this.checkInput.bind(this) });
+  }
+
+  private showErrorMessage() {
+    this.message = new ElementBuilder({
+      tag: 'span',
+      styleClass: 'checking-password-message',
+      content: this.errorMessage,
+    });
+
+    this.builder.getElement().after(this.message.getElement());
+  }
+
+  private checkInput() {
+    this.builder.getElement().removeEventListener('input', this.showErrorMessage);
+    const value = (this.builder.getElement() as HTMLInputElement).value;
+    if (!this.validateFunction(value)) {
+      this.builder.getElement().after(this.message.getElement());
+    } else {
+      this.message.getElement().remove();
+    }
   }
   getElement(): HTMLInputElement {
     return this.builder.getElement() as HTMLInputElement;
