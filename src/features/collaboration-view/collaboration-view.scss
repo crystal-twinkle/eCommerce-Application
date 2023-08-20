@@ -1,0 +1,60 @@
+.collaboration-view {
+  &__heading {
+    padding-bottom: 75px;
+
+    color: #121212;
+    font-family: Roboto;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 87.305%;
+  }
+
+  &__text {
+    color: #7d7d7d;
+    font-family: Roboto;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 118%;
+  }
+
+  &__content {
+    margin: auto;
+    padding: 60px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__content-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__item-heading {
+    max-width: 155px;
+
+    color: #121212;
+    text-align: center;
+    font-family: Roboto;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 118%;
+  }
+
+  &__item-text {
+    max-width: 230px;
+    padding: 25px;
+
+    color: #7d7d7d;
+    text-align: center;
+    font-family: Roboto;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 118%;
+  }
+}

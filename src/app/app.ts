@@ -8,21 +8,24 @@ import ProductPage from '../pages/product-page';
 import Main from '../features/main/main';
 import RegisterPage from '../pages/register-page';
 import ShowcasesPage from '../pages/showcases/showcases-page';
+import Footer from '../features/footer/footer';
 
 export default class App {
   private router: Router;
   private header: Header;
   private main: Main;
+  private footer: Footer;
 
   constructor() {
     this.router = new Router(this.createRoutes());
 
     this.header = new Header(this.router);
     this.main = new Main();
+    this.footer = new Footer();
 
     this.router.navigate(Page.OVERVIEW);
 
-    document.body.append(this.header.getElement(), this.main.getElement());
+    document.body.append(this.header.getElement(), this.main.getElement(), this.footer.getElement());
   }
 
   private createRoutes(): IRouterLink[] {

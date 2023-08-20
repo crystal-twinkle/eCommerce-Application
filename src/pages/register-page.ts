@@ -1,21 +1,18 @@
-import ElementBuilder from '../shared/lib/element-builder';
-import registrationForm from '../features/authorization/ui/registration-form';
-import requestMessage from '../features/authorization/ui/request-message';
-import tooltipsCard from '../features/authorization/ui/tooltips-card';
+import RegistrationFormView from '../features/authorization/ui/registration-form';
+import ViewBuilder from '../shared/lib/view-builder';
 
-export default class RegisterPage {
-  private builder: ElementBuilder;
-
+export default class RegisterPage extends ViewBuilder {
   constructor() {
-    this.builder = new ElementBuilder({
-      tag: 'div',
-      content: 'Register Page',
-    });
-
-    this.builder.append([registrationForm, requestMessage, tooltipsCard]);
+    super('page register-page');
   }
 
-  public getElement(): HTMLElement {
-    return this.builder.getElement();
+  public configureView(): HTMLElement[] {
+    const registrationFormView = new RegistrationFormView();
+
+    return [registrationFormView.getElement()];
+  }
+
+  public buildView(): void {
+    this.view.getElement().append(...this.configureView());
   }
 }

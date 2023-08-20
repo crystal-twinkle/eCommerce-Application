@@ -1,5 +1,6 @@
 import ElementBuilder from '../../lib/element-builder';
 import CommonBuilderWrapper from '../../lib/common-builder-wrapper';
+import { ValidationParams } from '../../lib/validate/validation-params';
 import './input.scss';
 
 interface IInputConfig {
@@ -9,9 +10,13 @@ interface IInputConfig {
 }
 
 export default class Input extends CommonBuilderWrapper {
+  message: ElementBuilder;
+  config: IInputConfig;
+
   constructor(config: IInputConfig) {
     super();
 
+    this.config = config;
     this.builder = new ElementBuilder({
       tag: 'input',
       styleClass: 'input',
@@ -20,11 +25,35 @@ export default class Input extends CommonBuilderWrapper {
         placeholder: config.placeholder || '',
         name: config.name || '',
         autocomplete: 'off',
-        // required: '',
       },
     });
+
+    this.message = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'error-message',
+      content: ValidationParams[this.config.name].message,
+    });
+
+    this.showErrorMessage = this.showErrorMessage.bind(this);
+
+    this.builder.setEventHandler({ type: 'input', callback: this.showErrorMessage });
+    this.builder.setEventHandler({ type: 'input', callback: this.checkInput.bind(this) });
+  }
+
+  protected showErrorMessage() {
+    this.builder.getElement().after(this.message.getElement());
+  }
+
+  protected checkInput() {
+    this.builder.getElement().removeEventListener('input', this.showErrorMessage);
+    const value = (this.builder.getElement() as HTMLInputElement).value;
+    if (!ValidationParams[this.config.name].validateFunction(value)) {
+      this.builder.getElement().after(this.message.getElement());
+    } else {
+      this.message.getElement().remove();
+    }
   }
   getElement(): HTMLInputElement {
-    return super.getElement() as HTMLInputElement;
+    return this.builder.getElement() as HTMLInputElement;
   }
 }
