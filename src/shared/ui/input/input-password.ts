@@ -1,21 +1,16 @@
 import ElementBuilder from '../../lib/element-builder';
 import Input from './input';
 import './input-password.scss';
-import validatePassword from '../../lib/validate/validate-password';
 
 export default class PasswordInput extends Input {
   showButton: ElementBuilder;
 
   constructor() {
-    super(
-      {
-        type: 'password',
-        placeholder: 'Password',
-        name: 'password',
-      },
-      'weack password',
-      validatePassword,
-    );
+    super({
+      type: 'password',
+      placeholder: 'Password',
+      name: 'password',
+    });
 
     this.showButton = new ElementBuilder({
       tag: 'div',
