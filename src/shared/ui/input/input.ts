@@ -28,9 +28,6 @@ export default class Input extends CommonBuilderWrapper {
       styleClass: 'input',
       tagSettings: {
         type: config.type || 'text',
-        placeholder: config.placeholder || '',
-        name: config.name || '',
-        autocomplete: 'off',
       },
     });
     if (config.placeholder && config.name) {
