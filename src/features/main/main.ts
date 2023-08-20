@@ -1,4 +1,4 @@
-import './main.css';
+import './main.scss';
 import ElementBuilder from '../../shared/lib/element-builder';
 
 export default class Main {
