@@ -36,7 +36,7 @@ export default class Button extends CommonBuilderWrapper {
     text: string = '',
     type: ButtonType = ButtonType.DEFAULT,
     icon?: IButtonIconConfig,
-    size?: ButtonSize | undefined,
+    size: ButtonSize | string = '',
     styleClass: string = '',
   ) {
     super();
