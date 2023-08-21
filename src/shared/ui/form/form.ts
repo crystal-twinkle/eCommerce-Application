@@ -5,7 +5,7 @@ import Button, { ButtonIconPosition, ButtonType } from '../button/button';
 
 interface FormButton {
   text: string;
-  callback?: (event: Event) => void;
+  callback?: () => void;
 }
 
 interface FormConfig {
@@ -51,7 +51,7 @@ export default class Form extends CommonBuilderWrapper {
         }).getElement();
         createButton.setAttribute('type', 'submit');
       } else {
-        createButton = new Button(() => {}, button.text, ButtonType.DEFAULT, undefined).getElement();
+        createButton = new Button(button.callback, button.text, ButtonType.DEFAULT, undefined).getElement();
         createButton.setAttribute('type', 'button');
       }
       createButton.classList.add('form__btn');
