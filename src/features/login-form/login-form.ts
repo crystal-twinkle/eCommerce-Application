@@ -41,6 +41,7 @@ export default class LoginForm extends ViewBuilder {
             blackout.classList.add('blackout_show');
             appRouter.navigate(Page.OVERVIEW);
           } else {
+            emailLogin.getElement().classList.add('input_invalid');
             emailLogin.wrongEmailMessage();
           }
         }

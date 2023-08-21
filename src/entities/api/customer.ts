@@ -189,3 +189,5 @@ export default function customer() {
 
   return { getById, getByEmail, create, deleteById, addAddress, setDefaultAddress, login };
 }
+
+console.log(customer().getByEmail('kristallik@example.com'));
