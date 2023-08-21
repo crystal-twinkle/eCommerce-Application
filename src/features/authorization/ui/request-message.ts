@@ -11,7 +11,6 @@ const requestMessage = new ElementBuilder({
 
 export const requestMessageText = new ElementBuilder({
   tag: 'div',
-  styleClass: 'request-message__text',
 }).getElement();
 
 const requestMessageCross = new Button(
@@ -25,6 +24,6 @@ const requestMessageCross = new Button(
   ButtonSize.SMALL,
 ).getElement();
 requestMessageCross.classList.add('request-message__cross');
-requestMessage.append(requestMessageCross);
+requestMessage.append(requestMessageCross, requestMessageText);
 
 export default requestMessage;
