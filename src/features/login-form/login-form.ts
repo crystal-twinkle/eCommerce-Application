@@ -16,15 +16,14 @@ export default class LoginForm extends ViewBuilder {
   }
 
   public configureView() {
-    const emailLoginClass = new InputEmail();
-    const emailLogin = emailLoginClass.getElement();
+    const emailLogin = new InputEmail();
     const passwordLoginClass = new PasswordInput();
     const passwordLogin = passwordLoginClass.getElement();
 
     const loginForm = new Form({
       title: 'Login',
       id: 'login',
-      fields: [emailLogin, passwordLogin],
+      fields: [emailLogin.getElement(), passwordLogin],
       buttons: [
         { text: 'Submit' },
         {
@@ -34,13 +33,15 @@ export default class LoginForm extends ViewBuilder {
       ],
       callback: async (event) => {
         event.preventDefault();
-        if (checkValidator([emailLogin, passwordLogin])) {
-          const result = await customer().getByEmail(emailLogin.value);
+        if (checkValidator([emailLogin.getElement(), passwordLogin])) {
+          const result = await customer().getByEmail(emailLogin.getElement().value);
           if (result.results.length && passwordLogin.value === localStorage.getItem('password')) {
             requestMessageText.textContent = 'You are logged in!';
             requestMessage.style.display = 'block';
             blackout.classList.add('blackout_show');
             appRouter.navigate(Page.OVERVIEW);
+          } else {
+            emailLogin.wrongEmailMessage();
           }
         }
       },
