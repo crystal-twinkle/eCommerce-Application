@@ -131,3 +131,5 @@ export default function customer() {
 
   return { getById, getByEmail, create, deleteById, addAddress, setDefaultAddress };
 }
+
+console.log(getCustomers());

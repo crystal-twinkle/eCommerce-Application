@@ -1,4 +1,4 @@
-import inputEmailBuild from '../../shared/ui/input/input-email';
+import InputEmail from '../../shared/ui/input/input-email';
 import Form from '../../shared/ui/form/form';
 import ViewBuilder from '../../shared/lib/view-builder';
 import PasswordInput from '../../shared/ui/input/input-password';
@@ -12,7 +12,7 @@ export default class LoginForm extends ViewBuilder {
   }
 
   public configureView() {
-    const emailReg = inputEmailBuild.getElement();
+    const emailReg = new InputEmail().getElement();
     const passwordReg = new PasswordInput();
 
     const loginForm = new Form({

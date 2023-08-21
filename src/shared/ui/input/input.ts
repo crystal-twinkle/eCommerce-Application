@@ -45,7 +45,7 @@ export default class Input extends CommonBuilderWrapper {
 
       this.showErrorMessage = this.showErrorMessage.bind(this);
 
-      this.builder.setEventHandler({ type: 'focus', callback: this.showErrorMessage });
+      this.builder.setEventHandler({ type: 'input', callback: this.showErrorMessage });
       this.builder.setEventHandler({ type: 'input', callback: this.checkInput.bind(this) });
     }
   }
