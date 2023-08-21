@@ -52,7 +52,14 @@ export default function customer() {
   };
 
   const getById = async (id: string) => {
+    await checkLocalToken();
     const res = await fetch(`${apiCustomers}/${id}`, customerOptional);
+    return res.json();
+  };
+
+  const getByEmail = async (email: string) => {
+    await checkLocalToken();
+    const res = await fetch(`${apiCustomers}/?where=email%3D%22${email}%22`, customerOptional);
     return res.json();
   };
 
@@ -122,5 +129,5 @@ export default function customer() {
     await fetch(`${apiCustomers}/${id}?version=1`, customerOptional);
   };
 
-  return { getById, create, deleteById, addAddress, setDefaultAddress };
+  return { getById, getByEmail, create, deleteById, addAddress, setDefaultAddress };
 }
