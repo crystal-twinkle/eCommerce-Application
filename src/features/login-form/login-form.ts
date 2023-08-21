@@ -1,10 +1,12 @@
-import InputEmail from '../../shared/ui/input/input-email';
 import Form from '../../shared/ui/form/form';
 import ViewBuilder from '../../shared/lib/view-builder';
 import PasswordInput from '../../shared/ui/input/input-password';
 import appRouter from '../../shared/lib/router/router';
 import { Page } from '../../shared/lib/router/pages';
 import '../authorization/ui/tooltip.scss';
+import customer from '../../entities/api/customer';
+import InputEmail from '../../shared/ui/input/input-email';
+import checkValidator from '../authorization/lib/check-validaror';
 
 export default class LoginForm extends ViewBuilder {
   constructor() {
@@ -12,13 +14,15 @@ export default class LoginForm extends ViewBuilder {
   }
 
   public configureView() {
-    const emailReg = new InputEmail().getElement();
-    const passwordReg = new PasswordInput();
+    const emailLoginClass = new InputEmail();
+    const emailLogin = emailLoginClass.getElement();
+    const passwordLoginClass = new PasswordInput();
+    const passwordLogin = passwordLoginClass.getElement();
 
     const loginForm = new Form({
       title: 'Login',
       id: 'login',
-      fields: [emailReg, passwordReg.getElement()],
+      fields: [emailLogin, passwordLogin],
       buttons: [
         { text: 'Submit' },
         {
@@ -26,11 +30,17 @@ export default class LoginForm extends ViewBuilder {
           callback: () => appRouter.navigate(Page.REGISTRATION),
         },
       ],
-      callback: (event) => {
+      callback: async (event) => {
         event.preventDefault();
+        if (checkValidator([emailLogin, passwordLogin])) {
+          const result = await customer().getByEmail(emailLogin.value);
+          if (result.results.length && passwordLogin.value === localStorage.getItem('password')) {
+            appRouter.navigate(Page.OVERVIEW);
+          }
+        }
       },
     });
-    passwordReg.addShowButton();
+    passwordLoginClass.addShowButton();
 
     return [loginForm.getElement()];
   }

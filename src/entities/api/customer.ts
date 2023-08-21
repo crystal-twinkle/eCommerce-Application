@@ -3,6 +3,21 @@ import checkLocalToken from './check-local-token';
 
 const apiCustomers = `${config.CTP_API_URL}/${config.CTP_PROJECT_KEY}/customers`;
 
+export interface IAddress {
+  id: string;
+  title: string;
+  firstName: string;
+  lastName: string;
+  streetName: string;
+  streetNumber: string;
+  postalCode: string;
+  city: string;
+  region: string;
+  state: string;
+  country: string;
+  email: string;
+}
+
 interface IAddressCreate {
   key: string;
   title: string;
@@ -14,6 +29,39 @@ interface IAddressCreate {
   region: string;
   country: string;
   email: string;
+}
+
+interface ICustomerByEmail {
+  count: number;
+  limit: number;
+  offset: number;
+  results: {
+    addresses: IAddress[];
+    authenticationMode: string;
+    billingAddressIds: string[];
+    createdAt: string;
+    createdBy: {
+      clientId: string;
+      isPlatformClient: boolean;
+    };
+    email: string;
+    firstName: string;
+    id: string;
+    isEmailVerified: boolean;
+    lastMessageSequenceNumber: number;
+    lastModifiedAt: string;
+    lastModifiedBy: {
+      clientId: string;
+      isPlatformClient: boolean;
+    };
+    lastName: string;
+    password: string;
+    shippingAddressIds: string[];
+    stores: [];
+    version: number;
+    versionModifiedAt: string;
+  }[];
+  total: 1;
 }
 
 export const addressesCreate: IAddressCreate[] = [];
@@ -57,7 +105,7 @@ export default function customer() {
     return res.json();
   };
 
-  const getByEmail = async (email: string) => {
+  const getByEmail = async (email: string): Promise<ICustomerByEmail> => {
     await checkLocalToken();
     const res = await fetch(`${apiCustomers}/?where=email%3D%22${email}%22`, customerOptional);
     return res.json();
@@ -131,5 +179,3 @@ export default function customer() {
 
   return { getById, getByEmail, create, deleteById, addAddress, setDefaultAddress };
 }
-
-console.log(getCustomers());

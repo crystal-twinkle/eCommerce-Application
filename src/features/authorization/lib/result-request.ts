@@ -1,22 +1,9 @@
 import requestMessage, { requestMessageText } from '../ui/request-message';
 import blackout from '../../blackout/blackout';
-import customer from '../../../entities/api/customer';
+import customer, { IAddress } from '../../../entities/api/customer';
 import InputEmail from '../../../shared/ui/input/input-email';
-
-interface IAddress {
-  id: string;
-  title: string;
-  firstName: string;
-  lastName: string;
-  streetName: string;
-  streetNumber: string;
-  postalCode: string;
-  city: string;
-  region: string;
-  state: string;
-  country: string;
-  email: string;
-}
+import appRouter from '../../../shared/lib/router/router';
+import { Page } from '../../../shared/lib/router/pages';
 
 interface IRequest {
   statusCode?: number;
@@ -32,13 +19,15 @@ export const resultsCheckbox = {
   billDefaultCheck: false,
 };
 
-export async function resultCreateCustomer(request: IRequest, emailReg: InputEmail) {
+export async function resultCreateCustomer(request: IRequest, emailReg: InputEmail, password: HTMLInputElement) {
   const updateEmailReg = emailReg.getElement();
   if (request.customer) {
+    localStorage.setItem('password', password.value);
     requestMessage.style.display = 'block';
     blackout.classList.add('blackout_show');
     requestMessageText.textContent = 'Account created successfully! 🎉';
     updateEmailReg.style.borderBottom = '';
+    appRouter.navigate(Page.OVERVIEW);
   }
   if (request.statusCode) {
     if (request.message === 'There is already an existing customer with the provided email.') {
