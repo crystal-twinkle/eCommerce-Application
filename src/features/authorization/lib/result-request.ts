@@ -32,12 +32,11 @@ export async function resultCreateCustomer(request: IRequest, emailReg: InputEma
   if (request.statusCode) {
     if (request.message === 'There is already an existing customer with the provided email.') {
       emailReg.alreadyExistMessage();
-      updateEmailReg.style.borderBottom = '2px solid red';
+      updateEmailReg.classList.add('input_invalid');
     } else {
       requestMessage.style.display = 'block';
       requestMessageText.textContent = 'Something went wrong, try again later :)';
       blackout.classList.add('blackout_show');
-      updateEmailReg.style.borderBottom = '';
     }
   }
 }
