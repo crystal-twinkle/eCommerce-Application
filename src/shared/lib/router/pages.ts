@@ -1,5 +1,5 @@
 export enum Page {
-  OVERVIEW = 'overview',
+  OVERVIEW = '',
   PRODUCT = 'product',
   LOGIN = 'login',
   REGISTRATION = 'registration',

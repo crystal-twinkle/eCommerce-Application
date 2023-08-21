@@ -1,13 +1,13 @@
 import ElementBuilder from '../../shared/lib/element-builder';
-import Router from '../../app/router/router';
-import { Page } from '../../app/router/pages';
+import { Page } from '../../shared/lib/router/pages';
 import './header.scss';
 import Button, { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/button';
 import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
 import UserHeaderButton from '../user-header-button/user-header-button';
+import appRouter from '../../shared/lib/router/router';
 
 export default class Header extends CommonBuilderWrapper {
-  constructor(private router: Router) {
+  constructor() {
     super();
 
     this.builder = new ElementBuilder({
@@ -23,7 +23,7 @@ export default class Header extends CommonBuilderWrapper {
       styleClass: 'header__logo',
       event: {
         type: 'click',
-        callback: () => this.router.navigate(Page.OVERVIEW),
+        callback: () => appRouter.navigate(Page.OVERVIEW),
       },
       tagSettings: {
         src: '../../assets/icons/logo.svg',
@@ -33,7 +33,7 @@ export default class Header extends CommonBuilderWrapper {
       tag: 'nav',
     });
 
-    const userHeaderButton = new UserHeaderButton(this.router);
+    const userHeaderButton = new UserHeaderButton();
     const favoritesButton = new Button(
       () => {},
       '',

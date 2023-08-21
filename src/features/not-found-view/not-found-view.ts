@@ -2,6 +2,8 @@ import './not-found-view.scss';
 import ViewBuilder from '../../shared/lib/view-builder';
 import ElementBuilder from '../../shared/lib/element-builder';
 import Button, { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/button';
+import { Page } from '../../shared/lib/router/pages';
+import appRouter from '../../shared/lib/router/router';
 
 export default class NotFoundView extends ViewBuilder {
   constructor() {
@@ -35,7 +37,7 @@ export default class NotFoundView extends ViewBuilder {
     contentContainer.getElement().append(imageFirst.getElement(), noPageText.getElement());
 
     const overviewButton = new Button(
-      () => {},
+      () => appRouter.navigate(Page.OVERVIEW),
       'Catalog',
       ButtonType.CIRCLE,
       { name: 'arrow-right', position: ButtonIconPosition.RIGHT },

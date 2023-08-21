@@ -1,9 +1,8 @@
 import ViewBuilder from '../shared/lib/view-builder';
-import Router from '../app/router/router';
 import NotFoundView from '../features/not-found-view/not-found-view';
 
 export default class NotFoundPage extends ViewBuilder {
-  constructor(private router: Router) {
+  constructor() {
     super('page main-page');
   }
 
