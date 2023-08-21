@@ -21,8 +21,7 @@ export default class RegistrationFormView extends ViewBuilder {
   public configureView(): HTMLElement[] {
     const emailRegClass = new InputEmail();
     const emailReg = emailRegClass.getElement();
-    const passwordRegClass = new PasswordInput();
-    const passwordReg = new PasswordInput().getElement();
+    const passwordReg = new PasswordInput();
 
     const firstName = new Input({
       placeholder: 'First Name',
@@ -135,13 +134,30 @@ export default class RegistrationFormView extends ViewBuilder {
     const registrationForm = new Form({
       title: 'Registration',
       id: 'form-registration',
-      fields: [emailReg, passwordReg, firstName, lastName, countryDropdown.getElement(), dob, shipAddress, billAddress],
+      fields: [
+        emailReg,
+        passwordReg.getElement(),
+        firstName,
+        lastName,
+        countryDropdown.getElement(),
+        dob,
+        shipAddress,
+        billAddress,
+      ],
 
       buttons: [{ text: 'Submit' }, { text: 'Login', callback: () => appRouter.navigate(Page.LOGIN) }],
       callback: async (event) => {
         event.preventDefault();
         let checkValid: boolean;
-        checkValid = checkValidator([emailReg, passwordReg, firstName, lastName, shipCity, shipStreet, shipPCode]);
+        checkValid = checkValidator([
+          emailReg,
+          passwordReg.getElement(),
+          firstName,
+          lastName,
+          shipCity,
+          shipStreet,
+          shipPCode,
+        ]);
         if (!resultsCheckbox.shipAsBillCheck) {
           checkValid = checkValidator([billCity, billStreet, billPCode]);
         }
@@ -167,11 +183,11 @@ export default class RegistrationFormView extends ViewBuilder {
           }
           const resultCreate = await customer().create(
             emailReg.value,
-            passwordReg.value,
+            passwordReg.getElement().value,
             firstName.value,
             lastName.value,
           );
-          await resultCreateCustomer(resultCreate, emailRegClass, passwordReg);
+          await resultCreateCustomer(resultCreate, emailRegClass, passwordReg.getElement());
           if (resultCreate.customer) {
             await resultGetCustomer(resultCreate.customer.id);
           }
@@ -179,7 +195,7 @@ export default class RegistrationFormView extends ViewBuilder {
       },
     });
 
-    passwordRegClass.addShowButton();
+    passwordReg.addShowButton();
 
     return [registrationForm.getElement()];
   }

@@ -7,6 +7,8 @@ import '../authorization/ui/tooltip.scss';
 import customer from '../../entities/api/customer';
 import InputEmail from '../../shared/ui/input/input-email';
 import checkValidator from '../authorization/lib/check-validaror';
+import requestMessage, { requestMessageText } from '../authorization/ui/request-message';
+import blackout from '../blackout/blackout';
 
 export default class LoginForm extends ViewBuilder {
   constructor() {
@@ -35,6 +37,9 @@ export default class LoginForm extends ViewBuilder {
         if (checkValidator([emailLogin, passwordLogin])) {
           const result = await customer().getByEmail(emailLogin.value);
           if (result.results.length && passwordLogin.value === localStorage.getItem('password')) {
+            requestMessageText.textContent = 'You are logged in!';
+            requestMessage.style.display = 'block';
+            blackout.classList.add('blackout_show');
             appRouter.navigate(Page.OVERVIEW);
           }
         }
