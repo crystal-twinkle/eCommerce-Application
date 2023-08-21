@@ -9,6 +9,12 @@ interface IInputConfig {
   name?: string;
 }
 
+interface IInputConfig {
+  type?: string;
+  placeholder?: string;
+  name?: string;
+}
+
 export default class Input extends CommonBuilderWrapper {
   message: ElementBuilder;
   config: IInputConfig;
@@ -22,22 +28,26 @@ export default class Input extends CommonBuilderWrapper {
       styleClass: 'input',
       tagSettings: {
         type: config.type || 'text',
-        placeholder: config.placeholder || '',
-        name: config.name || '',
-        autocomplete: 'off',
       },
     });
+    if (config.name) {
+      this.builder.setTagSettings({
+        placeholder: config.placeholder || '',
+        name: config.name,
+        autocomplete: 'off',
+      });
 
-    this.message = new ElementBuilder({
-      tag: 'div',
-      styleClass: 'error-message',
-      content: ValidationParams[this.config.name].message,
-    });
+      this.message = new ElementBuilder({
+        tag: 'div',
+        styleClass: 'error-message',
+        content: ValidationParams[this.config.name].message,
+      });
 
-    this.showErrorMessage = this.showErrorMessage.bind(this);
+      this.showErrorMessage = this.showErrorMessage.bind(this);
 
-    this.builder.setEventHandler({ type: 'input', callback: this.showErrorMessage });
-    this.builder.setEventHandler({ type: 'input', callback: this.checkInput.bind(this) });
+      this.builder.setEventHandler({ type: 'focus', callback: this.showErrorMessage });
+      this.builder.setEventHandler({ type: 'input', callback: this.checkInput.bind(this) });
+    }
   }
 
   protected showErrorMessage() {

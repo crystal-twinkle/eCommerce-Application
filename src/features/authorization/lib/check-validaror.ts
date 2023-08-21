@@ -3,7 +3,7 @@ import validatePassword from '../../../shared/lib/validate/validate-password';
 import validatePostalCode from '../../../shared/lib/validate/validate-postal-code';
 import notEmpty from '../../../shared/lib/validate/not-empty';
 
-export default function checkValidator(inputElement: HTMLInputElement) {
+export default function checkValidator(inputElement: HTMLInputElement): boolean {
   let isValid = true;
   const updateInput = inputElement;
   const inputName = inputElement.getAttribute('name');
