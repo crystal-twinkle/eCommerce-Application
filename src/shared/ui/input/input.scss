@@ -1,0 +1,31 @@
+@import '../../../colors';
+
+.input {
+  border: none;
+  background-color: $primary;
+  border-bottom: 2px solid $medium-gray;
+  outline: none;
+  height: 30px;
+  font-size: 18px;
+
+  &::placeholder {
+    text-align: center;
+    color: $medium-gray;
+    font-size: 18px;
+    font-weight: 100;
+  }
+
+  &_invalid {
+    border-bottom: 2px solid red;
+  }
+}
+
+.error-message {
+  color: red;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  margin-top: -20px;
+  transition: all 0.2s;
+  white-space: pre-wrap;
+}

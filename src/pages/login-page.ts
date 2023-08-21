@@ -1,16 +1,18 @@
-import ElementBuilder from '../shared/lib/element-builder';
+import LoginForm from '../features/login-form/login-form';
+import ViewBuilder from '../shared/lib/view-builder';
 
-export default class LoginPage {
-  private builder: ElementBuilder;
-
+export default class LoginPage extends ViewBuilder {
   constructor() {
-    this.builder = new ElementBuilder({
-      tag: 'div',
-      content: 'Login Page',
-    });
+    super('page login-page');
   }
 
-  public getElement(): HTMLElement {
-    return this.builder.getElement();
+  public configureView(): HTMLElement[] {
+    const loginFormView = new LoginForm();
+
+    return [loginFormView.getElement()];
+  }
+
+  public buildView(): void {
+    this.view.getElement().append(...this.configureView());
   }
 }

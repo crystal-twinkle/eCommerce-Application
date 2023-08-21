@@ -1,16 +1,18 @@
-import ElementBuilder from '../shared/lib/element-builder';
+import RegistrationFormView from '../features/authorization/ui/registration-form';
+import ViewBuilder from '../shared/lib/view-builder';
 
-export default class RegisterPage {
-  private builder: ElementBuilder;
-
+export default class RegisterPage extends ViewBuilder {
   constructor() {
-    this.builder = new ElementBuilder({
-      tag: 'div',
-      content: 'Register Page',
-    });
+    super('page register-page');
   }
 
-  public getElement(): HTMLElement {
-    return this.builder.getElement();
+  public configureView(): HTMLElement[] {
+    const registrationFormView = new RegistrationFormView();
+
+    return [registrationFormView.getElement()];
+  }
+
+  public buildView(): void {
+    this.view.getElement().append(...this.configureView());
   }
 }

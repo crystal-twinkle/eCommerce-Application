@@ -10,11 +10,13 @@ export interface IParseUrl {
   resource?: string;
 }
 
-export default class Router {
-  private readonly notFoundRouterLink: IRouterLink;
+export class Router {
+  private notFoundRouterLink: IRouterLink;
+  private routes: IRouterLink[];
 
-  constructor(private routes: IRouterLink[]) {
-    this.notFoundRouterLink = this.routes.find((item) => item.path === Page.NOT_FOUND);
+  public setRoutes(routes: IRouterLink[]): void {
+    this.routes = routes;
+    this.notFoundRouterLink = this.routes.find((item: IRouterLink) => item.path === Page.NOT_FOUND);
     window.addEventListener('DOMContentLoaded', () => {
       this.navigate(this.getCurrentPath());
     });
@@ -22,11 +24,11 @@ export default class Router {
     window.addEventListener('hashchange', this.browserChangeHandler.bind(this));
   }
 
-  public navigate(url: string): void {
+  public navigate(url: string, browserChangeEvent?: boolean): void {
     const request: IParseUrl = this.parseURL(url);
     const pathForFind = request.resource === '' ? request.path : `${request.path}/${request.resource}`;
     const route = this.routes.find((item) => item.path === pathForFind) || this.notFoundRouterLink;
-    window.history.pushState({}, '', route.path);
+    !browserChangeEvent && window.history.pushState({}, '', route.path || '/');
     route.callback();
   }
 
@@ -38,7 +40,7 @@ export default class Router {
   }
 
   private browserChangeHandler(): void {
-    this.navigate(this.getCurrentPath());
+    this.navigate(this.getCurrentPath(), true);
   }
 
   private getCurrentPath(): string {
@@ -48,3 +50,7 @@ export default class Router {
     return window.location.pathname.slice(1);
   }
 }
+
+const appRouter: Router = new Router();
+
+export default appRouter;

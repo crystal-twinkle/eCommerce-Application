@@ -1,13 +1,13 @@
 import ElementBuilder from '../../shared/lib/element-builder';
-import Router from '../../app/router/router';
-import { Page } from '../../app/router/pages';
+import { Page } from '../../shared/lib/router/pages';
 import './header.scss';
 import Button, { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/button';
 import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
 import UserHeaderButton from '../user-header-button/user-header-button';
+import appRouter from '../../shared/lib/router/router';
 
 export default class Header extends CommonBuilderWrapper {
-  constructor(private router: Router) {
+  constructor() {
     super();
 
     this.builder = new ElementBuilder({
@@ -18,20 +18,22 @@ export default class Header extends CommonBuilderWrapper {
       tag: 'div',
       styleClass: 'container header-container',
     });
-    const stubButtons = new ElementBuilder({
-      tag: 'div',
+    const logo = new ElementBuilder({
+      tag: 'img',
+      styleClass: 'header__logo',
+      event: {
+        type: 'click',
+        callback: () => appRouter.navigate(Page.OVERVIEW),
+      },
+      tagSettings: {
+        src: '../../assets/icons/logo.svg',
+      },
     });
     const navigation = new ElementBuilder({
       tag: 'nav',
     });
 
-    const overviewButton = new Button(() => this.router.navigate(Page.OVERVIEW), 'Overview');
-    const registerButton = new Button(() => this.router.navigate(Page.REGISTRATION), 'Registration');
-    const showCases = new Button(() => this.router.navigate(Page.SHOWCASES), 'Show cases');
-    stubButtons.append([overviewButton.getElement(), registerButton.getElement(), showCases.getElement()]);
-
     const userHeaderButton = new UserHeaderButton();
-
     const favoritesButton = new Button(
       () => {},
       '',
@@ -49,11 +51,8 @@ export default class Header extends CommonBuilderWrapper {
     cartButton.setBadge(4);
 
     navigation.append([userHeaderButton.getElement(), favoritesButton.getElement(), cartButton.getElement()]);
-
-    container.append([stubButtons.getElement(), navigation.getElement()]);
+    container.append([logo.getElement(), navigation.getElement()]);
 
     this.builder.append([container.getElement()]);
   }
-
-  private openUserCard(): void {}
 }

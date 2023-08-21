@@ -49,7 +49,7 @@ export default class Dropdown extends CommonBuilderWrapper {
     this.textBuilder = new ElementBuilder({
       tag: 'span',
       styleClass: 'dropdown-empty',
-      content: this.selectedItem?.content || config.placeholder || 'Select item',
+      content: this.selectedItem?.content || config.placeholder || 'Select country',
     });
     this.arrowBuilder = new ElementBuilder({
       tag: 'span',

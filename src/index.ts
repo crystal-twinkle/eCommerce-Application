@@ -1,7 +1,7 @@
 import App from './app/app';
+import './entities/api/customer';
 import './style.scss';
-import './features/authorization/ui/registration-form';
-import './features/authorization/ui/tooltips-card';
-// import 'normalize.css';
+import appRouter from './shared/lib/router/router';
 
-new App();
+const app = new App();
+appRouter.setRoutes(app.createRoutes());
