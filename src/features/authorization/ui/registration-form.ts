@@ -11,6 +11,7 @@ import { resultsCheckbox, resultCreateCustomer, resultGetCustomer } from '../lib
 import checkValidator from '../lib/check-validaror';
 import appRouter from '../../../shared/lib/router/router';
 import { Page } from '../../../shared/lib/router/pages';
+import InputEmail from '../../../shared/ui/input/input-email';
 
 export default class RegistrationFormView extends ViewBuilder {
   constructor() {
@@ -18,7 +19,8 @@ export default class RegistrationFormView extends ViewBuilder {
   }
 
   public configureView(): HTMLElement[] {
-    const emailReg = new Input({ placeholder: 'Email', name: 'email' }).getElement();
+    const emailRegClass = new InputEmail();
+    const emailReg = emailRegClass.getElement();
     const passwordReg = new PasswordInput();
 
     const firstName = new Input({
@@ -182,7 +184,7 @@ export default class RegistrationFormView extends ViewBuilder {
             firstName.value,
             lastName.value,
           );
-          await resultCreateCustomer(resultCreate, emailReg);
+          await resultCreateCustomer(resultCreate, emailRegClass);
           if (resultCreate.customer) {
             await resultGetCustomer(resultCreate.customer.id);
           }

@@ -1,7 +1,7 @@
-import requestCustomer from '../../../shared/const/request-customer';
 import requestMessage, { requestMessageText } from '../ui/request-message';
 import blackout from '../../blackout/blackout';
 import customer from '../../../entities/api/customer';
+import InputEmail from '../../../shared/ui/input/input-email';
 
 interface IAddress {
   id: string;
@@ -32,22 +32,20 @@ export const resultsCheckbox = {
   billDefaultCheck: false,
 };
 
-export async function resultCreateCustomer(request: IRequest, emailReg: HTMLInputElement) {
-  const updateEmailReg = emailReg;
+export async function resultCreateCustomer(request: IRequest, emailReg: InputEmail) {
+  const updateEmailReg = emailReg.getElement();
   if (request.customer) {
     requestMessage.style.display = 'block';
     blackout.classList.add('blackout_show');
     requestMessageText.textContent = 'Account created successfully! 🎉';
-    requestCustomer.text = '';
     updateEmailReg.style.borderBottom = '';
   }
   if (request.statusCode) {
     if (request.message === 'There is already an existing customer with the provided email.') {
-      requestCustomer.text = request.message;
+      emailReg.alreadyExistMessage();
       updateEmailReg.style.borderBottom = '2px solid red';
     } else {
       requestMessage.style.display = 'block';
-      requestCustomer.text = '';
       requestMessageText.textContent = 'Something went wrong, try again later :)';
       blackout.classList.add('blackout_show');
       updateEmailReg.style.borderBottom = '';
