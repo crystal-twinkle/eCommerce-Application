@@ -9,6 +9,8 @@ import customer, { addressesCreate } from '../../../entities/api/customer';
 import ElementBuilder from '../../../shared/lib/element-builder';
 import { resultsCheckbox, resultCreateCustomer, resultGetCustomer } from '../lib/result-request';
 import checkValidator from '../lib/check-validaror';
+import appRouter from '../../../shared/lib/router/router';
+import { Page } from '../../../shared/lib/router/pages';
 
 export default class RegistrationFormView extends ViewBuilder {
   constructor() {
@@ -141,7 +143,7 @@ export default class RegistrationFormView extends ViewBuilder {
         billAddress,
       ],
 
-      buttons: [{ text: 'Submit' }, { text: 'Sign in' }],
+      buttons: [{ text: 'Submit' }, { text: 'Login', callback: () => appRouter.navigate(Page.LOGIN) }],
       callback: async (event) => {
         event.preventDefault();
         let checkValid = false;
