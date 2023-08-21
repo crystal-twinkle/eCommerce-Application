@@ -59,7 +59,9 @@ export default class Input extends CommonBuilderWrapper {
     const value = (this.builder.getElement() as HTMLInputElement).value;
     if (!ValidationParams[this.config.name].validateFunction(value)) {
       this.builder.getElement().after(this.message.getElement());
+      this.builder.getElement().classList.add('input_invalid');
     } else {
+      this.builder.getElement().classList.remove('input_invalid');
       this.message.getElement().remove();
     }
   }
