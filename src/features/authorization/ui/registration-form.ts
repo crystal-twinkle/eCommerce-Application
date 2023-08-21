@@ -141,7 +141,7 @@ export default class RegistrationFormView extends ViewBuilder {
         billAddress,
       ],
 
-      buttons: [{ text: 'Submit' }],
+      buttons: [{ text: 'Submit' }, { text: 'Sign in' }],
       callback: async (event) => {
         event.preventDefault();
         let checkValid = false;

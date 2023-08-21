@@ -52,6 +52,7 @@ export default class Form extends CommonBuilderWrapper {
         createButton.setAttribute('type', 'submit');
       } else {
         createButton = new Button(() => {}, button.text, ButtonType.DEFAULT, undefined).getElement();
+        createButton.setAttribute('type', 'button');
       }
       createButton.classList.add('form__btn');
       btnContainer.append(createButton);

@@ -57,17 +57,7 @@ export async function resultCreateCustomer(request: IRequest, emailReg: HTMLInpu
 
 export async function resultGetCustomer(id: string) {
   const request = await customer().getById(id);
-  console.log(request);
   const basicId: string = request.addresses[0].id;
-  console.log(
-    'shipDefaultCheck',
-    resultsCheckbox.shipDefaultCheck,
-    'shipAsBillCheck',
-    resultsCheckbox.shipAsBillCheck,
-    'billDefaultCheck',
-    resultsCheckbox.billDefaultCheck,
-  );
-
   if (resultsCheckbox.shipDefaultCheck && !resultsCheckbox.shipAsBillCheck && !resultsCheckbox.billDefaultCheck) {
     await customer().setDefaultAddress(request.id, request.version, [true, false], [basicId, '']);
   }
