@@ -42,3 +42,15 @@
     margin: auto;
   }
 }
+
+@media (max-width: 430px) {
+  .result {
+    left: 3%;
+    width: 286px;
+    padding: 30px 5px 10px;
+  }
+
+  .text-result {
+    font-size: 15px;
+  }
+}

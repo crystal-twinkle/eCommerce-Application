@@ -34,8 +34,8 @@ export default class LoginForm extends ViewBuilder {
       callback: async (event) => {
         event.preventDefault();
         if (checkValidator([emailLogin.getElement(), passwordLogin])) {
-          const result = await customer().getByEmail(emailLogin.getElement().value);
-          if (result.results.length && passwordLogin.value === localStorage.getItem('password')) {
+          const result = await customer().login(emailLogin.getElement().value, passwordLogin.value);
+          if (result.statusCode !== 400) {
             requestMessageText.textContent = 'You are logged in!';
             requestMessage.style.display = 'block';
             blackout.classList.add('blackout_show');
