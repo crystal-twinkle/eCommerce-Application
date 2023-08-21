@@ -1,11 +1,11 @@
 @import '../../../colors';
 
 .request-message {
+  display: none;
   position: fixed;
   z-index: 7;
   padding: 45px 15px 20px;
   font-size: 24px;
-  display: none;
   width: 200px;
   top: 20%;
   left: calc(45vw - 90px);
@@ -15,10 +15,8 @@
   background: $primary;
 
   &__cross {
-    font-size: 20px;
     top: 5px;
     right: 5px;
     position: absolute;
-    cursor: pointer;
   }
 }
