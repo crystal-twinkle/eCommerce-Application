@@ -111,6 +111,16 @@ export default function customer() {
     return res.json();
   };
 
+  const login = async (email: string, password: string) => {
+    await checkLocalToken();
+    optionalForPost.body = JSON.stringify({
+      email,
+      password,
+    });
+    const res = await fetch(`${config.CTP_API_URL}/${config.CTP_PROJECT_KEY}/login`, optionalForPost);
+    return res.json();
+  };
+
   const addAddress = async (address: string[]) => {
     const [email, firstName, lastName, postalCode, city, street] = address;
     const generateRandomKey = () => {
@@ -177,5 +187,7 @@ export default function customer() {
     await fetch(`${apiCustomers}/${id}?version=1`, customerOptional);
   };
 
-  return { getById, getByEmail, create, deleteById, addAddress, setDefaultAddress };
+  return { getById, getByEmail, create, deleteById, addAddress, setDefaultAddress, login };
 }
+
+console.log(customer().getByEmail('kristallik@example.com'));
