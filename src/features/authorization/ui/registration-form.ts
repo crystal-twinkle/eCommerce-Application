@@ -154,37 +154,37 @@ export default class RegistrationFormView extends ViewBuilder {
             checkValid = checkValidator(elem);
           });
         }
-        // if (checkValid) {
-        addressesCreate.length = 0;
-        await customer().addAddress([
-          emailReg.value,
-          firstName.value,
-          lastName.value,
-          shipPCode.value,
-          shipCity.value,
-          shipStreet.value,
-        ]);
-        if (!resultsCheckbox.shipAsBillCheck) {
+        if (checkValid) {
+          addressesCreate.length = 0;
           await customer().addAddress([
             emailReg.value,
             firstName.value,
             lastName.value,
-            billPCode.value,
-            billPCode.value,
-            billPCode.value,
+            shipPCode.value,
+            shipCity.value,
+            shipStreet.value,
           ]);
+          if (!resultsCheckbox.shipAsBillCheck) {
+            await customer().addAddress([
+              emailReg.value,
+              firstName.value,
+              lastName.value,
+              billPCode.value,
+              billPCode.value,
+              billPCode.value,
+            ]);
+          }
+          const resultCreate = await customer().create(
+            emailReg.value,
+            passwordReg.getElement().value,
+            firstName.value,
+            lastName.value,
+          );
+          await resultCreateCustomer(resultCreate, emailReg);
+          if (resultCreate.customer) {
+            await resultGetCustomer(resultCreate.customer.id);
+          }
         }
-        const resultCreate = await customer().create(
-          emailReg.value,
-          passwordReg.getElement().value,
-          firstName.value,
-          lastName.value,
-        );
-        await resultCreateCustomer(resultCreate, emailReg);
-        if (resultCreate.customer) {
-          await resultGetCustomer(resultCreate.customer.id);
-        }
-        // }
       },
     });
 
