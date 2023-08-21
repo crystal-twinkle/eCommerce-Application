@@ -1,0 +1,22 @@
+@import '../../../colors';
+
+.request-message {
+  display: none;
+  position: fixed;
+  z-index: 7;
+  padding: 45px 15px 20px;
+  font-size: 24px;
+  width: 200px;
+  top: 20%;
+  left: calc(45vw - 90px);
+  text-align: center;
+  border-radius: 30px;
+  border: 1px solid #0a0909;
+  background: $primary;
+
+  &__cross {
+    top: 5px;
+    right: 5px;
+    position: absolute;
+  }
+}

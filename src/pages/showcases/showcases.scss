@@ -1,0 +1,9 @@
+.showcases {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+
+  & > button {
+    margin-top: 10px;
+  }
+}

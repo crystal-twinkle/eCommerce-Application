@@ -1,58 +1,58 @@
 import ElementBuilder from '../../shared/lib/element-builder';
-import Router from '../../app/router/router';
-import { Page } from '../../app/router/pages';
-import './header.css';
+import { Page } from '../../shared/lib/router/pages';
+import './header.scss';
+import Button, { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/button';
+import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
+import UserHeaderButton from '../user-header-button/user-header-button';
+import appRouter from '../../shared/lib/router/router';
 
-export default class Header {
-  private builder: ElementBuilder;
+export default class Header extends CommonBuilderWrapper {
+  constructor() {
+    super();
 
-  constructor(private router: Router) {
     this.builder = new ElementBuilder({
       tag: 'header',
+      styleClass: 'header',
     });
-
-    const navBuilder = new ElementBuilder({
+    const container = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'container header-container',
+    });
+    const logo = new ElementBuilder({
+      tag: 'img',
+      styleClass: 'header__logo',
+      event: {
+        type: 'click',
+        callback: () => appRouter.navigate(Page.OVERVIEW),
+      },
+      tagSettings: {
+        src: '../../assets/icons/logo.svg',
+      },
+    });
+    const navigation = new ElementBuilder({
       tag: 'nav',
-      styleClass: 'container',
     });
 
-    const overviewButton = new ElementBuilder({
-      tag: 'button',
-      content: 'Overview',
-      event: {
-        type: 'click',
-        callback: () => {
-          this.router.navigate(Page.OVERVIEW);
-        },
-      },
-    });
-    const loginButton = new ElementBuilder({
-      tag: 'button',
-      content: 'Login',
-      event: {
-        type: 'click',
-        callback: () => {
-          this.router.navigate(Page.LOGIN);
-        },
-      },
-    });
-    const registerButton = new ElementBuilder({
-      tag: 'button',
-      content: 'Registration',
-      event: {
-        type: 'click',
-        callback: () => {
-          this.router.navigate(Page.REGISTRATION);
-        },
-      },
-    });
+    const userHeaderButton = new UserHeaderButton();
+    const favoritesButton = new Button(
+      () => {},
+      '',
+      ButtonType.CIRCLE_WITHOUT_BORDER,
+      { name: 'heart', position: ButtonIconPosition.LEFT },
+      ButtonSize.SMALL,
+    );
+    const cartButton = new Button(
+      () => {},
+      '',
+      ButtonType.CIRCLE_WITHOUT_BORDER,
+      { name: 'shopping-bag', position: ButtonIconPosition.LEFT },
+      ButtonSize.SMALL,
+    );
+    cartButton.setBadge(4);
 
-    navBuilder.append([overviewButton.getElement(), loginButton.getElement(), registerButton.getElement()]);
+    navigation.append([userHeaderButton.getElement(), favoritesButton.getElement(), cartButton.getElement()]);
+    container.append([logo.getElement(), navigation.getElement()]);
 
-    this.builder.append([navBuilder.getElement()]);
-  }
-
-  public getElement(): HTMLElement {
-    return this.builder.getElement();
+    this.builder.append([container.getElement()]);
   }
 }

@@ -1,0 +1,104 @@
+@import '../../../colors';
+
+.button {
+  border: 1px solid $purple-2;
+  box-shadow: 0 4px 10px 0 $purple-3;
+  padding: 6px 10px;
+  margin: 0;
+  color: $purple-2;
+  fill: $purple-2;
+  stroke: $purple-2;
+  cursor: pointer;
+  transition:
+    color,
+    background-color 0.1s linear;
+  width: auto;
+  overflow: visible;
+  background: transparent;
+  line-height: normal;
+  position: relative;
+
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+
+  &:hover {
+    background-color: $purple-2;
+    color: white;
+    fill: white;
+    stroke: white;
+  }
+
+  &-badge {
+    width: 18px;
+    height: 18px;
+    position: absolute;
+    right: 0;
+    top: -5px;
+    transition: opacity 0.1s linear;
+    opacity: 1;
+    font-family: inherit;
+    border-radius: 50%;
+    display: inline-block;
+    background: $purple-2;
+    padding: 4px;
+    color: white;
+
+    &__hide {
+      opacity: 0;
+      display: none;
+    }
+  }
+
+  &._without-border {
+    border: none;
+    box-shadow: none;
+  }
+
+  &._circle {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    padding: 10px 10px;
+  }
+
+  & > span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & > svg {
+      &:not(:first-child) {
+        margin-left: 4px;
+      }
+
+      &:not(:last-child) {
+        margin-right: 4px;
+      }
+    }
+  }
+
+  &._small {
+    width: 40px;
+    height: 40px;
+  }
+
+  &._medium {
+    width: 70px;
+    height: 70px;
+  }
+
+  &._big {
+    width: 190px;
+    height: 190px;
+    font-size: 20px;
+  }
+
+  &._colored {
+    background-color: $purple-2;
+    fill: white;
+    stroke: white;
+    color: white;
+  }
+}

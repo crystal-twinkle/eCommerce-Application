@@ -35,8 +35,7 @@
     "@typescript-eslint/no-explicit-any": "off",
     "no-console": "off",
     "no-unused-expressions": "off",
-
-
+    "prefer-destructuring": "off",
     "class-methods-use-this": "off",
     "no-new": "off",
     "import/no-unresolved": "off",

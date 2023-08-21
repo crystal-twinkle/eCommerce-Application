@@ -1,30 +1,29 @@
 import OverviewPage from '../pages/overview-page';
 import Header from '../features/header/header';
-import Router, { IRouterLink } from './router/router';
-import { ID_SELECTOR, Page } from './router/pages';
+import { IRouterLink } from '../shared/lib/router/router';
+import { ID_SELECTOR, Page } from '../shared/lib/router/pages';
 import NotFoundPage from '../pages/not-found-page';
 import LoginPage from '../pages/login-page';
 import ProductPage from '../pages/product-page';
 import Main from '../features/main/main';
 import RegisterPage from '../pages/register-page';
+import ShowcasesPage from '../pages/showcases/showcases-page';
+import Footer from '../features/footer/footer';
 
 export default class App {
-  private router: Router;
   private header: Header;
   private main: Main;
+  private footer: Footer;
 
   constructor() {
-    this.router = new Router(this.createRoutes());
-
-    this.header = new Header(this.router);
+    this.header = new Header();
     this.main = new Main();
+    this.footer = new Footer();
 
-    this.router.navigate(Page.OVERVIEW);
-
-    document.body.append(this.header.getElement(), this.main.getElement());
+    document.body.append(this.header.getElement(), this.main.getElement(), this.footer.getElement());
   }
 
-  private createRoutes(): IRouterLink[] {
+  public createRoutes(): IRouterLink[] {
     return [
       {
         path: Page.OVERVIEW,
@@ -42,6 +41,12 @@ export default class App {
         path: Page.LOGIN,
         callback: () => {
           this.main.setContent([new LoginPage().getElement()]);
+        },
+      },
+      {
+        path: Page.SHOWCASES,
+        callback: () => {
+          this.main.setContent([new ShowcasesPage().getElement()]);
         },
       },
       {

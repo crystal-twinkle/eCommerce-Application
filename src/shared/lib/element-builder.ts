@@ -1,6 +1,6 @@
 interface IElementEvent {
   type: string;
-  callback: (event: Event) => void;
+  callback: (event?: Event) => void;
 }
 
 interface IElementBuilderConfig {

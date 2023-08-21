@@ -1,4 +1,7 @@
 import App from './app/app';
-import './style.css';
+import './entities/api/customer';
+import './style.scss';
+import appRouter from './shared/lib/router/router';
 
-new App();
+const app = new App();
+appRouter.setRoutes(app.createRoutes());
