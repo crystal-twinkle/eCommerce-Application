@@ -9,6 +9,11 @@ const requestMessage = new ElementBuilder({
   styleClass: 'request-message',
 }).getElement();
 
+export const requestMessageText = new ElementBuilder({
+  tag: 'div',
+  styleClass: 'request-message__text',
+}).getElement();
+
 const requestMessageCross = new Button(
   () => {
     requestMessage.style.display = 'none';

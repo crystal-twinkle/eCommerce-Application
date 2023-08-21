@@ -30,23 +30,24 @@ export default class Input extends CommonBuilderWrapper {
         type: config.type || 'text',
       },
     });
-    if (config.placeholder && config.name) {
+    if (config.name) {
       this.builder.setTagSettings({
-        placeholder: config.placeholder,
+        placeholder: config.placeholder || '',
         name: config.name,
         autocomplete: 'off',
       });
+
+      this.message = new ElementBuilder({
+        tag: 'div',
+        styleClass: 'error-message',
+        content: ValidationParams[this.config.name].message,
+      });
+
+      this.showErrorMessage = this.showErrorMessage.bind(this);
+
+      this.builder.setEventHandler({ type: 'focus', callback: this.showErrorMessage });
+      this.builder.setEventHandler({ type: 'input', callback: this.checkInput.bind(this) });
     }
-    this.message = new ElementBuilder({
-      tag: 'div',
-      styleClass: 'error-message',
-      content: ValidationParams[this.config.name].message,
-    });
-
-    this.showErrorMessage = this.showErrorMessage.bind(this);
-
-    this.builder.setEventHandler({ type: 'input', callback: this.showErrorMessage });
-    this.builder.setEventHandler({ type: 'input', callback: this.checkInput.bind(this) });
   }
 
   protected showErrorMessage() {

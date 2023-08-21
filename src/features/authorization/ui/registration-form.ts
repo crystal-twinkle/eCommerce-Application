@@ -1,12 +1,11 @@
 import Input from '../../../shared/ui/input/input';
-import inputEmail from '../../../shared/ui/input/input-email';
 import PasswordInput from '../../../shared/ui/input/input-password';
 import countryDropdown from './country-dropdown';
 import Form from '../../../shared/ui/form/form';
 import './tooltip.scss';
 import ViewBuilder from '../../../shared/lib/view-builder';
 import InputPostalCode from '../../../shared/ui/input/input-postal-code';
-import customer from '../../../entities/api/customer';
+import customer, { addressesCreate } from '../../../entities/api/customer';
 import ElementBuilder from '../../../shared/lib/element-builder';
 import { resultsCheckbox, resultCreateCustomer, resultGetCustomer } from '../lib/result-request';
 import checkValidator from '../lib/check-validaror';
@@ -17,7 +16,7 @@ export default class RegistrationFormView extends ViewBuilder {
   }
 
   public configureView(): HTMLElement[] {
-    const emailReg = inputEmail.getElement();
+    const emailReg = new Input({ placeholder: 'Email', name: 'email' }).getElement();
     const passwordReg = new PasswordInput();
 
     const firstName = new Input({
@@ -53,10 +52,7 @@ export default class RegistrationFormView extends ViewBuilder {
       tag: 'div',
     }).getElement();
 
-    const shipDefaultCheckbox = new ElementBuilder({
-      tag: 'input',
-      tagSettings: { type: 'checkbox' },
-    }).getElement() as HTMLInputElement;
+    const shipDefaultCheckbox = new Input({ type: 'checkbox' }).getElement();
 
     const shipDefaultText = new ElementBuilder({
       tag: 'span',
@@ -67,12 +63,8 @@ export default class RegistrationFormView extends ViewBuilder {
     const shipAsBill = new ElementBuilder({
       tag: 'div',
     }).getElement();
-    // const shipAsBillCheckbox = new Input({ type: 'checkbox' }).getElement();
-
-    const shipAsBillCheckbox = new ElementBuilder({
-      tag: 'input',
-      tagSettings: { type: 'checkbox' },
-    }).getElement() as HTMLInputElement;
+    const shipAsBillCheckbox = new Input({ type: 'checkbox' }).getElement();
+    shipAsBillCheckbox.checked = true;
 
     const shipAsBillText = new ElementBuilder({
       tag: 'span',
@@ -92,7 +84,7 @@ export default class RegistrationFormView extends ViewBuilder {
       placeholder: 'City',
       name: 'city',
     }).getElement();
-    billAddress.setAttribute('id', 'bill-address');
+    billAddress.style.display = 'none';
     const billStreet = new Input({
       placeholder: 'Street',
       name: 'street',
@@ -102,11 +94,7 @@ export default class RegistrationFormView extends ViewBuilder {
     const billDefault = new ElementBuilder({
       tag: 'div',
     }).getElement();
-    // const billDefaultCheckbox = new Input({ type: 'checkbox' }).getElement();
-    const billDefaultCheckbox = new ElementBuilder({
-      tag: 'input',
-      tagSettings: { type: 'checkbox' },
-    }).getElement() as HTMLInputElement;
+    const billDefaultCheckbox = new Input({ type: 'checkbox' }).getElement();
 
     const billDefaultText = new ElementBuilder({
       tag: 'span',
@@ -166,43 +154,40 @@ export default class RegistrationFormView extends ViewBuilder {
             checkValid = checkValidator(elem);
           });
         }
-        if (checkValid) {
-          const countryDropdownText: string = countryDropdown?.getSelectedItem()?.content;
-          const resultCreate = await customer().create([
+        // if (checkValid) {
+        addressesCreate.length = 0;
+        await customer().addAddress([
+          emailReg.value,
+          firstName.value,
+          lastName.value,
+          shipPCode.value,
+          shipCity.value,
+          shipStreet.value,
+        ]);
+        if (!resultsCheckbox.shipAsBillCheck) {
+          await customer().addAddress([
             emailReg.value,
-            passwordReg.getElement().value,
             firstName.value,
             lastName.value,
+            billPCode.value,
+            billPCode.value,
+            billPCode.value,
           ]);
-          console.log(resultCreate);
-          await resultCreateCustomer(resultCreate, emailReg);
-
-          if (resultCreate.customer) {
-            await customer().addAddress(resultCreate.id, resultCreate.version, [
-              emailReg.value,
-              firstName.value,
-              lastName.value,
-              shipPCode.value,
-              shipCity.value,
-              shipStreet.value,
-              countryDropdownText,
-            ]);
-            if (!resultsCheckbox.shipAsBillCheck) {
-              await customer().addAddress(resultCreate.id, 2, [
-                emailReg.value,
-                firstName.value,
-                lastName.value,
-                billPCode.value,
-                billPCode.value,
-                billPCode.value,
-                countryDropdownText,
-              ]);
-            }
-            await resultGetCustomer(resultCreate.id);
-          }
         }
+        const resultCreate = await customer().create(
+          emailReg.value,
+          passwordReg.getElement().value,
+          firstName.value,
+          lastName.value,
+        );
+        await resultCreateCustomer(resultCreate, emailReg);
+        if (resultCreate.customer) {
+          await resultGetCustomer(resultCreate.customer.id);
+        }
+        // }
       },
     });
+
     passwordReg.addShowButton();
 
     return [registrationForm.getElement()];
