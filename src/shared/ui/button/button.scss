@@ -22,7 +22,6 @@
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
-  line-height: normal;
 
   &:hover {
     background-color: $purple-2;
@@ -68,7 +67,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    line-break: anywhere;
 
     & > svg {
       &:not(:first-child) {

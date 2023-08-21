@@ -30,8 +30,13 @@ export default class UserHeaderButton extends CommonBuilderWrapper {
     });
     const avatar = new Avatar('default-avatar.png', () => {});
     const loginButton = new Button(() => this.router.navigate(Page.LOGIN), 'Login', ButtonType.DEFAULT_COLORED);
+    const registerButton = new Button(
+      () => this.router.navigate(Page.REGISTRATION),
+      'Registration',
+      ButtonType.DEFAULT_COLORED,
+    );
 
-    popup.append([avatar.getElement(), loginButton.getElement()]);
+    popup.append([avatar.getElement(), loginButton.getElement(), registerButton.getElement()]);
     this.builder.append([this.avatarButton.getElement(), popup.getElement()]);
   }
 }

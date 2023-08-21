@@ -10,14 +10,11 @@
     align-items: center;
     background-color: $white-1;
     padding: 20px 20px;
-    box-shadow: 0 4px 20px 0 rgba(51, 51, 51, 0.05);
-    max-width: 200px;
+    box-shadow: 0 4px 20px 0 $black-3;
     position: absolute;
     right: 0;
     top: 45px;
-    transition:
-      opacity,
-      0.2s linear;
+    transition: opacity 0.2s linear;
     opacity: 0;
 
     & > *:not(:last-child) {
