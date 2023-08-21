@@ -148,15 +148,18 @@ export default class RegistrationFormView extends ViewBuilder {
       buttons: [{ text: 'Submit' }, { text: 'Login', callback: () => appRouter.navigate(Page.LOGIN) }],
       callback: async (event) => {
         event.preventDefault();
-        let checkValid = false;
-        [emailReg, passwordReg.getElement(), firstName, lastName, shipCity, shipStreet, shipPCode].forEach((elem) => {
-          checkValid = checkValidator(elem);
-        });
-
+        let checkValid: boolean;
+        checkValid = checkValidator([
+          emailReg,
+          passwordReg.getElement(),
+          firstName,
+          lastName,
+          shipCity,
+          shipStreet,
+          shipPCode,
+        ]);
         if (!resultsCheckbox.shipAsBillCheck) {
-          [billCity, billStreet, billPCode].forEach((elem) => {
-            checkValid = checkValidator(elem);
-          });
+          checkValid = checkValidator([billCity, billStreet, billPCode]);
         }
         if (checkValid) {
           addressesCreate.length = 0;
@@ -184,7 +187,7 @@ export default class RegistrationFormView extends ViewBuilder {
             firstName.value,
             lastName.value,
           );
-          await resultCreateCustomer(resultCreate, emailRegClass);
+          await resultCreateCustomer(resultCreate, emailRegClass, passwordReg.getElement());
           if (resultCreate.customer) {
             await resultGetCustomer(resultCreate.customer.id);
           }

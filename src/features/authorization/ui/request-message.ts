@@ -25,5 +25,6 @@ const requestMessageCross = new Button(
 ).getElement();
 requestMessageCross.classList.add('request-message__cross');
 requestMessage.append(requestMessageCross, requestMessageText);
+document.body.appendChild(requestMessage);
 
 export default requestMessage;
