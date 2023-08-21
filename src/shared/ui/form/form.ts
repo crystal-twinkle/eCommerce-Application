@@ -45,7 +45,7 @@ export default class Form extends CommonBuilderWrapper {
     config.buttons.forEach((button: FormButton) => {
       let createButton: HTMLElement;
       if (button.text === 'Submit') {
-        createButton = new Button(() => {}, button.text, ButtonType.DEFAULT_COLORED, {
+        createButton = new Button(button.callback, button.text, ButtonType.DEFAULT_COLORED, {
           name: 'arrow-right',
           position: ButtonIconPosition.RIGHT,
         }).getElement();
