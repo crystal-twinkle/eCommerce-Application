@@ -73,7 +73,7 @@ export default class Header extends CommonBuilderWrapper {
       'Registration',
       ButtonType.DEFAULT_COLORED,
     );
-    if (localStorage.getItem('customerData')) {
+    if (localStorage.getItem('token')) {
       buttonsContainerBuilder.append([overviewButton.getElement(), logoutButton.getElement()]);
     } else {
       buttonsContainerBuilder.append([
