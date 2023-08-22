@@ -45,7 +45,7 @@ export async function resultCreateCustomer(request: IRequest, emailReg: InputEma
     appRouter.navigate(Page.OVERVIEW);
   }
   if (request.statusCode) {
-    if (request.message === 'There is already an existing api with the provided email.') {
+    if (request.message === 'There is already an existing customer with the provided email.') {
       emailReg.alreadyExistMessage();
       updateEmailReg.classList.add('input_invalid');
     } else {
