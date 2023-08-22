@@ -160,6 +160,7 @@ export default class RegistrationFormView extends ViewBuilder {
           shipCity,
           shipStreet,
           shipPCode,
+          dob,
         ]);
         if (!resultsCheckbox.shipAsBillCheck) {
           checkValid = checkValidator([billCity, billStreet, billPCode]);
