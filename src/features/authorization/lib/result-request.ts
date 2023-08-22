@@ -60,7 +60,10 @@ export async function resultGetCustomer(id: string) {
   const customerAPI: CustomerAPI = apiFactory.getApi('customerAPI') as CustomerAPI;
   const request = await customerAPI.getById(id);
   const basicAddressId: string = request.addresses[0].id;
-  const twoAddressId: string = request.addresses[1].id;
+  let twoAddressId: string;
+  if (request.addresses.length > 1) {
+    twoAddressId = request.addresses[1].id;
+  }
   if (!resultsCheckbox.shipDefaultCheck && !resultsCheckbox.shipAsBillCheck && !resultsCheckbox.billDefaultCheck) {
     await customerAPI.setDefaultAddress(request.id, request.version, [false, false], [basicAddressId, twoAddressId]);
   }
