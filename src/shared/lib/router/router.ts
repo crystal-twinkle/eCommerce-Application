@@ -30,7 +30,7 @@ export class Router {
     const request: IParseUrl = this.parseURL(url);
     const pathForFind = request.resource === '' ? request.path : `${request.path}/${request.resource}`;
     const route =
-      localStorage.getItem('customerData') && (url === Page.LOGIN || url === Page.REGISTRATION)
+      localStorage.getItem('token') && (url === Page.LOGIN || url === Page.REGISTRATION)
         ? this.overviewLink
         : this.routes.find((item) => item.path === pathForFind) || this.notFoundRouterLink;
 
