@@ -47,9 +47,6 @@ interface ICustomerByEmail {
     email: string;
     firstName: string;
     id: string;
-    isEmailVerified: boolean;
-    lastMessageSequenceNumber: number;
-    lastModifiedAt: string;
     lastModifiedBy: {
       clientId: string;
       isPlatformClient: boolean;
@@ -57,9 +54,7 @@ interface ICustomerByEmail {
     lastName: string;
     password: string;
     shippingAddressIds: string[];
-    stores: [];
     version: number;
-    versionModifiedAt: string;
   }[];
   total: 1;
 }
@@ -159,26 +154,39 @@ export default function customer() {
   const setDefaultAddress = async (id: string, version: number, defaultAddress: boolean[], addressIds: string[]) => {
     const [setDefaultShippingAddress, setDefaultBillingAddress] = defaultAddress;
     const [shippingAddressId, billingAddressId] = addressIds;
-    const setDefaultAddressBody = {
+
+    const setAddressBody = {
       version,
       actions: [] as { action: string; addressId: string }[],
     };
-
+    if (!setDefaultShippingAddress) {
+      setAddressBody.actions.push({
+        action: 'addShippingAddressId',
+        addressId: shippingAddressId,
+      });
+    }
+    if (!setDefaultBillingAddress) {
+      setAddressBody.actions.push({
+        action: 'addBillingAddressId',
+        addressId: billingAddressId,
+      });
+    }
     if (setDefaultShippingAddress) {
-      setDefaultAddressBody.actions.push({
+      setAddressBody.actions.push({
         action: 'setDefaultShippingAddress',
         addressId: shippingAddressId,
       });
     }
 
     if (setDefaultBillingAddress) {
-      setDefaultAddressBody.actions.push({
+      setAddressBody.actions.push({
         action: 'setDefaultBillingAddress',
         addressId: billingAddressId,
       });
     }
-    optionalForPost.body = JSON.stringify(setDefaultAddressBody);
+    optionalForPost.body = JSON.stringify(setAddressBody);
     await fetch(`${apiCustomers}/${id}`, optionalForPost);
+    console.log(getById(id));
   };
 
   const deleteById = async (id: string) => {
@@ -189,5 +197,3 @@ export default function customer() {
 
   return { getById, getByEmail, create, deleteById, addAddress, setDefaultAddress, login };
 }
-
-console.log(customer().getByEmail('kristallik@example.com'));

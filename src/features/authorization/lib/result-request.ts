@@ -43,20 +43,26 @@ export async function resultCreateCustomer(request: IRequest, emailReg: InputEma
 
 export async function resultGetCustomer(id: string) {
   const request = await customer().getById(id);
-  const basicId: string = request.addresses[0].id;
-  if (resultsCheckbox.shipDefaultCheck && !resultsCheckbox.shipAsBillCheck && !resultsCheckbox.billDefaultCheck) {
-    await customer().setDefaultAddress(request.id, request.version, [true, false], [basicId, '']);
+  const basicAddressId: string = request.addresses[0].id;
+  const twoAddressId: string = request.addresses[1].id;
+  if (!resultsCheckbox.shipDefaultCheck && !resultsCheckbox.shipAsBillCheck && !resultsCheckbox.billDefaultCheck) {
+    await customer().setDefaultAddress(request.id, request.version, [false, false], [basicAddressId, twoAddressId]);
   }
-
+  if (!resultsCheckbox.shipDefaultCheck && resultsCheckbox.shipAsBillCheck && !resultsCheckbox.billDefaultCheck) {
+    await customer().setDefaultAddress(request.id, request.version, [false, false], [basicAddressId, basicAddressId]);
+  }
+  if (resultsCheckbox.shipDefaultCheck && !resultsCheckbox.shipAsBillCheck && !resultsCheckbox.billDefaultCheck) {
+    await customer().setDefaultAddress(request.id, request.version, [true, false], [basicAddressId, twoAddressId]);
+  }
   if (resultsCheckbox.shipDefaultCheck && resultsCheckbox.shipAsBillCheck && !resultsCheckbox.billDefaultCheck) {
-    await customer().setDefaultAddress(request.id, request.version, [true, true], [basicId, basicId]);
+    await customer().setDefaultAddress(request.id, request.version, [true, true], [basicAddressId, basicAddressId]);
   }
 
   if (resultsCheckbox.shipDefaultCheck && resultsCheckbox.billDefaultCheck && !resultsCheckbox.shipAsBillCheck) {
-    await customer().setDefaultAddress(request.id, request.version, [true, true], [basicId, request.addresses[1].id]);
+    await customer().setDefaultAddress(request.id, request.version, [true, true], [basicAddressId, twoAddressId]);
   }
 
   if (resultsCheckbox.billDefaultCheck && !resultsCheckbox.shipDefaultCheck && !resultsCheckbox.shipAsBillCheck) {
-    await customer().setDefaultAddress(request.id, request.version, [false, true], ['', request.addresses[1].id]);
+    await customer().setDefaultAddress(request.id, request.version, [false, true], ['', twoAddressId]);
   }
 }
