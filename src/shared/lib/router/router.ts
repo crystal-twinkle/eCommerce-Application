@@ -12,11 +12,13 @@ export interface IParseUrl {
 
 export class Router {
   private notFoundRouterLink: IRouterLink;
+  private overviewLink: IRouterLink;
   private routes: IRouterLink[];
 
   public setRoutes(routes: IRouterLink[]): void {
     this.routes = routes;
     this.notFoundRouterLink = this.routes.find((item: IRouterLink) => item.path === Page.NOT_FOUND);
+    this.overviewLink = this.routes.find((item: IRouterLink) => item.path === Page.OVERVIEW);
     window.addEventListener('DOMContentLoaded', () => {
       this.navigate(this.getCurrentPath());
     });
@@ -27,7 +29,11 @@ export class Router {
   public navigate(url: string, browserChangeEvent?: boolean): void {
     const request: IParseUrl = this.parseURL(url);
     const pathForFind = request.resource === '' ? request.path : `${request.path}/${request.resource}`;
-    const route = this.routes.find((item) => item.path === pathForFind) || this.notFoundRouterLink;
+    const route =
+      localStorage.getItem('customerData') && (url === Page.LOGIN || url === Page.REGISTRATION)
+        ? this.overviewLink
+        : this.routes.find((item) => item.path === pathForFind) || this.notFoundRouterLink;
+
     !browserChangeEvent && window.history.pushState({}, '', route.path || '/');
     route.callback();
   }
