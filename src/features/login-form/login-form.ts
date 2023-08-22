@@ -42,7 +42,7 @@ export default class LoginForm extends ViewBuilder {
             passwordLogin.value,
           );
           if (result.statusCode !== 400) {
-            // localStorage.setItem('customerData', JSON.stringify(result.customer));
+            localStorage.setItem('customerData', JSON.stringify(result.customer));
             const customerData: Customer = (result as { customer: Customer }).customer;
             eventBus.publish(EventBusActions.LOGIN, { customer: customerData });
             requestMessageText.textContent = 'You are logged in!';
