@@ -91,25 +91,37 @@ export default class CustomerAPI extends Api {
   public setDefaultAddress = async (id: string, version: number, defaultAddress: boolean[], addressIds: string[]) => {
     const [setDefaultShippingAddress, setDefaultBillingAddress] = defaultAddress;
     const [shippingAddressId, billingAddressId] = addressIds;
-    const setDefaultAddressBody = {
+
+    const setAddressBody = {
       version,
       actions: [] as { action: string; addressId: string }[],
     };
-
+    if (!setDefaultShippingAddress) {
+      setAddressBody.actions.push({
+        action: 'addShippingAddressId',
+        addressId: shippingAddressId,
+      });
+    }
+    if (!setDefaultBillingAddress) {
+      setAddressBody.actions.push({
+        action: 'addBillingAddressId',
+        addressId: billingAddressId,
+      });
+    }
     if (setDefaultShippingAddress) {
-      setDefaultAddressBody.actions.push({
+      setAddressBody.actions.push({
         action: 'setDefaultShippingAddress',
         addressId: shippingAddressId,
       });
     }
 
     if (setDefaultBillingAddress) {
-      setDefaultAddressBody.actions.push({
+      setAddressBody.actions.push({
         action: 'setDefaultBillingAddress',
         addressId: billingAddressId,
       });
     }
-    this.optionalForPost.body = JSON.stringify(setDefaultAddressBody);
+    this.optionalForPost.body = JSON.stringify(setAddressBody);
     await fetch(`${apiCustomers}/${id}`, this.optionalForPost);
   };
 

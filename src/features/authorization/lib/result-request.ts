@@ -3,14 +3,28 @@ import blackout from '../../blackout/blackout';
 import InputEmail from '../../../shared/ui/input/input-email';
 import appRouter from '../../../shared/lib/router/router';
 import { Page } from '../../../shared/lib/router/pages';
-import { IAddress } from '../../../entities/customer/models';
 import CustomerAPI from '../../../entities/customer/api';
 import apiFactory from '../../../shared/lib/api-factory';
 
 interface IRequest {
   statusCode?: number;
   message?: string;
-  customer?: { addresses: IAddress[] };
+  customer?: {
+    addresses: {
+      id: string;
+      title: string;
+      firstName: string;
+      lastName: string;
+      streetName: string;
+      streetNumber: string;
+      postalCode: string;
+      city: string;
+      region: string;
+      state: string;
+      country: string;
+      email: string;
+    }[];
+  };
   id: string;
   version: number;
 }
@@ -46,20 +60,26 @@ export async function resultCreateCustomer(request: IRequest, emailReg: InputEma
 export async function resultGetCustomer(id: string) {
   const customerAPI: CustomerAPI = apiFactory.getApi('customerAPI') as CustomerAPI;
   const request = await customerAPI.getById(id);
-  const basicId: string = request.addresses[0].id;
-  if (resultsCheckbox.shipDefaultCheck && !resultsCheckbox.shipAsBillCheck && !resultsCheckbox.billDefaultCheck) {
-    await customerAPI.setDefaultAddress(request.id, request.version, [true, false], [basicId, '']);
+  const basicAddressId: string = request.addresses[0].id;
+  const twoAddressId: string = request.addresses[1].id;
+  if (!resultsCheckbox.shipDefaultCheck && !resultsCheckbox.shipAsBillCheck && !resultsCheckbox.billDefaultCheck) {
+    await customerAPI.setDefaultAddress(request.id, request.version, [false, false], [basicAddressId, twoAddressId]);
   }
-
+  if (!resultsCheckbox.shipDefaultCheck && resultsCheckbox.shipAsBillCheck && !resultsCheckbox.billDefaultCheck) {
+    await customerAPI.setDefaultAddress(request.id, request.version, [false, false], [basicAddressId, basicAddressId]);
+  }
+  if (resultsCheckbox.shipDefaultCheck && !resultsCheckbox.shipAsBillCheck && !resultsCheckbox.billDefaultCheck) {
+    await customerAPI.setDefaultAddress(request.id, request.version, [true, false], [basicAddressId, twoAddressId]);
+  }
   if (resultsCheckbox.shipDefaultCheck && resultsCheckbox.shipAsBillCheck && !resultsCheckbox.billDefaultCheck) {
-    await customerAPI.setDefaultAddress(request.id, request.version, [true, true], [basicId, basicId]);
+    await customerAPI.setDefaultAddress(request.id, request.version, [true, true], [basicAddressId, basicAddressId]);
   }
 
   if (resultsCheckbox.shipDefaultCheck && resultsCheckbox.billDefaultCheck && !resultsCheckbox.shipAsBillCheck) {
-    await customerAPI.setDefaultAddress(request.id, request.version, [true, true], [basicId, request.addresses[1].id]);
+    await customerAPI.setDefaultAddress(request.id, request.version, [true, true], [basicAddressId, twoAddressId]);
   }
 
   if (resultsCheckbox.billDefaultCheck && !resultsCheckbox.shipDefaultCheck && !resultsCheckbox.shipAsBillCheck) {
-    await customerAPI.setDefaultAddress(request.id, request.version, [false, true], ['', request.addresses[1].id]);
+    await customerAPI.setDefaultAddress(request.id, request.version, [false, true], ['', twoAddressId]);
   }
 }
