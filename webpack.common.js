@@ -62,6 +62,7 @@ const config = {
     new CopyPlugin({
       patterns: [
         { from: path.resolve(__dirname, 'src', 'shared', 'assets'), to: path.resolve(__dirname, 'dist', 'assets') },
+        { from: path.resolve(__dirname, '_redirects'), to: path.resolve(__dirname, 'dist') },
       ],
     }),
     new FaviconsWebpackPlugin({
