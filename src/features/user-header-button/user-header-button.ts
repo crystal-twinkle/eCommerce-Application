@@ -43,6 +43,7 @@ export default class UserHeaderButton extends CommonBuilderWrapper {
     this.loginButton = new Button(() => appRouter.navigate(Page.LOGIN), 'Login', ButtonType.DEFAULT_COLORED);
     this.logoutButton = new Button(
       () => {
+        localStorage.removeItem('token');
         localStorage.removeItem('customerData');
         eventBus.publish(EventBusActions.LOGOUT, {});
       },

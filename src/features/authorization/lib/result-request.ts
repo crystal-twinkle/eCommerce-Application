@@ -35,10 +35,9 @@ export const resultsCheckbox = {
   billDefaultCheck: false,
 };
 
-export async function resultCreateCustomer(request: IRequest, emailReg: InputEmail, password: HTMLInputElement) {
+export async function resultCreateCustomer(request: IRequest, emailReg: InputEmail) {
   const updateEmailReg = emailReg.getElement();
   if (request.customer) {
-    localStorage.setItem('password', password.value);
     requestMessage.style.display = 'block';
     blackout.classList.add('blackout_show');
     requestMessageText.textContent = 'Account created successfully! 🎉';
