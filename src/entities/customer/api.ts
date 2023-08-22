@@ -2,6 +2,7 @@ import config from '../api/api-data';
 import checkLocalToken from '../api/check-local-token';
 import { IAddressCreate, ICustomersResponse } from './models';
 import Api from '../api';
+import getToken from '../api/get-token';
 
 const apiCustomers: string = `${config.CTP_API_URL}/${config.CTP_PROJECT_KEY}/customers`;
 
@@ -44,6 +45,7 @@ export default class CustomerAPI extends Api {
   };
 
   public login = async (email: string, password: string) => {
+    await getToken().access();
     this.optionalForPost.body = JSON.stringify({
       email,
       password,
