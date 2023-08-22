@@ -44,7 +44,6 @@ export default class CustomerAPI extends Api {
   };
 
   public login = async (email: string, password: string) => {
-    await checkLocalToken();
     this.optionalForPost.body = JSON.stringify({
       email,
       password,
