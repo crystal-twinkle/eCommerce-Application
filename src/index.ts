@@ -1,7 +1,9 @@
 import App from './app/app';
-import './entities/api/customer';
 import './style.scss';
 import appRouter from './shared/lib/router/router';
+import apiFactory from './shared/lib/api-factory';
+import CustomerAPI from './entities/customer/api';
 
 const app = new App();
 appRouter.setRoutes(app.createRoutes());
+apiFactory.registerApi([new CustomerAPI()]);
