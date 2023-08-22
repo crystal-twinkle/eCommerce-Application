@@ -1,14 +1,30 @@
 import requestMessage, { requestMessageText } from '../ui/request-message';
 import blackout from '../../blackout/blackout';
-import customer, { IAddress } from '../../../entities/api/customer';
 import InputEmail from '../../../shared/ui/input/input-email';
 import appRouter from '../../../shared/lib/router/router';
 import { Page } from '../../../shared/lib/router/pages';
+import CustomerAPI from '../../../entities/customer/api';
+import apiFactory from '../../../shared/lib/api-factory';
 
 interface IRequest {
   statusCode?: number;
   message?: string;
-  customer?: { addresses: IAddress[] };
+  customer?: {
+    addresses: {
+      id: string;
+      title: string;
+      firstName: string;
+      lastName: string;
+      streetName: string;
+      streetNumber: string;
+      postalCode: string;
+      city: string;
+      region: string;
+      state: string;
+      country: string;
+      email: string;
+    }[];
+  };
   id: string;
   version: number;
 }
@@ -30,7 +46,7 @@ export async function resultCreateCustomer(request: IRequest, emailReg: InputEma
     appRouter.navigate(Page.OVERVIEW);
   }
   if (request.statusCode) {
-    if (request.message === 'There is already an existing customer with the provided email.') {
+    if (request.message === 'There is already an existing api with the provided email.') {
       emailReg.alreadyExistMessage();
       updateEmailReg.classList.add('input_invalid');
     } else {
@@ -42,21 +58,28 @@ export async function resultCreateCustomer(request: IRequest, emailReg: InputEma
 }
 
 export async function resultGetCustomer(id: string) {
-  const request = await customer().getById(id);
-  const basicId: string = request.addresses[0].id;
-  if (resultsCheckbox.shipDefaultCheck && !resultsCheckbox.shipAsBillCheck && !resultsCheckbox.billDefaultCheck) {
-    await customer().setDefaultAddress(request.id, request.version, [true, false], [basicId, '']);
+  const customerAPI: CustomerAPI = apiFactory.getApi('customerAPI') as CustomerAPI;
+  const request = await customerAPI.getById(id);
+  const basicAddressId: string = request.addresses[0].id;
+  const twoAddressId: string = request.addresses[1].id;
+  if (!resultsCheckbox.shipDefaultCheck && !resultsCheckbox.shipAsBillCheck && !resultsCheckbox.billDefaultCheck) {
+    await customerAPI.setDefaultAddress(request.id, request.version, [false, false], [basicAddressId, twoAddressId]);
   }
-
+  if (!resultsCheckbox.shipDefaultCheck && resultsCheckbox.shipAsBillCheck && !resultsCheckbox.billDefaultCheck) {
+    await customerAPI.setDefaultAddress(request.id, request.version, [false, false], [basicAddressId, basicAddressId]);
+  }
+  if (resultsCheckbox.shipDefaultCheck && !resultsCheckbox.shipAsBillCheck && !resultsCheckbox.billDefaultCheck) {
+    await customerAPI.setDefaultAddress(request.id, request.version, [true, false], [basicAddressId, twoAddressId]);
+  }
   if (resultsCheckbox.shipDefaultCheck && resultsCheckbox.shipAsBillCheck && !resultsCheckbox.billDefaultCheck) {
-    await customer().setDefaultAddress(request.id, request.version, [true, true], [basicId, basicId]);
+    await customerAPI.setDefaultAddress(request.id, request.version, [true, true], [basicAddressId, basicAddressId]);
   }
 
   if (resultsCheckbox.shipDefaultCheck && resultsCheckbox.billDefaultCheck && !resultsCheckbox.shipAsBillCheck) {
-    await customer().setDefaultAddress(request.id, request.version, [true, true], [basicId, request.addresses[1].id]);
+    await customerAPI.setDefaultAddress(request.id, request.version, [true, true], [basicAddressId, twoAddressId]);
   }
 
   if (resultsCheckbox.billDefaultCheck && !resultsCheckbox.shipDefaultCheck && !resultsCheckbox.shipAsBillCheck) {
-    await customer().setDefaultAddress(request.id, request.version, [false, true], ['', request.addresses[1].id]);
+    await customerAPI.setDefaultAddress(request.id, request.version, [false, true], ['', twoAddressId]);
   }
 }
