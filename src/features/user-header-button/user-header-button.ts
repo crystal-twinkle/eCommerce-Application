@@ -6,7 +6,7 @@ import './user-header-button.scss';
 import { Page } from '../../shared/lib/router/pages';
 import appRouter from '../../shared/lib/router/router';
 import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
-import { Customer } from '../../entities/customer/customer';
+import { Customer } from '../../entities/customer/models';
 
 export default class UserHeaderButton extends CommonBuilderWrapper {
   private avatarButton: Button;

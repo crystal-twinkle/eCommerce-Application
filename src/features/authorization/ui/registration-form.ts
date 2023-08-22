@@ -5,13 +5,14 @@ import Form from '../../../shared/ui/form/form';
 import './tooltip.scss';
 import ViewBuilder from '../../../shared/lib/view-builder';
 import InputPostalCode from '../../../shared/ui/input/input-postal-code';
-import customer, { addressesCreate } from '../../../entities/api/customer';
+import CustomerAPI, { addressesCreate } from '../../../entities/customer/api';
 import ElementBuilder from '../../../shared/lib/element-builder';
-import { resultsCheckbox, resultCreateCustomer, resultGetCustomer } from '../lib/result-request';
+import { resultCreateCustomer, resultGetCustomer, resultsCheckbox } from '../lib/result-request';
 import checkValidator from '../lib/check-validaror';
 import appRouter from '../../../shared/lib/router/router';
 import { Page } from '../../../shared/lib/router/pages';
 import InputEmail from '../../../shared/ui/input/input-email';
+import apiFactory from '../../../shared/lib/api-factory';
 
 export default class RegistrationFormView extends ViewBuilder {
   constructor() {
@@ -131,6 +132,7 @@ export default class RegistrationFormView extends ViewBuilder {
       resultsCheckbox.billDefaultCheck = billDefaultCheckbox.checked;
     });
 
+    const customerAPI: CustomerAPI = apiFactory.getApi('customerAPI') as CustomerAPI;
     const registrationForm = new Form({
       title: 'Registration',
       id: 'form-registration',
@@ -163,7 +165,7 @@ export default class RegistrationFormView extends ViewBuilder {
         }
         if (checkValid) {
           addressesCreate.length = 0;
-          await customer().addAddress([
+          customerAPI.addAddress([
             emailReg.value,
             firstName.value,
             lastName.value,
@@ -172,7 +174,7 @@ export default class RegistrationFormView extends ViewBuilder {
             shipStreet.value,
           ]);
           if (!resultsCheckbox.shipAsBillCheck) {
-            await customer().addAddress([
+            await customerAPI.addAddress([
               emailReg.value,
               firstName.value,
               lastName.value,
@@ -181,7 +183,7 @@ export default class RegistrationFormView extends ViewBuilder {
               billPCode.value,
             ]);
           }
-          const resultCreate = await customer().create(
+          const resultCreate = await customerAPI.create(
             emailReg.value,
             passwordReg.getElement().value,
             firstName.value,
