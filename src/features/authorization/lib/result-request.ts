@@ -80,6 +80,6 @@ export async function resultGetCustomer(id: string) {
   }
 
   if (resultsCheckbox.billDefaultCheck && !resultsCheckbox.shipDefaultCheck && !resultsCheckbox.shipAsBillCheck) {
-    await customerAPI.setDefaultAddress(request.id, request.version, [false, true], ['', twoAddressId]);
+    await customerAPI.setDefaultAddress(request.id, request.version, [false, true], [basicAddressId, twoAddressId]);
   }
 }
