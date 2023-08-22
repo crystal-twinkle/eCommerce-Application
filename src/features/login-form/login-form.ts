@@ -9,6 +9,8 @@ import InputEmail from '../../shared/ui/input/input-email';
 import checkValidator from '../authorization/lib/check-validaror';
 import requestMessage, { requestMessageText } from '../authorization/ui/request-message';
 import blackout from '../blackout/blackout';
+import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
+import { Customer } from '../../entities/customer/customer';
 
 export default class LoginForm extends ViewBuilder {
   constructor() {
@@ -36,6 +38,9 @@ export default class LoginForm extends ViewBuilder {
         if (checkValidator([emailLogin.getElement(), passwordLogin])) {
           const result = await customer().login(emailLogin.getElement().value, passwordLogin.value);
           if (result.statusCode !== 400) {
+            const customerData: Customer = (result as { customer: Customer }).customer;
+            localStorage.setItem('customerData', JSON.stringify(customerData));
+            eventBus.publish(EventBusActions.LOGIN, { customer: customerData });
             requestMessageText.textContent = 'You are logged in!';
             requestMessage.style.display = 'block';
             blackout.classList.add('blackout_show');
