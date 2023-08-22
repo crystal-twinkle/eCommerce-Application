@@ -194,6 +194,7 @@ export default class RegistrationFormView extends ViewBuilder {
           await resultCreateCustomer(resultCreate, emailRegClass);
           if (resultCreate.customer) {
             localStorage.setItem('customerData', JSON.stringify(resultCreate.customer));
+            console.log(localStorage.getItem(resultCreate.customer));
             await resultGetCustomer(resultCreate.customer.id);
             eventBus.publish(EventBusActions.LOGIN, { customer: resultCreate.customer });
           }
