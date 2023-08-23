@@ -8,7 +8,7 @@ import InputPostalCode from '../../../shared/ui/input/input-postal-code';
 import CustomerAPI, { addressesCreate } from '../../../entities/customer/api';
 import ElementBuilder from '../../../shared/lib/element-builder';
 import { resultCreateCustomer, resultGetCustomer, resultsCheckbox } from '../lib/result-request';
-import checkValidator from '../lib/check-validaror';
+import checkValidator from '../../../shared/lib/validate/check-validaror';
 import appRouter from '../../../shared/lib/router/router';
 import { Page } from '../../../shared/lib/router/pages';
 import InputEmail from '../../../shared/ui/input/input-email';
@@ -151,8 +151,7 @@ export default class RegistrationFormView extends ViewBuilder {
       buttons: [{ text: 'Submit' }, { text: 'Login', callback: () => appRouter.navigate(Page.LOGIN) }],
       callback: async (event) => {
         event.preventDefault();
-        let checkValid: boolean;
-        checkValid = checkValidator([
+        let checkValid = [
           emailReg,
           passwordReg.getElement(),
           firstName,
@@ -161,9 +160,9 @@ export default class RegistrationFormView extends ViewBuilder {
           shipStreet,
           shipPCode,
           dob,
-        ]);
+        ].every((elem) => checkValidator(elem));
         if (!resultsCheckbox.shipAsBillCheck) {
-          checkValid = checkValidator([billCity, billStreet, billPCode]);
+          checkValid = [billCity, billStreet, billPCode].every((elem) => checkValidator(elem));
         }
         if (checkValid) {
           addressesCreate.length = 0;

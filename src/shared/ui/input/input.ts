@@ -2,6 +2,7 @@ import ElementBuilder from '../../lib/element-builder';
 import CommonBuilderWrapper from '../../lib/common-builder-wrapper';
 import { ValidationParams } from '../../lib/validate/validation-params';
 import './input.scss';
+import checkValidator from '../../lib/validate/check-validaror';
 
 interface IInputConfig {
   type?: string;
@@ -56,8 +57,8 @@ export default class Input extends CommonBuilderWrapper {
 
   protected checkInput() {
     this.builder.getElement().removeEventListener('input', this.showErrorMessage);
-    const value = (this.builder.getElement() as HTMLInputElement).value;
-    if (!ValidationParams[this.config.name].validateFunction(value)) {
+    const inputElem = this.builder.getElement() as HTMLInputElement;
+    if (!checkValidator(inputElem)) {
       this.builder.getElement().after(this.message.getElement());
       this.builder.getElement().classList.add('input_invalid');
     } else {
