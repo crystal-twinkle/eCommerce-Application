@@ -7,7 +7,6 @@ import validateStreet from './validate-street';
 
 export default function checkValidator(inputElement: HTMLInputElement): boolean {
   let isValid = true;
-  const updateInput = inputElement;
   const inputName = inputElement.getAttribute('name');
   const validationRules: Record<string, (value: string) => boolean> = {
     email: validateEmail,
@@ -23,10 +22,10 @@ export default function checkValidator(inputElement: HTMLInputElement): boolean 
   if (inputName in validationRules) {
     const validationFunction = validationRules[inputName];
     if (!validationFunction(inputElement.value)) {
-      updateInput.style.borderBottom = '2px solid red';
+      inputElement.classList.add('input_invalid');
       isValid = false;
     } else {
-      updateInput.style.borderBottom = '';
+      inputElement.classList.remove('input_invalid');
     }
   }
   return isValid;
