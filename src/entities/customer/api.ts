@@ -1,8 +1,7 @@
 import config from '../api/api-data';
-import checkLocalToken from '../api/check-local-token';
 import { IAddressCreate, ICustomersResponse } from './models';
 import Api from '../api';
-import getToken from '../api/get-token';
+import { checkLocalTokenAnon } from '../api/check-local-token';
 
 const apiCustomers: string = `${config.CTP_API_URL}/${config.CTP_PROJECT_KEY}/customers`;
 
@@ -30,22 +29,22 @@ export default class CustomerAPI extends Api {
 
   constructor() {
     super('customerAPI');
+    checkLocalTokenAnon();
   }
 
   public getById = async (id: string) => {
-    await checkLocalToken();
+    await checkLocalTokenAnon();
     const res = await fetch(`${apiCustomers}/${id}`, this.customerOptional);
     return res.json();
   };
 
   public getByEmail = async (email: string): Promise<ICustomersResponse> => {
-    await checkLocalToken();
+    await checkLocalTokenAnon();
     const res = await fetch(`${apiCustomers}/?where=email%3D%22${email}%22`, this.customerOptional);
     return res.json();
   };
 
   public login = async (email: string, password: string) => {
-    await getToken().access();
     this.optionalForPost.body = JSON.stringify({
       email,
       password,
@@ -77,7 +76,6 @@ export default class CustomerAPI extends Api {
   }
 
   public create = async (email: string, password: string, firstName: string, lastName: string) => {
-    await checkLocalToken();
     this.optionalForPost.body = JSON.stringify({
       email,
       password,
@@ -127,13 +125,11 @@ export default class CustomerAPI extends Api {
   };
 
   public deleteById = async (id: string) => {
-    await checkLocalToken();
     this.customerOptional.method = 'DELETE';
     await fetch(`${apiCustomers}/${id}?version=1`, this.customerOptional);
   };
 
   public getCustomers = async () => {
-    await checkLocalToken();
     const response = await fetch(`${apiCustomers}?limit=100`, {
       method: 'GET',
       headers: {
