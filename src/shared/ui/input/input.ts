@@ -60,12 +60,11 @@ export default class Input extends CommonBuilderWrapper {
     const inputElem = this.builder.getElement() as HTMLInputElement;
     if (!checkValidator(inputElem)) {
       this.builder.getElement().after(this.message.getElement());
-      this.builder.getElement().classList.add('input_invalid');
     } else {
-      this.builder.getElement().classList.remove('input_invalid');
       this.message.getElement().remove();
     }
   }
+
   getElement(): HTMLInputElement {
     return this.builder.getElement() as HTMLInputElement;
   }
