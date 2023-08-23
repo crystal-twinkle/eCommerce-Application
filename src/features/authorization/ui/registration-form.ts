@@ -181,8 +181,8 @@ export default class RegistrationFormView extends ViewBuilder {
               firstName.value,
               lastName.value,
               billPCode.value,
-              billPCode.value,
-              billPCode.value,
+              billCity.value,
+              billStreet.value,
             ]);
           }
           const resultCreate = await customerAPI.create(
