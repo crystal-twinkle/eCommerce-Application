@@ -35,10 +35,9 @@ export const resultsCheckbox = {
   billDefaultCheck: false,
 };
 
-export async function resultCreateCustomer(request: IRequest, emailReg: InputEmail, password: HTMLInputElement) {
+export async function resultCreateCustomer(request: IRequest, emailReg: InputEmail) {
   const updateEmailReg = emailReg.getElement();
   if (request.customer) {
-    localStorage.setItem('password', password.value);
     requestMessage.style.display = 'block';
     blackout.classList.add('blackout_show');
     requestMessageText.textContent = 'Account created successfully! 🎉';
@@ -46,7 +45,7 @@ export async function resultCreateCustomer(request: IRequest, emailReg: InputEma
     appRouter.navigate(Page.OVERVIEW);
   }
   if (request.statusCode) {
-    if (request.message === 'There is already an existing api with the provided email.') {
+    if (request.message === 'There is already an existing customer with the provided email.') {
       emailReg.alreadyExistMessage();
       updateEmailReg.classList.add('input_invalid');
     } else {
@@ -61,7 +60,10 @@ export async function resultGetCustomer(id: string) {
   const customerAPI: CustomerAPI = apiFactory.getApi('customerAPI') as CustomerAPI;
   const request = await customerAPI.getById(id);
   const basicAddressId: string = request.addresses[0].id;
-  const twoAddressId: string = request.addresses[1].id;
+  let twoAddressId: string;
+  if (request.addresses.length > 1) {
+    twoAddressId = request.addresses[1].id;
+  }
   if (!resultsCheckbox.shipDefaultCheck && !resultsCheckbox.shipAsBillCheck && !resultsCheckbox.billDefaultCheck) {
     await customerAPI.setDefaultAddress(request.id, request.version, [false, false], [basicAddressId, twoAddressId]);
   }

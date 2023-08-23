@@ -63,6 +63,7 @@ export default class Header extends CommonBuilderWrapper {
     const logoutButton = new Button(
       () => {
         localStorage.removeItem('customerData');
+        localStorage.removeItem('token');
         eventBus.publish(EventBusActions.LOGOUT, {});
       },
       'Logout',

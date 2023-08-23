@@ -14,7 +14,6 @@ import { Page } from '../../../shared/lib/router/pages';
 import InputEmail from '../../../shared/ui/input/input-email';
 import apiFactory from '../../../shared/lib/api-factory';
 import eventBus, { EventBusActions } from '../../../shared/lib/event-bus';
-import getToken from '../../../entities/api/get-token';
 
 export default class RegistrationFormView extends ViewBuilder {
   constructor() {
@@ -192,9 +191,9 @@ export default class RegistrationFormView extends ViewBuilder {
             firstName.value,
             lastName.value,
           );
-          await resultCreateCustomer(resultCreate, emailRegClass, passwordReg.getElement());
+          await resultCreateCustomer(resultCreate, emailRegClass);
           if (resultCreate.customer) {
-            await getToken().access();
+            localStorage.setItem('customerData', JSON.stringify(resultCreate.customer));
             await resultGetCustomer(resultCreate.customer.id);
             eventBus.publish(EventBusActions.LOGIN, { customer: resultCreate.customer });
           }

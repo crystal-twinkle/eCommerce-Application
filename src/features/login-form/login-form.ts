@@ -12,7 +12,6 @@ import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
 import { Customer } from '../../entities/customer/models';
 import apiFactory from '../../shared/lib/api-factory';
 import CustomerAPI from '../../entities/customer/api';
-import getToken from '../../entities/api/get-token';
 
 export default class LoginForm extends ViewBuilder {
   constructor() {
@@ -43,9 +42,8 @@ export default class LoginForm extends ViewBuilder {
             passwordLogin.value,
           );
           if (result.statusCode !== 400) {
-            await getToken().access();
+            localStorage.setItem('customerData', JSON.stringify(result.customer));
             const customerData: Customer = (result as { customer: Customer }).customer;
-            localStorage.setItem('customerData', JSON.stringify(customerData));
             eventBus.publish(EventBusActions.LOGIN, { customer: customerData });
             requestMessageText.textContent = 'You are logged in!';
             requestMessage.style.display = 'block';
