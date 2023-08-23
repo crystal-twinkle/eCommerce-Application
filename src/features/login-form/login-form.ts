@@ -12,6 +12,7 @@ import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
 import { Customer } from '../../entities/customer/models';
 import apiFactory from '../../shared/lib/api-factory';
 import CustomerAPI from '../../entities/customer/api';
+import checkLocalToken from '../../entities/api/check-local-token';
 
 export default class LoginForm extends ViewBuilder {
   constructor() {
@@ -41,15 +42,16 @@ export default class LoginForm extends ViewBuilder {
             emailLogin.getElement().value,
             passwordLogin.value,
           );
-          if (result.statusCode !== 400) {
+          if (!result.statusCode) {
             localStorage.setItem('customerData', JSON.stringify(result.customer));
+            await checkLocalToken();
             const customerData: Customer = (result as { customer: Customer }).customer;
             eventBus.publish(EventBusActions.LOGIN, { customer: customerData });
             requestMessageText.textContent = 'You are logged in!';
             requestMessage.style.display = 'block';
             blackout.classList.add('blackout_show');
             appRouter.navigate(Page.OVERVIEW);
-          } else {
+          } else if (result.statusCode === 400) {
             emailLogin.getElement().classList.add('input_invalid');
             emailLogin.wrongEmailMessage();
           }

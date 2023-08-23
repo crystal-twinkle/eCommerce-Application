@@ -18,12 +18,13 @@ export default function getToken() {
     redirect: 'follow',
   } as RequestInit;
 
-  const anonymous = async (): Promise<IToken> => {
+  const anonymous = async () => {
     const response = await fetch(
       `${config.CTP_AUTH_URL}/oauth/${config.CTP_PROJECT_KEY}/anonymous/token?grant_type=client_credentials`,
       basicOptional,
     );
-    return response.json();
+    const result: IToken = await response.json();
+    localStorage.setItem('token', result.access_token);
   };
 
   const access = async () => {
