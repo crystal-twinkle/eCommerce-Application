@@ -3,6 +3,7 @@ import validatePassword from './validate-password';
 import notEmpty from './not-empty';
 import validatePostalCode from './validate-postal-code';
 import validateAge from './validate-age';
+import validateStreet from './validate-street';
 
 export interface IValidationParams {
   [inputName: string]: {
@@ -13,7 +14,7 @@ export interface IValidationParams {
 
 export const ValidationParams: IValidationParams = {
   email: {
-    message: 'Enter a properly formatted email address (like "example@email.com")',
+    message: 'Enter a properly formatted email address (like "example@email.com"), must not contain whitespaces',
     validateFunction: validateEmail,
   },
   password: {
@@ -35,7 +36,7 @@ export const ValidationParams: IValidationParams = {
   },
   street: {
     message: 'This field must contain at least one character',
-    validateFunction: notEmpty,
+    validateFunction: validateStreet,
   },
   postalCode: {
     message: '',

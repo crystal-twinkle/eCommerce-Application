@@ -1,4 +1,4 @@
 export default function notEmpty(value: string): boolean {
-  const pattern = /^[a-zA-Z]+$/;
+  const pattern = /^[^\d!@#№$%^&*()_+=[\]{}|;:'"<>,.?/\\]+$/u;
   return pattern.test(value);
 }
