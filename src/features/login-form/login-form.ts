@@ -5,7 +5,7 @@ import appRouter from '../../shared/lib/router/router';
 import { Page } from '../../shared/lib/router/pages';
 import '../authorization/ui/tooltip.scss';
 import InputEmail from '../../shared/ui/input/input-email';
-import checkValidator from '../authorization/lib/check-validaror';
+import checkValidator from '../../shared/lib/validate/check-validaror';
 import requestMessage, { requestMessageText } from '../authorization/ui/request-message';
 import blackout from '../blackout/blackout';
 import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
@@ -36,7 +36,7 @@ export default class LoginForm extends ViewBuilder {
       ],
       callback: async (event) => {
         event.preventDefault();
-        if (checkValidator([emailLogin.getElement(), passwordLogin])) {
+        if ([emailLogin.getElement(), passwordLogin].every((elem) => checkValidator(elem))) {
           const result = await (apiFactory.getApi('customerAPI') as CustomerAPI).login(
             emailLogin.getElement().value,
             passwordLogin.value,
