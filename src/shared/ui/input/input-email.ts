@@ -13,7 +13,9 @@ export default class InputEmail extends Input {
     this.builder.setEventHandler({ type: 'input', callback: this.checkInput.bind(this) });
   }
   protected showErrorMessage() {
-    this.message.setContent('Enter a properly formatted email address (like "example@email.com")');
+    this.message.setContent(
+      'Enter a properly formatted email address (like "example@email.com"), must not contain whitespaces',
+    );
     this.builder.getElement().after(this.message.getElement());
   }
   public alreadyExistMessage() {
