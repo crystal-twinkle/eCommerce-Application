@@ -3,7 +3,7 @@ import validatePassword from './validate-password';
 import validatePostalCode from './validate-postal-code';
 import notEmpty from './not-empty';
 import validateAge from './validate-age';
-import validateStreet from './validate-street';
+import validateName from './validate-name';
 
 export default function checkValidator(inputElement: HTMLInputElement): boolean {
   let isValid = true;
@@ -11,10 +11,10 @@ export default function checkValidator(inputElement: HTMLInputElement): boolean 
   const validationRules: Record<string, (value: string) => boolean> = {
     email: validateEmail,
     password: validatePassword,
-    firstName: notEmpty,
-    lastName: notEmpty,
-    city: notEmpty,
-    street: validateStreet,
+    firstName: validateName,
+    lastName: validateName,
+    city: validateName,
+    street: notEmpty,
     postalCode: validatePostalCode,
     dob: validateAge,
   };
