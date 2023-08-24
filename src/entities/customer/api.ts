@@ -1,7 +1,9 @@
 import config from '../api/api-data';
-import { IAddressCreate, ICustomersResponse } from './models';
+import { Customer, IAddressCreate } from './models';
 import Api from '../api';
 import { checkLocalTokenAnon } from '../api/check-local-token';
+import { ApiNames } from '../../shared/lib/api-factory/api-names';
+import ListResponse from '../models';
 
 const apiCustomers: string = `${config.CTP_API_URL}/${config.CTP_PROJECT_KEY}/customers`;
 
@@ -28,7 +30,7 @@ export default class CustomerAPI extends Api {
   };
 
   constructor() {
-    super('customerAPI');
+    super(ApiNames.CUSTOMER);
     checkLocalTokenAnon();
   }
 
@@ -38,7 +40,7 @@ export default class CustomerAPI extends Api {
     return res.json();
   };
 
-  public getByEmail = async (email: string): Promise<ICustomersResponse> => {
+  public getByEmail = async (email: string): Promise<ListResponse<Customer>> => {
     await checkLocalTokenAnon();
     const res = await fetch(`${apiCustomers}/?where=email%3D%22${email}%22`, this.customerOptional);
     return res.json();

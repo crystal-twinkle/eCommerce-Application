@@ -4,7 +4,8 @@ import InputEmail from '../../../shared/ui/input/input-email';
 import appRouter from '../../../shared/lib/router/router';
 import { Page } from '../../../shared/lib/router/pages';
 import CustomerAPI from '../../../entities/customer/api';
-import apiFactory from '../../../shared/lib/api-factory';
+import apiFactory from '../../../shared/lib/api-factory/api-factory';
+import { ApiNames } from '../../../shared/lib/api-factory/api-names';
 
 interface IRequest {
   statusCode?: number;
@@ -57,7 +58,7 @@ export async function resultCreateCustomer(request: IRequest, emailReg: InputEma
 }
 
 export async function resultGetCustomer(id: string) {
-  const customerAPI: CustomerAPI = apiFactory.getApi('customerAPI') as CustomerAPI;
+  const customerAPI: CustomerAPI = apiFactory.getApi(ApiNames.CUSTOMER) as CustomerAPI;
   const request = await customerAPI.getById(id);
   const basicAddressId: string = request.addresses[0].id;
   let twoAddressId: string;
