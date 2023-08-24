@@ -12,9 +12,10 @@ import checkValidator from '../../../shared/lib/validate/check-validaror';
 import appRouter from '../../../shared/lib/router/router';
 import { Page } from '../../../shared/lib/router/pages';
 import InputEmail from '../../../shared/ui/input/input-email';
-import apiFactory from '../../../shared/lib/api-factory';
+import apiFactory from '../../../shared/lib/api-factory/api-factory';
 import eventBus, { EventBusActions } from '../../../shared/lib/event-bus';
 import checkLocalToken from '../../../entities/api/check-local-token';
+import { ApiNames } from '../../../shared/lib/api-factory/api-names';
 
 export default class RegistrationFormView extends ViewBuilder {
   constructor() {
@@ -134,7 +135,7 @@ export default class RegistrationFormView extends ViewBuilder {
       resultsCheckbox.billDefaultCheck = billDefaultCheckbox.checked;
     });
 
-    const customerAPI: CustomerAPI = apiFactory.getApi('customerAPI') as CustomerAPI;
+    const customerAPI: CustomerAPI = apiFactory.getApi(ApiNames.CUSTOMER) as CustomerAPI;
     const registrationForm = new Form({
       title: 'Registration',
       id: 'form-registration',

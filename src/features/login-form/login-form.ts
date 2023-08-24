@@ -10,9 +10,10 @@ import requestMessage, { requestMessageText } from '../authorization/ui/request-
 import blackout from '../blackout/blackout';
 import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
 import { Customer } from '../../entities/customer/models';
-import apiFactory from '../../shared/lib/api-factory';
+import apiFactory from '../../shared/lib/api-factory/api-factory';
 import CustomerAPI from '../../entities/customer/api';
 import checkLocalToken from '../../entities/api/check-local-token';
+import { ApiNames } from '../../shared/lib/api-factory/api-names';
 
 export default class LoginForm extends ViewBuilder {
   constructor() {
@@ -38,7 +39,7 @@ export default class LoginForm extends ViewBuilder {
       callback: async (event) => {
         event.preventDefault();
         if ([emailLogin.getElement(), passwordLogin].every((elem) => checkValidator(elem))) {
-          const result = await (apiFactory.getApi('customerAPI') as CustomerAPI).login(
+          const result = await (apiFactory.getApi(ApiNames.CUSTOMER) as CustomerAPI).login(
             emailLogin.getElement().value,
             passwordLogin.value,
           );

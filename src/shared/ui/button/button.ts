@@ -2,52 +2,21 @@ import ElementBuilder from '../../lib/element-builder';
 import './button.scss';
 import CommonBuilderWrapper from '../../lib/common-builder-wrapper';
 import iconsFactory from '../../lib/icons-factory';
-
-export enum ButtonSize {
-  SMALL = 'small',
-  MEDIUM = 'medium',
-  BIG = 'big',
-}
-
-export enum ButtonType {
-  DEFAULT = '',
-  DEFAULT_WITHOUT_BORDER = 'without-border',
-  DEFAULT_COLORED = 'colored',
-  CIRCLE = 'circle',
-  CIRCLE_WITHOUT_BORDER = 'circle _without-border',
-  CIRCLE_COLORED = 'circle _colored',
-}
-
-export enum ButtonIconPosition {
-  RIGHT,
-  LEFT,
-}
-
-export interface IButtonIconConfig {
-  name: string;
-  position?: ButtonIconPosition;
-}
+import { ButtonIconPosition, IButtonConfig, IButtonIconConfig } from './models';
 
 export default class Button extends CommonBuilderWrapper {
   private badge: ElementBuilder;
 
-  constructor(
-    callback: () => void,
-    text: string = '',
-    type: ButtonType = ButtonType.DEFAULT,
-    icon?: IButtonIconConfig,
-    size: ButtonSize | string = '',
-    styleClass: string = '',
-  ) {
+  constructor(config: IButtonConfig) {
     super();
 
     this.builder = new ElementBuilder({
       tag: 'button',
-      content: this.getContent(text, icon),
-      styleClass: `button _${type} _${size} ${styleClass}`,
+      content: this.getContent(config.text, config.icon),
+      styleClass: `button _${config.type} _${config.size} ${config.styleClass}`,
       event: {
         type: 'click',
-        callback,
+        callback: config.callback,
       },
     });
     this.badge = new ElementBuilder({

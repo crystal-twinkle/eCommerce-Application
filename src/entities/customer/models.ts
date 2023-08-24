@@ -52,11 +52,3 @@ export interface IAddressCreate {
   country: string;
   email: string;
 }
-
-export interface ICustomersResponse {
-  count: number;
-  limit: number;
-  offset: number;
-  results: [];
-  total: number;
-}

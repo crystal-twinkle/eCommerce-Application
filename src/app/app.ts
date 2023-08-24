@@ -9,6 +9,7 @@ import Main from '../features/main/main';
 import RegisterPage from '../pages/register-page';
 import ShowcasesPage from '../pages/showcases/showcases-page';
 import Footer from '../features/footer/footer';
+import ProductsListPage from '../pages/products-list-page/products-list-page';
 
 export default class App {
   private header: Header;
@@ -29,6 +30,12 @@ export default class App {
         path: Page.OVERVIEW,
         callback: () => {
           this.main.setContent([new OverviewPage().getElement()]);
+        },
+      },
+      {
+        path: Page.PRODUCTS,
+        callback: () => {
+          this.main.setContent([new ProductsListPage().getElement()]);
         },
       },
       {
