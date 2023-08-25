@@ -1,5 +1,5 @@
 import Api from '../../../entities/api';
-import { ApiNames } from './api-names';
+import ApiNames from './api-names';
 
 export class ApiFactory {
   private apiMap: Map<ApiNames, Api> = new Map<ApiNames, Api>();

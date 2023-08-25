@@ -14,8 +14,8 @@ import { Page } from '../../../shared/lib/router/pages';
 import InputEmail from '../../../shared/ui/input/input-email';
 import apiFactory from '../../../shared/lib/api-factory/api-factory';
 import eventBus, { EventBusActions } from '../../../shared/lib/event-bus';
-import checkLocalToken from '../../../entities/api/check-local-token';
-import { ApiNames } from '../../../shared/lib/api-factory/api-names';
+import ApiNames from '../../../shared/lib/api-factory/api-names';
+import apiRoot from '../../../app/client-builder/api-root';
 
 export default class RegistrationFormView extends ViewBuilder {
   constructor() {
@@ -186,18 +186,22 @@ export default class RegistrationFormView extends ViewBuilder {
               billStreet.value,
             ]);
           }
-          const resultCreate = await customerAPI.create(
-            emailReg.value,
-            passwordReg.getElement().value,
-            firstName.value,
-            lastName.value,
-          );
-          await resultCreateCustomer(resultCreate, emailRegClass);
-          if (resultCreate.customer) {
-            await checkLocalToken();
-            localStorage.setItem('customerData', JSON.stringify(resultCreate.customer));
-            await resultGetCustomer(resultCreate.customer.id);
-            eventBus.publish(EventBusActions.LOGIN, { customer: resultCreate.customer });
+          const resultCreate = await apiRoot
+            .me()
+            .signup()
+            .post({
+              body: {
+                email: emailReg.value,
+                password: passwordReg.getElement().value,
+                firstName: firstName.value,
+                lastName: lastName.value,
+              },
+            })
+            .execute();
+          await resultCreateCustomer(resultCreate.body.customer, emailRegClass);
+          if (resultCreate.body.customer) {
+            await resultGetCustomer(resultCreate.body.customer.id);
+            eventBus.publish(EventBusActions.LOGIN, { customer: resultCreate.body.customer });
           }
         }
       },
