@@ -1,6 +1,7 @@
-export enum ApiNames {
+enum ApiNames {
+  AUTHENTICATION = 'authenticationAPI',
   CUSTOMER = 'customerAPI',
   PRODUCTS = 'productsAPI',
 }
 
-export const a = 'a';
+export default ApiNames;

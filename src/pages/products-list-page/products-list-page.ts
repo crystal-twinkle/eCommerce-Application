@@ -7,8 +7,8 @@ import ProductsList from '../../features/products-list/products-list';
 import apiFactory from '../../shared/lib/api-factory/api-factory';
 import ProductAPI from '../../entities/product/api';
 import { Product } from '../../entities/product/models';
-import { ApiNames } from '../../shared/lib/api-factory/api-names';
 import ListResponse from '../../entities/models';
+import ApiNames from '../../shared/lib/api-factory/api-names';
 
 export default class ProductsListPage extends ViewBuilder {
   private productsFilter: ProductsFilter;

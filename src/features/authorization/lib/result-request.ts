@@ -5,7 +5,7 @@ import appRouter from '../../../shared/lib/router/router';
 import { Page } from '../../../shared/lib/router/pages';
 import CustomerAPI from '../../../entities/customer/api';
 import apiFactory from '../../../shared/lib/api-factory/api-factory';
-import { ApiNames } from '../../../shared/lib/api-factory/api-names';
+import ApiNames from '../../../shared/lib/api-factory/api-names';
 
 interface IRequest {
   statusCode?: number;
