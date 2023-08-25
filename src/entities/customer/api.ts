@@ -1,7 +1,7 @@
 import config from '../api/api-data';
 import { Customer, IAddressCreate } from './models';
 import Api from '../api';
-import { checkLocalTokenAnon } from '../api/check-local-token';
+import checkLocalToken from '../api/check-local-token';
 import { ApiNames } from '../../shared/lib/api-factory/api-names';
 import ListResponse from '../models';
 
@@ -28,25 +28,23 @@ export default class CustomerAPI extends Api {
     body: undefined,
     redirect: 'follow',
   };
-
+  addresses: IAddressCreate[] = [];
   constructor() {
     super(ApiNames.CUSTOMER);
-    checkLocalTokenAnon();
   }
 
   public getById = async (id: string) => {
-    await checkLocalTokenAnon();
     const res = await fetch(`${apiCustomers}/${id}`, this.customerOptional);
     return res.json();
   };
 
   public getByEmail = async (email: string): Promise<ListResponse<Customer>> => {
-    await checkLocalTokenAnon();
     const res = await fetch(`${apiCustomers}/?where=email%3D%22${email}%22`, this.customerOptional);
     return res.json();
   };
 
   public login = async (email: string, password: string) => {
+    await checkLocalToken();
     this.optionalForPost.body = JSON.stringify({
       email,
       password,
@@ -74,10 +72,13 @@ export default class CustomerAPI extends Api {
       country: 'DE',
       email,
     };
+    this.addresses.push(setDefaultAddressBody);
+    console.log(this.addresses);
     addressesCreate.push(setDefaultAddressBody);
   }
 
   public create = async (email: string, password: string, firstName: string, lastName: string) => {
+    await checkLocalToken();
     this.optionalForPost.body = JSON.stringify({
       email,
       password,
@@ -127,11 +128,13 @@ export default class CustomerAPI extends Api {
   };
 
   public deleteById = async (id: string) => {
+    await checkLocalToken();
     this.customerOptional.method = 'DELETE';
     await fetch(`${apiCustomers}/${id}?version=1`, this.customerOptional);
   };
 
   public getCustomers = async () => {
+    await checkLocalToken();
     const response = await fetch(`${apiCustomers}?limit=100`, {
       method: 'GET',
       headers: {
@@ -143,3 +146,5 @@ export default class CustomerAPI extends Api {
     return response.json();
   };
 }
+// const customerAPI: CustomerAPI = apiFactory.getApi('customerAPI') as CustomerAPI;
+// customerAPI.addAddress(['basic@ver.com', 'aaaa', 'cccc', 'sasf', 'sasaee', '12345']);

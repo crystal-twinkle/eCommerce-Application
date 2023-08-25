@@ -1,9 +1,6 @@
-import requestMessage, { requestMessageText } from '../ui/request-message';
-import blackout from '../../blackout/blackout';
 import InputEmail from '../../../shared/ui/input/input-email';
-import appRouter from '../../../shared/lib/router/router';
-import { Page } from '../../../shared/lib/router/pages';
 import CustomerAPI from '../../../entities/customer/api';
+import RequestMessage from '../ui/request-message';
 import apiFactory from '../../../shared/lib/api-factory/api-factory';
 import { ApiNames } from '../../../shared/lib/api-factory/api-names';
 
@@ -39,20 +36,14 @@ export const resultsCheckbox = {
 export async function resultCreateCustomer(request: IRequest, emailReg: InputEmail) {
   const updateEmailReg = emailReg.getElement();
   if (request.customer) {
-    requestMessage.style.display = 'block';
-    blackout.classList.add('blackout_show');
-    requestMessageText.textContent = 'Account created successfully! 🎉';
-    updateEmailReg.style.borderBottom = '';
-    appRouter.navigate(Page.OVERVIEW);
+    new RequestMessage().createSuccess();
   }
   if (request.statusCode) {
     if (request.message === 'There is already an existing customer with the provided email.') {
       emailReg.alreadyExistMessage();
       updateEmailReg.classList.add('input_invalid');
     } else {
-      requestMessage.style.display = 'block';
-      requestMessageText.textContent = 'Something went wrong, try again later :)';
-      blackout.classList.add('blackout_show');
+      new RequestMessage().badResult();
     }
   }
 }
