@@ -8,6 +8,7 @@ import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
 import { Customer } from '../../entities/customer/models';
 import { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/models';
 import Avatar from '../../shared/ui/avatar/avatar';
+import apiRoot from '../../app/client-builder/api-root';
 
 export default class UserHeaderButton extends CommonBuilderWrapper {
   private avatarButton: Button;

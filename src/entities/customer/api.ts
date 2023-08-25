@@ -1,11 +1,10 @@
-import config from '../api/api-data';
 import { Customer, IAddressCreate } from './models';
 import Api from '../api';
-import { checkLocalTokenAnon } from '../api/check-local-token';
-import { ApiNames } from '../../shared/lib/api-factory/api-names';
 import ListResponse from '../models';
+import ApiConfig from '../../app/client-builder/api-config';
+import ApiNames from '../../shared/lib/api-factory/api-names';
 
-const apiCustomers: string = `${config.CTP_API_URL}/${config.CTP_PROJECT_KEY}/customers`;
+const apiCustomers: string = `${ApiConfig.CTP_API_URL}/${ApiConfig.CTP_PROJECT_KEY}/customers`;
 
 export const addressesCreate: IAddressCreate[] = [];
 
@@ -31,17 +30,14 @@ export default class CustomerAPI extends Api {
 
   constructor() {
     super(ApiNames.CUSTOMER);
-    checkLocalTokenAnon();
   }
 
   public getById = async (id: string) => {
-    await checkLocalTokenAnon();
     const res = await fetch(`${apiCustomers}/${id}`, this.customerOptional);
     return res.json();
   };
 
   public getByEmail = async (email: string): Promise<ListResponse<Customer>> => {
-    await checkLocalTokenAnon();
     const res = await fetch(`${apiCustomers}/?where=email%3D%22${email}%22`, this.customerOptional);
     return res.json();
   };
@@ -51,7 +47,7 @@ export default class CustomerAPI extends Api {
       email,
       password,
     });
-    const res = await fetch(`${config.CTP_API_URL}/${config.CTP_PROJECT_KEY}/login`, this.optionalForPost);
+    const res = await fetch(`${ApiConfig.CTP_API_URL}/${ApiConfig.CTP_PROJECT_KEY}/login`, this.optionalForPost);
     return res.json();
   };
 

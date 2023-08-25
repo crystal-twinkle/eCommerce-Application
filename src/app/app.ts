@@ -10,6 +10,7 @@ import RegisterPage from '../pages/register-page';
 import ShowcasesPage from '../pages/showcases/showcases-page';
 import Footer from '../features/footer/footer';
 import ProductsListPage from '../pages/products-list-page/products-list-page';
+import apiRoot from './client-builder/api-root';
 
 export default class App {
   private header: Header;
@@ -17,6 +18,13 @@ export default class App {
   private footer: Footer;
 
   constructor() {
+    console.log(document.cookie);
+    apiRoot
+      .me()
+      .get()
+      .execute()
+      .then(() => console.log('!!!!'));
+
     this.header = new Header();
     this.main = new Main();
     this.footer = new Footer();
