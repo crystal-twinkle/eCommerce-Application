@@ -1,7 +1,7 @@
 import { Customer, IAddressCreate } from './models';
 import Api from '../api';
 import ListResponse from '../models';
-import ApiConfig from '../../app/client-builder/api-config';
+import ApiConfig from '../../app/api-flow/api-config';
 import ApiNames from '../../shared/lib/api-factory/api-names';
 
 const apiCustomers: string = `${ApiConfig.CTP_API_URL}/${ApiConfig.CTP_PROJECT_KEY}/customers`;

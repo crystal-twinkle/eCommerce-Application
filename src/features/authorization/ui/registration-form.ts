@@ -15,7 +15,8 @@ import InputEmail from '../../../shared/ui/input/input-email';
 import apiFactory from '../../../shared/lib/api-factory/api-factory';
 import eventBus, { EventBusActions } from '../../../shared/lib/event-bus';
 import ApiNames from '../../../shared/lib/api-factory/api-names';
-import apiRoot from '../../../app/client-builder/api-root';
+import flowFactory from '../../../app/api-flow/flow-factory';
+import store from '../../../app/store';
 
 export default class RegistrationFormView extends ViewBuilder {
   constructor() {
@@ -186,7 +187,7 @@ export default class RegistrationFormView extends ViewBuilder {
               billStreet.value,
             ]);
           }
-          const resultCreate = await apiRoot
+          const resultCreate = await flowFactory.clientCredentialsFlow
             .me()
             .signup()
             .post({
@@ -200,8 +201,20 @@ export default class RegistrationFormView extends ViewBuilder {
             .execute();
           await resultCreateCustomer(resultCreate.body.customer, emailRegClass);
           if (resultCreate.body.customer) {
-            await resultGetCustomer(resultCreate.body.customer.id);
-            eventBus.publish(EventBusActions.LOGIN, { customer: resultCreate.body.customer });
+            flowFactory.createPasswordFlow(emailReg.value, passwordReg.getElement().value);
+            const loginResult = await flowFactory.passwordFlow
+              .me()
+              .login()
+              .post({
+                body: {
+                  email: emailReg.value,
+                  password: passwordReg.getElement().value,
+                },
+              })
+              .execute();
+            // await resultGetCustomer(resultCreate.body.customer.id);
+            store.setCustomer(loginResult.body.customer);
+            appRouter.navigate(Page.OVERVIEW);
           }
         }
       },
