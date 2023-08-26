@@ -6,10 +6,9 @@ import { Page } from '../../shared/lib/router/pages';
 import '../authorization/ui/tooltip.scss';
 import InputEmail from '../../shared/ui/input/input-email';
 import checkValidator from '../../shared/lib/validate/check-validaror';
+import flowFactory from '../../app/api-flow/flow-factory';
+import store from '../../app/store';
 import RequestMessage from '../authorization/ui/request-message';
-import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
-import { Customer } from '../../entities/customer/models';
-import apiRoot from '../../app/client-builder/api-root';
 
 export default class LoginForm extends ViewBuilder {
   constructor() {
@@ -35,25 +34,25 @@ export default class LoginForm extends ViewBuilder {
       callback: async (event) => {
         event.preventDefault();
         if ([emailLogin.getElement(), passwordLogin].every((elem) => checkValidator(elem))) {
-          try {
-            const result = await apiRoot
-              .me()
-              .login()
-              .post({
-                body: {
-                  email: emailLogin.getElement().value,
-                  password: passwordLogin.value,
-                },
-              })
-              .execute();
-            const customerData: Customer = (result as { customer: Customer }).customer;
-            eventBus.publish(EventBusActions.LOGIN, { customer: customerData });
-            new RequestMessage().logSuccess();
-            appRouter.navigate(Page.OVERVIEW);
-          } catch (e) {
-            emailLogin.getElement().classList.add('input_invalid');
-            emailLogin.wrongEmailMessage();
-          }
+          // try {
+          flowFactory.createPasswordFlow(emailLogin.getElement().value, passwordLogin.value);
+          const result = await flowFactory.passwordFlow
+            .me()
+            .login()
+            .post({
+              body: {
+                email: emailLogin.getElement().value,
+                password: passwordLogin.value,
+              },
+            })
+            .execute();
+          store.setCustomer(result.body.customer);
+          new RequestMessage().logSuccess();
+          appRouter.navigate(Page.OVERVIEW);
+          // } catch (e) {
+          emailLogin.getElement().classList.add('input_invalid');
+          emailLogin.wrongEmailMessage();
+          // }
         }
       },
     });
