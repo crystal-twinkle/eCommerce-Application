@@ -2,7 +2,7 @@ import InputEmail from '../../../shared/ui/input/input-email';
 import CustomerAPI from '../../../entities/customer/api';
 import RequestMessage from '../ui/request-message';
 import apiFactory from '../../../shared/lib/api-factory/api-factory';
-import { ApiNames } from '../../../shared/lib/api-factory/api-names';
+import ApiNames from '../../../shared/lib/api-factory/api-names';
 
 interface IRequest {
   statusCode?: number;

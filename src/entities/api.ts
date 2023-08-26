@@ -1,10 +1,10 @@
-import config from './api/api-data';
-import { ApiNames } from '../shared/lib/api-factory/api-names';
+import ApiNames from '../shared/lib/api-factory/api-names';
+import ApiConfig from '../app/client-builder/api-config';
 
 export default class Api {
   protected baseApiUrl: string;
 
   constructor(public name: ApiNames) {
-    this.baseApiUrl = `${config.CTP_API_URL}/${config.CTP_PROJECT_KEY}`;
+    this.baseApiUrl = `${ApiConfig.CTP_API_URL}/${ApiConfig.CTP_PROJECT_KEY}`;
   }
 }

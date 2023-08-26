@@ -1,7 +1,7 @@
 import Api from '../api';
 import { Product } from './models';
-import { ApiNames } from '../../shared/lib/api-factory/api-names';
 import ListResponse from '../models';
+import ApiNames from '../../shared/lib/api-factory/api-names';
 
 export default class ProductAPI extends Api {
   constructor() {
