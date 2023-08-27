@@ -23,11 +23,10 @@ export default class RequestMessage extends CommonBuilderWrapper {
 
     const requestMessageCross = new Button({
       callback: () => {
-        this.requestMessage.style.display = 'none';
+        this.requestMessage.classList.remove('visible');
         blackout.classList.remove('blackout_show');
         document.body.removeChild(this.requestMessage);
       },
-      text: '',
       type: ButtonType.CIRCLE,
       icon: { name: 'cross', position: ButtonIconPosition.RIGHT },
       size: ButtonSize.SMALL,
@@ -38,7 +37,7 @@ export default class RequestMessage extends CommonBuilderWrapper {
   }
 
   protected basicAction() {
-    this.requestMessage.style.display = 'block';
+    this.requestMessage.classList.add('visible');
     blackout.classList.add('blackout_show');
     document.body.appendChild(this.requestMessage);
   }

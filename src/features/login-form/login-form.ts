@@ -46,12 +46,8 @@ export default class LoginForm extends ViewBuilder {
             new RequestMessage().logSuccess();
             appRouter.navigate(Page.OVERVIEW);
           } catch (e) {
-            if (e.toString() === 'Error: Customer account with the given credentials not found.') {
-              emailLogin.getElement().classList.add('input_invalid');
-              emailLogin.wrongEmailMessage();
-            } else {
-              new RequestMessage().badResult();
-            }
+            emailLogin.getElement().classList.add('input_invalid');
+            emailLogin.wrongEmailMessage();
           }
         }
       },

@@ -14,6 +14,7 @@ import InputEmail from '../../../shared/ui/input/input-email';
 import flowFactory from '../../../app/api-flow/flow-factory';
 import store from '../../../app/store';
 import RequestMessage from './request-message';
+import { Mutable } from '../../../shared/lib/mutable';
 
 export default class RegistrationFormView extends ViewBuilder {
   constructor() {
@@ -25,7 +26,7 @@ export default class RegistrationFormView extends ViewBuilder {
     const emailReg = emailRegClass.getElement();
     const passwordReg = new PasswordInput();
 
-    const resultsCheckbox = {
+    const resultsCheckbox: { billDefaultCheck: boolean; shipDefaultCheck: boolean; shipAsBillCheck: boolean } = {
       shipDefaultCheck: false,
       shipAsBillCheck: true,
       billDefaultCheck: false,
@@ -172,7 +173,7 @@ export default class RegistrationFormView extends ViewBuilder {
         if (checkValid) {
           try {
             const countryDropdownText: string = countryDropdown?.getSelectedItem()?.content;
-            const customerParams: CustomerDraft = {
+            const customerParams: Mutable<CustomerDraft> = {
               email: emailReg.value,
               password: passwordReg.getElement().value,
               firstName: firstName.value,
@@ -215,14 +216,14 @@ export default class RegistrationFormView extends ViewBuilder {
               customerParams.defaultBillingAddress = 0;
             }
 
-            if (resultsCheckbox.billDefaultCheck && billAddress.style.display === 'flex') {
+            if (resultsCheckbox.billDefaultCheck && !resultsCheckbox.shipAsBillCheck) {
               customerParams.defaultBillingAddress = 1;
             }
 
             const resultCreate = await flowFactory.clientCredentialsFlow
               .customers()
               .post({
-                body: customerParams,
+                body: customerParams as CustomerDraft,
               })
               .execute();
             if (resultCreate.body.customer) {
@@ -241,13 +242,9 @@ export default class RegistrationFormView extends ViewBuilder {
               store.setCustomer(loginResult.body.customer);
               appRouter.navigate(Page.OVERVIEW);
             }
-          } catch (e: any) {
-            if (e.message === 'There is already an existing customer with the provided email.') {
-              emailRegClass.alreadyExistMessage();
-              emailReg.classList.add('input_invalid');
-            } else {
-              new RequestMessage().badResult();
-            }
+          } catch (e) {
+            emailRegClass.alreadyExistMessage();
+            emailReg.classList.add('input_invalid');
           }
         }
       },
