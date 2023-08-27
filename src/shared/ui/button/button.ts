@@ -1,4 +1,4 @@
-import ElementBuilder from '../../lib/element-builder';
+import ElementBuilder, { IElementEvent } from '../../lib/element-builder';
 import './button.scss';
 import CommonBuilderWrapper from '../../lib/common-builder-wrapper';
 import iconsFactory from '../../lib/icons-factory';
@@ -7,18 +7,22 @@ import { ButtonIconPosition, IButtonConfig, IButtonIconConfig } from './models';
 export default class Button extends CommonBuilderWrapper {
   private badge: ElementBuilder;
 
-  constructor(config: IButtonConfig) {
+  constructor(private config: IButtonConfig) {
     super();
 
     this.builder = new ElementBuilder({
       tag: 'button',
       content: this.getContent(config.text, config.icon),
       styleClass: `button _${config.type} _${config.size} ${config.styleClass}`,
-      event: {
+    });
+
+    if (config.callback) {
+      this.builder.setEventHandler({
         type: 'click',
         callback: config.callback,
-      },
-    });
+      });
+    }
+
     this.badge = new ElementBuilder({
       tag: 'span',
     });
@@ -41,6 +45,14 @@ export default class Button extends CommonBuilderWrapper {
 
     return `<span>${content}</span>`;
   }
+
+  public setContent(value: string): void {
+    this.builder.setContent(this.getContent(value, this.config.icon));
+  }
+
+  public setCallback = (event: IElementEvent): void => {
+    this.builder.setEventHandler(event);
+  };
 
   public setBadge(value: number): void {
     if (value) {

@@ -6,6 +6,7 @@ export enum ButtonSize {
 
 export enum ButtonType {
   DEFAULT = '',
+  AS_TEXT = 'as-text',
   DEFAULT_WITHOUT_BORDER = 'without-border',
   DEFAULT_COLORED = 'colored',
   CIRCLE = 'circle',
@@ -24,8 +25,8 @@ export interface IButtonIconConfig {
 }
 
 export interface IButtonConfig {
-  callback: () => void;
   type: ButtonType;
+  callback?: () => void;
   text?: string;
   icon?: IButtonIconConfig;
   size?: ButtonSize | string;

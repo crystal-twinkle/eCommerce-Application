@@ -1,3 +1,4 @@
+import { Customer } from '@commercetools/platform-sdk';
 import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
 import ElementBuilder from '../../shared/lib/element-builder';
 import Button from '../../shared/ui/button/button';
@@ -5,7 +6,6 @@ import './user-header-button.scss';
 import { Page } from '../../shared/lib/router/pages';
 import appRouter from '../../shared/lib/router/router';
 import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
-import { Customer } from '../../entities/customer/models';
 import { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/models';
 import Avatar from '../../shared/ui/avatar/avatar';
 import store from '../../app/store';

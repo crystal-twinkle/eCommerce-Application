@@ -1,7 +1,7 @@
+import { Product } from '@commercetools/platform-sdk';
 import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
 import './products-list.scss';
 import ElementBuilder from '../../shared/lib/element-builder';
-import { Product } from '../../entities/product/models';
 import Loader from '../../shared/ui/loader/loader';
 
 export default class ProductsList extends CommonBuilderWrapper {

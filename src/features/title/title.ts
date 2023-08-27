@@ -6,7 +6,7 @@ export default class Title extends CommonBuilderWrapper {
   constructor(title: string, option?: string) {
     super();
     this.builder = new ElementBuilder({
-      tag: 'div',
+      tag: 'section',
       styleClass: 'title',
     });
     const titleBuilder = new ElementBuilder({

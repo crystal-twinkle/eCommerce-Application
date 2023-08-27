@@ -4,11 +4,8 @@ import ElementBuilder from '../../shared/lib/element-builder';
 import ProductsFilter from '../../features/products-filter/products-filter';
 import './products-list-page.scss';
 import ProductsList from '../../features/products-list/products-list';
-import apiFactory from '../../shared/lib/api-factory/api-factory';
-import ProductAPI from '../../entities/product/api';
-import { Product } from '../../entities/product/models';
-import ListResponse from '../../entities/models';
-import ApiNames from '../../shared/lib/api-factory/api-names';
+import flowFactory from '../../app/api-flow/flow-factory';
+import SortBar, { SortButtonCallbackValue } from '../../features/sort-bar/sort-bar';
 
 export default class ProductsListPage extends ViewBuilder {
   private productsFilter: ProductsFilter;
@@ -21,6 +18,7 @@ export default class ProductsListPage extends ViewBuilder {
 
   public configureView(): HTMLElement[] {
     const titleView = new Title('Блузки и рубашки для женщин');
+    const sortBarView = new SortBar(this.sortClick);
     this.productsList = new ProductsList();
     this.productsFilter = new ProductsFilter();
     const productsView = new ElementBuilder({
@@ -29,18 +27,26 @@ export default class ProductsListPage extends ViewBuilder {
     });
     productsView.append([this.productsFilter.getElement(), this.productsList.getElement()]);
 
-    return [titleView.getElement(), productsView.getElement()];
+    return [titleView.getElement(), sortBarView.getElement(), productsView.getElement()];
   }
 
   public buildView(): void {
     this.view.getElement().append(...this.configureView());
   }
 
+  public sortClick = (sortValue: SortButtonCallbackValue): void => {
+    console.log(sortValue);
+  };
+
   public loadProducts(): void {
     this.productsList.showLoader(true);
-    (apiFactory.getApi(ApiNames.PRODUCTS) as ProductAPI).getProducts().then((data: ListResponse<Product>) => {
-      this.productsList.setProducts(data.results);
-      this.productsList.showLoader(false);
-    });
+    flowFactory.refreshTokenFlow
+      .products()
+      .get()
+      .execute()
+      .then((data) => {
+        this.productsList.setProducts(data.body.results);
+        this.productsList.showLoader(false);
+      });
   }
 }

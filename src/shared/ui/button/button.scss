@@ -51,6 +51,18 @@
     }
   }
 
+  &._as-text {
+    border: none;
+    box-shadow: none;
+
+    &:hover {
+      background-color: transparent;
+      color: $purple-2;
+      fill: $purple-2;
+      stroke: $purple-2;
+    }
+  }
+
   &._without-border {
     border: none;
     box-shadow: none;
