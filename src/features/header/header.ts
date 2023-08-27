@@ -60,6 +60,7 @@ export default class Header extends CommonBuilderWrapper {
     });
     const overviewButton = new Button(() => appRouter.navigate(Page.OVERVIEW), 'Main', ButtonType.DEFAULT_COLORED);
     const loginButton = new Button(() => appRouter.navigate(Page.LOGIN), 'Login', ButtonType.DEFAULT_COLORED);
+    const productButton = new Button(() => appRouter.navigate(Page.PRODUCT), 'product', ButtonType.DEFAULT_COLORED);
     const logoutButton = new Button(
       () => {
         localStorage.removeItem('customerData');
@@ -81,6 +82,7 @@ export default class Header extends CommonBuilderWrapper {
         overviewButton.getElement(),
         loginButton.getElement(),
         registerButton.getElement(),
+        productButton.getElement(),
       ]);
     }
     eventBus.subscribe(EventBusActions.LOGIN, (data) => {

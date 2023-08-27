@@ -32,9 +32,10 @@ export default class App {
         },
       },
       {
-        path: `${Page.PRODUCT}/${ID_SELECTOR}`,
+        // path: `${Page.PRODUCT}/${ID_SELECTOR}`,
+        path: Page.PRODUCT,
         callback: (id: string) => {
-          this.main.setContent([new ProductPage(id).getElement()]);
+          this.main.setContent([new ProductPage().getElement()]);
         },
       },
       {
