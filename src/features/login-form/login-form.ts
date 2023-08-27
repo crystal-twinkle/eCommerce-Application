@@ -6,11 +6,9 @@ import { Page } from '../../shared/lib/router/pages';
 import '../authorization/ui/tooltip.scss';
 import InputEmail from '../../shared/ui/input/input-email';
 import checkValidator from '../../shared/lib/validate/check-validaror';
-import requestMessage, { requestMessageText } from '../authorization/ui/request-message';
-import blackout from '../blackout/blackout';
 import flowFactory from '../../app/api-flow/flow-factory';
-import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
 import store from '../../app/store';
+import RequestMessage from '../authorization/ui/request-message';
 
 export default class LoginForm extends ViewBuilder {
   constructor() {
@@ -36,27 +34,21 @@ export default class LoginForm extends ViewBuilder {
       callback: async (event) => {
         event.preventDefault();
         if ([emailLogin.getElement(), passwordLogin].every((elem) => checkValidator(elem))) {
-          // try {
-          flowFactory.createPasswordFlow(emailLogin.getElement().value, passwordLogin.value);
-          const result = await flowFactory.passwordFlow
-            .me()
-            .login()
-            .post({
-              body: {
-                email: emailLogin.getElement().value,
-                password: passwordLogin.value,
-              },
-            })
-            .execute();
-          store.setCustomer(result.body.customer);
-          requestMessageText.textContent = 'You are logged in!';
-          requestMessage.style.display = 'block';
-          blackout.classList.add('blackout_show');
-          appRouter.navigate(Page.OVERVIEW);
-          // } catch (e) {
-          emailLogin.getElement().classList.add('input_invalid');
-          emailLogin.wrongEmailMessage();
-          // }
+          try {
+            flowFactory.createPasswordFlow(emailLogin.getElement().value, passwordLogin.value);
+            const result = await flowFactory.passwordFlow
+              .me()
+              .login()
+              .post({ body: { email: emailLogin.getElement().value, password: passwordLogin.value } })
+              .execute();
+            store.setCustomer(result.body.customer);
+
+            new RequestMessage().logSuccess();
+            appRouter.navigate(Page.OVERVIEW);
+          } catch (e) {
+            emailLogin.getElement().classList.add('input_invalid');
+            emailLogin.wrongEmailMessage();
+          }
         }
       },
     });

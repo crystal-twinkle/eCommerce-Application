@@ -2,8 +2,8 @@ import Dropdown, { DropdownType, IDropdownItem } from '../../../shared/ui/dropdo
 
 const countryItems: IDropdownItem[] = [
   {
-    value: 'USA',
-    content: 'USA',
+    value: 'US',
+    content: 'US',
   },
   {
     value: 'Canada',
