@@ -6,13 +6,9 @@ import { Page } from '../../shared/lib/router/pages';
 import '../authorization/ui/tooltip.scss';
 import InputEmail from '../../shared/ui/input/input-email';
 import checkValidator from '../../shared/lib/validate/check-validaror';
-import requestMessage, { requestMessageText } from '../authorization/ui/request-message';
-import blackout from '../blackout/blackout';
-import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
-import { Customer } from '../../entities/customer/models';
-import apiFactory from '../../shared/lib/api-factory';
-import CustomerAPI from '../../entities/customer/api';
-import checkLocalToken from '../../entities/api/check-local-token';
+import flowFactory from '../../app/api-flow/flow-factory';
+import store from '../../app/store';
+import RequestMessage from '../authorization/ui/request-message';
 
 export default class LoginForm extends ViewBuilder {
   constructor() {
@@ -38,20 +34,18 @@ export default class LoginForm extends ViewBuilder {
       callback: async (event) => {
         event.preventDefault();
         if ([emailLogin.getElement(), passwordLogin].every((elem) => checkValidator(elem))) {
-          const result = await (apiFactory.getApi('customerAPI') as CustomerAPI).login(
-            emailLogin.getElement().value,
-            passwordLogin.value,
-          );
-          if (!result.statusCode) {
-            localStorage.setItem('customerData', JSON.stringify(result.customer));
-            await checkLocalToken();
-            const customerData: Customer = (result as { customer: Customer }).customer;
-            eventBus.publish(EventBusActions.LOGIN, { customer: customerData });
-            requestMessageText.textContent = 'You are logged in!';
-            requestMessage.style.display = 'block';
-            blackout.classList.add('blackout_show');
+          try {
+            flowFactory.createPasswordFlow(emailLogin.getElement().value, passwordLogin.value);
+            const result = await flowFactory.passwordFlow
+              .me()
+              .login()
+              .post({ body: { email: emailLogin.getElement().value, password: passwordLogin.value } })
+              .execute();
+            store.setCustomer(result.body.customer);
+
+            new RequestMessage().logSuccess();
             appRouter.navigate(Page.OVERVIEW);
-          } else if (result.statusCode === 400) {
+          } catch (e) {
             emailLogin.getElement().classList.add('input_invalid');
             emailLogin.wrongEmailMessage();
           }

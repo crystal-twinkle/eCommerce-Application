@@ -1,7 +1,8 @@
 import './welcome-view.scss';
 import ViewBuilder from '../../shared/lib/view-builder';
 import ElementBuilder from '../../shared/lib/element-builder';
-import Button, { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/button';
+import Button from '../../shared/ui/button/button';
+import { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/models';
 
 export default class WelcomeView extends ViewBuilder {
   constructor() {
@@ -50,13 +51,13 @@ export default class WelcomeView extends ViewBuilder {
       .getElement()
       .append(welcomeImageFirst.getElement(), welcomeHeading.getElement(), welcomeText.getElement());
 
-    const welcomeButton = new Button(
-      () => {},
-      'Catalog',
-      ButtonType.CIRCLE,
-      { name: 'arrow-right', position: ButtonIconPosition.RIGHT },
-      ButtonSize.BIG,
-    );
+    const welcomeButton = new Button({
+      callback: () => {},
+      text: 'Catalog',
+      type: ButtonType.CIRCLE,
+      icon: { name: 'arrow-right', position: ButtonIconPosition.RIGHT },
+      size: ButtonSize.BIG,
+    });
 
     welcomeButton.getElement().classList.add('button-container');
 

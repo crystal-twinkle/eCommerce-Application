@@ -16,10 +16,10 @@ export default class InputPostalCode extends Input {
 
   protected showErrorMessage() {
     const countryDropdownText: string = countryDropdown?.getSelectedItem()?.content;
-    if (countryDropdownText !== 'USA' && countryDropdownText !== 'Canada') {
+    if (countryDropdownText !== 'US' && countryDropdownText !== 'Canada') {
       this.message.setContent('Select country');
     }
-    if (countryDropdownText === 'USA') {
+    if (countryDropdownText === 'US') {
       this.message.setContent('The format for the USA should be like "12345"');
     }
     if (countryDropdownText === 'Canada') {

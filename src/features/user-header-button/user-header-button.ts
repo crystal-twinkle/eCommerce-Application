@@ -1,12 +1,14 @@
+import { Customer } from '@commercetools/platform-sdk';
 import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
 import ElementBuilder from '../../shared/lib/element-builder';
-import Button, { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/button';
-import Avatar from '../../shared/ui/avatar/avatar';
+import Button from '../../shared/ui/button/button';
 import './user-header-button.scss';
 import { Page } from '../../shared/lib/router/pages';
 import appRouter from '../../shared/lib/router/router';
 import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
-import { Customer } from '../../entities/customer/models';
+import { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/models';
+import Avatar from '../../shared/ui/avatar/avatar';
+import store from '../../app/store';
 
 export default class UserHeaderButton extends CommonBuilderWrapper {
   private avatarButton: Button;
@@ -24,14 +26,13 @@ export default class UserHeaderButton extends CommonBuilderWrapper {
       tag: 'div',
       styleClass: 'user-header-button',
     });
-    this.avatarButton = new Button(
-      () => {},
-      '',
-      ButtonType.CIRCLE_WITHOUT_BORDER,
-      { name: 'avatar', position: ButtonIconPosition.LEFT },
-      ButtonSize.SMALL,
-      'user-header-button__button',
-    );
+    this.avatarButton = new Button({
+      callback: () => {},
+      type: ButtonType.CIRCLE_WITHOUT_BORDER,
+      icon: { name: 'avatar', position: ButtonIconPosition.LEFT },
+      size: ButtonSize.SMALL,
+      styleClass: 'user-header-button__button',
+    });
     this.popup = new ElementBuilder({
       tag: 'div',
       styleClass: 'user-header-button__popup',
@@ -40,34 +41,33 @@ export default class UserHeaderButton extends CommonBuilderWrapper {
     this.user = new ElementBuilder({
       tag: 'span',
     });
-    this.loginButton = new Button(() => appRouter.navigate(Page.LOGIN), 'Login', ButtonType.DEFAULT_COLORED);
-    this.logoutButton = new Button(
-      () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('customerData');
-        eventBus.publish(EventBusActions.LOGOUT, {});
+    this.loginButton = new Button({
+      callback: () => appRouter.navigate(Page.LOGIN),
+      text: 'Login',
+      type: ButtonType.DEFAULT_COLORED,
+    });
+    this.logoutButton = new Button({
+      callback: () => {
+        localStorage.removeItem('token_store');
+        store.setCustomer(null);
+        this.logout();
       },
-      'Logout',
-      ButtonType.DEFAULT_COLORED,
-    );
-    this.registerButton = new Button(
-      () => appRouter.navigate(Page.REGISTRATION),
-      'Registration',
-      ButtonType.DEFAULT_COLORED,
-    );
-
-    if (localStorage.getItem('customerData')) {
-      this.login(JSON.parse(localStorage.getItem('customerData')) as Customer);
-    } else {
-      this.logout();
-    }
+      text: 'Logout',
+      type: ButtonType.DEFAULT_COLORED,
+    });
+    this.registerButton = new Button({
+      callback: () => appRouter.navigate(Page.REGISTRATION),
+      text: 'Registration',
+      type: ButtonType.DEFAULT_COLORED,
+    });
 
     this.builder.append([this.avatarButton.getElement(), this.popup.getElement()]);
 
-    eventBus.subscribe(EventBusActions.LOGIN, (data) =>
-      this.login((data as { customer: Customer }).customer as Customer),
+    this.logout();
+
+    eventBus.subscribe(EventBusActions.UPDATE_CUSTOMER, (data) =>
+      data ? this.login(data as Customer) : this.logout(),
     );
-    eventBus.subscribe(EventBusActions.LOGOUT, () => this.logout());
   }
 
   public login = (data: Customer): void => {

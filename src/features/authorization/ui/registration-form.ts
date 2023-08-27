@@ -1,3 +1,4 @@
+import { CustomerDraft } from '@commercetools/platform-sdk';
 import Input from '../../../shared/ui/input/input';
 import PasswordInput from '../../../shared/ui/input/input-password';
 import countryDropdown from './country-dropdown';
@@ -5,16 +6,15 @@ import Form from '../../../shared/ui/form/form';
 import './tooltip.scss';
 import ViewBuilder from '../../../shared/lib/view-builder';
 import InputPostalCode from '../../../shared/ui/input/input-postal-code';
-import CustomerAPI, { addressesCreate } from '../../../entities/customer/api';
 import ElementBuilder from '../../../shared/lib/element-builder';
-import { resultCreateCustomer, resultGetCustomer, resultsCheckbox } from '../lib/result-request';
 import checkValidator from '../../../shared/lib/validate/check-validaror';
 import appRouter from '../../../shared/lib/router/router';
 import { Page } from '../../../shared/lib/router/pages';
 import InputEmail from '../../../shared/ui/input/input-email';
-import apiFactory from '../../../shared/lib/api-factory';
-import eventBus, { EventBusActions } from '../../../shared/lib/event-bus';
-import checkLocalToken from '../../../entities/api/check-local-token';
+import flowFactory from '../../../app/api-flow/flow-factory';
+import store from '../../../app/store';
+import RequestMessage from './request-message';
+import { Mutable } from '../../../shared/lib/mutable';
 
 export default class RegistrationFormView extends ViewBuilder {
   constructor() {
@@ -25,6 +25,12 @@ export default class RegistrationFormView extends ViewBuilder {
     const emailRegClass = new InputEmail();
     const emailReg = emailRegClass.getElement();
     const passwordReg = new PasswordInput();
+
+    const resultsCheckbox: { billDefaultCheck: boolean; shipDefaultCheck: boolean; shipAsBillCheck: boolean } = {
+      shipDefaultCheck: false,
+      shipAsBillCheck: true,
+      billDefaultCheck: false,
+    };
 
     const firstName = new Input({
       placeholder: 'First Name',
@@ -127,14 +133,12 @@ export default class RegistrationFormView extends ViewBuilder {
         billAddress.style.display = 'flex';
       }
       resultsCheckbox.shipAsBillCheck = shipAsBillCheckbox.checked;
-      resultsCheckbox.billDefaultCheck = false;
     });
 
     billDefaultCheckbox.addEventListener('change', () => {
       resultsCheckbox.billDefaultCheck = billDefaultCheckbox.checked;
     });
 
-    const customerAPI: CustomerAPI = apiFactory.getApi('customerAPI') as CustomerAPI;
     const registrationForm = new Form({
       title: 'Registration',
       id: 'form-registration',
@@ -165,38 +169,82 @@ export default class RegistrationFormView extends ViewBuilder {
         if (!resultsCheckbox.shipAsBillCheck) {
           checkValid = [billCity, billStreet, billPCode].every((elem) => checkValidator(elem));
         }
+
         if (checkValid) {
-          addressesCreate.length = 0;
-          customerAPI.addAddress([
-            emailReg.value,
-            firstName.value,
-            lastName.value,
-            shipPCode.value,
-            shipCity.value,
-            shipStreet.value,
-          ]);
-          if (!resultsCheckbox.shipAsBillCheck) {
-            await customerAPI.addAddress([
-              emailReg.value,
-              firstName.value,
-              lastName.value,
-              billPCode.value,
-              billCity.value,
-              billStreet.value,
-            ]);
-          }
-          const resultCreate = await customerAPI.create(
-            emailReg.value,
-            passwordReg.getElement().value,
-            firstName.value,
-            lastName.value,
-          );
-          await resultCreateCustomer(resultCreate, emailRegClass);
-          if (resultCreate.customer) {
-            await checkLocalToken();
-            localStorage.setItem('customerData', JSON.stringify(resultCreate.customer));
-            await resultGetCustomer(resultCreate.customer.id);
-            eventBus.publish(EventBusActions.LOGIN, { customer: resultCreate.customer });
+          try {
+            const countryDropdownText: string = countryDropdown?.getSelectedItem()?.content;
+            const customerParams: Mutable<CustomerDraft> = {
+              email: emailReg.value,
+              password: passwordReg.getElement().value,
+              firstName: firstName.value,
+              lastName: lastName.value,
+              dateOfBirth: dob.value,
+              addresses: [
+                {
+                  email: emailReg.value,
+                  firstName: firstName.value,
+                  lastName: lastName.value,
+                  country: countryDropdownText,
+                  city: shipCity.value,
+                  streetName: shipStreet.value,
+                  postalCode: shipPCode.value,
+                },
+              ],
+              shippingAddresses: [0],
+              billingAddresses: [],
+            };
+
+            if (!resultsCheckbox.shipAsBillCheck) {
+              customerParams.billingAddresses.push(1);
+              customerParams.addresses.push({
+                email: emailReg.value,
+                firstName: firstName.value,
+                lastName: lastName.value,
+                country: countryDropdownText,
+                city: billCity.value,
+                streetName: billStreet.value,
+                postalCode: billPCode.value,
+              });
+            }
+
+            if (resultsCheckbox.shipDefaultCheck) {
+              customerParams.defaultShippingAddress = 0;
+            }
+            if (resultsCheckbox.shipDefaultCheck && resultsCheckbox.shipAsBillCheck) {
+              customerParams.defaultShippingAddress = 0;
+              customerParams.billingAddresses.push(0);
+              customerParams.defaultBillingAddress = 0;
+            }
+
+            if (resultsCheckbox.billDefaultCheck && !resultsCheckbox.shipAsBillCheck) {
+              customerParams.defaultBillingAddress = 1;
+            }
+
+            const resultCreate = await flowFactory.clientCredentialsFlow
+              .customers()
+              .post({
+                body: customerParams as CustomerDraft,
+              })
+              .execute();
+            if (resultCreate.body.customer) {
+              flowFactory.createPasswordFlow(emailReg.value, passwordReg.getElement().value);
+              const loginResult = await flowFactory.passwordFlow
+                .me()
+                .login()
+                .post({
+                  body: {
+                    email: emailReg.value,
+                    password: passwordReg.getElement().value,
+                  },
+                })
+                .execute();
+              new RequestMessage().createSuccess();
+              store.setCustomer(loginResult.body.customer);
+              appRouter.navigate(Page.OVERVIEW);
+            }
+          } catch (e) {
+            emailRegClass.alreadyExistMessage();
+            emailReg.classList.add('input_invalid');
           }
         }
       },

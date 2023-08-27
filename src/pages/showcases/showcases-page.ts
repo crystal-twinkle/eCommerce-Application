@@ -1,7 +1,8 @@
 import ElementBuilder from '../../shared/lib/element-builder';
-import Button, { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/button';
+import Button from '../../shared/ui/button/button';
 import './showcases.scss';
 import Dropdown, { DropdownType, IDropdownItem } from '../../shared/ui/dropdown/dropdown';
+import { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/models';
 
 export default class ShowcasesPage {
   private builder: ElementBuilder;
@@ -30,41 +31,46 @@ export default class ShowcasesPage {
       items: dropdownItems,
       type: DropdownType.FORM,
     });
-    const defaultButton = new Button(() => {}, 'Default button');
-    const buttonWithoutBorders = new Button(() => {}, 'Button without borders', ButtonType.DEFAULT_WITHOUT_BORDER);
-    const buttonWithIconAndLeftPosition = new Button(
-      () => {},
-      'button With Icon And Left Position',
-      ButtonType.DEFAULT,
-      { name: 'arrow-right', position: ButtonIconPosition.LEFT },
-    );
-    const buttonWithIconAndRightPosition = new Button(
-      () => {},
-      'button colored with Icon And Right Position',
-      ButtonType.DEFAULT_COLORED,
-      { name: 'arrow-right', position: ButtonIconPosition.RIGHT },
-    );
-    const circleButtonWithBorderBig = new Button(
-      () => {},
-      'circle With Border Big',
-      ButtonType.CIRCLE,
-      null,
-      ButtonSize.BIG,
-    );
-    const circleButtonColoredMedium = new Button(
-      () => {},
-      'circle colored medium',
-      ButtonType.CIRCLE_COLORED,
-      null,
-      ButtonSize.MEDIUM,
-    );
-    const circleButtonWithoutBorderSmall = new Button(
-      () => {},
-      '',
-      ButtonType.CIRCLE_WITHOUT_BORDER,
-      { name: 'heart', position: ButtonIconPosition.LEFT },
-      ButtonSize.SMALL,
-    );
+    const defaultButton = new Button({
+      callback: () => {},
+      text: 'Default button',
+      type: ButtonType.DEFAULT_COLORED,
+    });
+    const buttonWithoutBorders = new Button({
+      callback: () => {},
+      text: 'Button without borders',
+      type: ButtonType.DEFAULT_WITHOUT_BORDER,
+    });
+    const buttonWithIconAndLeftPosition = new Button({
+      callback: () => {},
+      text: 'button With Icon And Left Position',
+      type: ButtonType.DEFAULT,
+      icon: { name: 'arrow-right', position: ButtonIconPosition.LEFT },
+    });
+    const buttonWithIconAndRightPosition = new Button({
+      callback: () => {},
+      text: 'button colored with Icon And Right Position',
+      type: ButtonType.DEFAULT_COLORED,
+      icon: { name: 'arrow-right', position: ButtonIconPosition.RIGHT },
+    });
+    const circleButtonWithBorderBig = new Button({
+      callback: () => {},
+      text: 'circle With Border Big',
+      type: ButtonType.CIRCLE,
+      size: ButtonSize.BIG,
+    });
+    const circleButtonColoredMedium = new Button({
+      callback: () => {},
+      text: 'circle colored medium',
+      type: ButtonType.CIRCLE_COLORED,
+      size: ButtonSize.MEDIUM,
+    });
+    const circleButtonWithoutBorderSmall = new Button({
+      callback: () => {},
+      type: ButtonType.CIRCLE_WITHOUT_BORDER,
+      icon: { name: 'heart', position: ButtonIconPosition.LEFT },
+      size: ButtonSize.SMALL,
+    });
 
     this.builder.append([
       formDropdown.getElement(),
