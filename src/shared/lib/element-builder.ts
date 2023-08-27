@@ -1,4 +1,4 @@
-interface IElementEvent {
+export interface IElementEvent {
   type: string;
   callback: (event?: Event) => void;
 }
