@@ -1,3 +1,4 @@
+import { CustomerDraft } from '@commercetools/platform-sdk';
 import Input from '../../../shared/ui/input/input';
 import PasswordInput from '../../../shared/ui/input/input-password';
 import countryDropdown from './country-dropdown';
@@ -5,17 +6,14 @@ import Form from '../../../shared/ui/form/form';
 import './tooltip.scss';
 import ViewBuilder from '../../../shared/lib/view-builder';
 import InputPostalCode from '../../../shared/ui/input/input-postal-code';
-import CustomerAPI, { addressesCreate } from '../../../entities/customer/api';
 import ElementBuilder from '../../../shared/lib/element-builder';
-import { resultCreateCustomer, resultGetCustomer, resultsCheckbox } from '../lib/result-request';
 import checkValidator from '../../../shared/lib/validate/check-validaror';
 import appRouter from '../../../shared/lib/router/router';
 import { Page } from '../../../shared/lib/router/pages';
 import InputEmail from '../../../shared/ui/input/input-email';
-import apiFactory from '../../../shared/lib/api-factory/api-factory';
-import ApiNames from '../../../shared/lib/api-factory/api-names';
 import flowFactory from '../../../app/api-flow/flow-factory';
 import store from '../../../app/store';
+import RequestMessage from './request-message';
 
 export default class RegistrationFormView extends ViewBuilder {
   constructor() {
@@ -26,6 +24,12 @@ export default class RegistrationFormView extends ViewBuilder {
     const emailRegClass = new InputEmail();
     const emailReg = emailRegClass.getElement();
     const passwordReg = new PasswordInput();
+
+    const resultsCheckbox = {
+      shipDefaultCheck: false,
+      shipAsBillCheck: true,
+      billDefaultCheck: false,
+    };
 
     const firstName = new Input({
       placeholder: 'First Name',
@@ -128,14 +132,12 @@ export default class RegistrationFormView extends ViewBuilder {
         billAddress.style.display = 'flex';
       }
       resultsCheckbox.shipAsBillCheck = shipAsBillCheckbox.checked;
-      resultsCheckbox.billDefaultCheck = false;
     });
 
     billDefaultCheckbox.addEventListener('change', () => {
       resultsCheckbox.billDefaultCheck = billDefaultCheckbox.checked;
     });
 
-    const customerAPI: CustomerAPI = apiFactory.getApi(ApiNames.CUSTOMER) as CustomerAPI;
     const registrationForm = new Form({
       title: 'Registration',
       id: 'form-registration',
@@ -166,55 +168,86 @@ export default class RegistrationFormView extends ViewBuilder {
         if (!resultsCheckbox.shipAsBillCheck) {
           checkValid = [billCity, billStreet, billPCode].every((elem) => checkValidator(elem));
         }
+
         if (checkValid) {
-          addressesCreate.length = 0;
-          customerAPI.addAddress([
-            emailReg.value,
-            firstName.value,
-            lastName.value,
-            shipPCode.value,
-            shipCity.value,
-            shipStreet.value,
-          ]);
-          if (!resultsCheckbox.shipAsBillCheck) {
-            await customerAPI.addAddress([
-              emailReg.value,
-              firstName.value,
-              lastName.value,
-              billPCode.value,
-              billCity.value,
-              billStreet.value,
-            ]);
-          }
-          const resultCreate = await flowFactory.clientCredentialsFlow
-            .me()
-            .signup()
-            .post({
-              body: {
+          try {
+            const countryDropdownText: string = countryDropdown?.getSelectedItem()?.content;
+            const customerParams: CustomerDraft = {
+              email: emailReg.value,
+              password: passwordReg.getElement().value,
+              firstName: firstName.value,
+              lastName: lastName.value,
+              dateOfBirth: dob.value,
+              addresses: [
+                {
+                  email: emailReg.value,
+                  firstName: firstName.value,
+                  lastName: lastName.value,
+                  country: countryDropdownText,
+                  city: shipCity.value,
+                  streetName: shipStreet.value,
+                  postalCode: shipPCode.value,
+                },
+              ],
+              shippingAddresses: [0],
+              billingAddresses: [],
+            };
+
+            if (!resultsCheckbox.shipAsBillCheck) {
+              customerParams.billingAddresses.push(1);
+              customerParams.addresses.push({
                 email: emailReg.value,
-                password: passwordReg.getElement().value,
                 firstName: firstName.value,
                 lastName: lastName.value,
-                dateOfBirth: dob.value,
-              },
-            })
-            .execute();
-          await resultCreateCustomer(resultCreate.body.customer, emailRegClass);
-          if (resultCreate.body.customer) {
-            flowFactory.createPasswordFlow(emailReg.value, passwordReg.getElement().value);
-            const loginResult = await flowFactory.passwordFlow
-              .me()
-              .login()
+                country: countryDropdownText,
+                city: billCity.value,
+                streetName: billStreet.value,
+                postalCode: billPCode.value,
+              });
+            }
+
+            if (resultsCheckbox.shipDefaultCheck) {
+              customerParams.defaultShippingAddress = 0;
+            }
+            if (resultsCheckbox.shipDefaultCheck && resultsCheckbox.shipAsBillCheck) {
+              customerParams.defaultShippingAddress = 0;
+              customerParams.billingAddresses.push(0);
+              customerParams.defaultBillingAddress = 0;
+            }
+
+            if (resultsCheckbox.billDefaultCheck && billAddress.style.display === 'flex') {
+              customerParams.defaultBillingAddress = 1;
+            }
+
+            const resultCreate = await flowFactory.clientCredentialsFlow
+              .customers()
               .post({
-                body: {
-                  email: emailReg.value,
-                  password: passwordReg.getElement().value,
-                },
+                body: customerParams,
               })
               .execute();
-            await resultGetCustomer(resultCreate.body.customer.id);
-            store.setCustomer(loginResult.body.customer);
-            appRouter.navigate(Page.OVERVIEW);
+            if (resultCreate.body.customer) {
+              flowFactory.createPasswordFlow(emailReg.value, passwordReg.getElement().value);
+              const loginResult = await flowFactory.passwordFlow
+                .me()
+                .login()
+                .post({
+                  body: {
+                    email: emailReg.value,
+                    password: passwordReg.getElement().value,
+                  },
+                })
+                .execute();
+              new RequestMessage().createSuccess();
+              store.setCustomer(loginResult.body.customer);
+              appRouter.navigate(Page.OVERVIEW);
+            }
+          } catch (e: any) {
+            if (e.message === 'There is already an existing customer with the provided email.') {
+              emailRegClass.alreadyExistMessage();
+              emailReg.classList.add('input_invalid');
+            } else {
+              new RequestMessage().badResult();
+            }
           }
         }
       },

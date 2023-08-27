@@ -4,8 +4,8 @@ export default function validatePostalCode(checkPostalCode: string): boolean {
   const countryDropdownText: string = countryDropdown?.getSelectedItem()?.content;
   let postalCodePattern: RegExp;
 
-  if (countryDropdownText === 'USA' || countryDropdownText === 'Canada') {
-    if (countryDropdownText === 'USA') {
+  if (countryDropdownText === 'US' || countryDropdownText === 'Canada') {
+    if (countryDropdownText === 'US') {
       postalCodePattern = /^\d{5}(-\d{4})?$/;
     }
     if (countryDropdownText === 'Canada') {

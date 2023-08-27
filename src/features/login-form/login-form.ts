@@ -34,25 +34,25 @@ export default class LoginForm extends ViewBuilder {
       callback: async (event) => {
         event.preventDefault();
         if ([emailLogin.getElement(), passwordLogin].every((elem) => checkValidator(elem))) {
-          // try {
-          flowFactory.createPasswordFlow(emailLogin.getElement().value, passwordLogin.value);
-          const result = await flowFactory.passwordFlow
-            .me()
-            .login()
-            .post({
-              body: {
-                email: emailLogin.getElement().value,
-                password: passwordLogin.value,
-              },
-            })
-            .execute();
-          store.setCustomer(result.body.customer);
-          new RequestMessage().logSuccess();
-          appRouter.navigate(Page.OVERVIEW);
-          // } catch (e) {
-          emailLogin.getElement().classList.add('input_invalid');
-          emailLogin.wrongEmailMessage();
-          // }
+          try {
+            flowFactory.createPasswordFlow(emailLogin.getElement().value, passwordLogin.value);
+            const result = await flowFactory.passwordFlow
+              .me()
+              .login()
+              .post({ body: { email: emailLogin.getElement().value, password: passwordLogin.value } })
+              .execute();
+            store.setCustomer(result.body.customer);
+
+            new RequestMessage().logSuccess();
+            appRouter.navigate(Page.OVERVIEW);
+          } catch (e) {
+            if (e.toString() === 'Error: Customer account with the given credentials not found.') {
+              emailLogin.getElement().classList.add('input_invalid');
+              emailLogin.wrongEmailMessage();
+            } else {
+              new RequestMessage().badResult();
+            }
+          }
         }
       },
     });
