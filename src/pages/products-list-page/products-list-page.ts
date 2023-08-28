@@ -1,11 +1,12 @@
 import ViewBuilder from '../../shared/lib/view-builder';
-import Title from '../../features/title/title';
+import PageTitle from '../../features/page-title/page-title';
 import ElementBuilder from '../../shared/lib/element-builder';
 import ProductsFilter from '../../features/products-filter/products-filter';
 import './products-list-page.scss';
 import ProductsList from '../../features/products-list/products-list';
 import flowFactory from '../../app/api-flow/flow-factory';
-import SortBar, { SortButtonCallbackValue } from '../../features/sort-bar/sort-bar';
+import { SortButtonCallbackValue } from '../../features/sort-bar/sort-bar.models';
+import SortBar from '../../features/sort-bar/sort-bar';
 
 export default class ProductsListPage extends ViewBuilder {
   private productsFilter: ProductsFilter;
@@ -17,12 +18,12 @@ export default class ProductsListPage extends ViewBuilder {
   }
 
   public configureView(): HTMLElement[] {
-    const titleView = new Title('Блузки и рубашки для женщин');
+    const titleView = new PageTitle('Блузки и рубашки для женщин', 'Арт. 123123');
     const sortBarView = new SortBar(this.sortClick);
     this.productsList = new ProductsList();
     this.productsFilter = new ProductsFilter();
     const productsView = new ElementBuilder({
-      tag: 'article',
+      tag: 'section',
       styleClass: 'products-list-page',
     });
     productsView.append([this.productsFilter.getElement(), this.productsList.getElement()]);
@@ -34,9 +35,9 @@ export default class ProductsListPage extends ViewBuilder {
     this.view.getElement().append(...this.configureView());
   }
 
-  public sortClick = (sortValue: SortButtonCallbackValue): void => {
+  public sortClick(sortValue: SortButtonCallbackValue): void {
     console.log(sortValue);
-  };
+  }
 
   public loadProducts(): void {
     this.productsList.showLoader(true);

@@ -1,2 +1,31 @@
+@import '../../colors';
+
 .sort-bar {
+  display: flex;
+  justify-content: space-between;
+  font-weight: normal;
+  padding-top: 20px;
+  padding-bottom: 20px;
+
+  &__title {
+    color: $gray-1;
+  }
+
+  &__search {
+    display: flex;
+    align-items: center;
+
+    &-icon {
+      display: inline-block;
+      margin-right: 8px;
+      width: 20px;
+      height: 20px;
+      background-image: url('../../shared/assets/icons/search.svg');
+    }
+  }
+
+  &__button {
+    color: $black-1;
+    width: 100px;
+  }
 }

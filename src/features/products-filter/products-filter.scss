@@ -1,2 +1,10 @@
 .products-filter {
+  min-width: 200px;
+
+  &__price-title {
+    margin-bottom: 4px;
+  }
+  &__input {
+    width: 70px;
+  }
 }

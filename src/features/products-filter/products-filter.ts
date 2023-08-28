@@ -1,14 +1,1 @@
-import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
-import './products-filter.scss';
-import ElementBuilder from '../../shared/lib/element-builder';
-import AccordionItem from '../../shared/ui/accordion-item/accordion-item';
-
-export default class ProductsFilter extends CommonBuilderWrapper {
-  constructor() {
-    super();
-
-    this.builder = new ElementBuilder({
-      tag: 'section',
-    });
-  }
-}
+import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';import './products-filter.scss';import ElementBuilder from '../../shared/lib/element-builder';import Input from '../../shared/ui/input/input';export default class ProductsFilter extends CommonBuilderWrapper {  constructor() {    super();    this.builder = new ElementBuilder({      tag: 'div',      styleClass: 'products-filter',    });    this.builder.append([this.getPriceField().getElement()]);  }  private getPriceField(): ElementBuilder {    const priceFieldBuilder = new ElementBuilder({      tag: 'div',    });    const fieldName = new ElementBuilder({      tag: 'div',      content: 'Price, $',      styleClass: 'products-filter__price-title',    });    const inputFrom = new Input({      type: 'number',      styleClass: 'products-filter__input',      placeholder: 'From',    });    const inputTo = new Input({      type: 'number',      styleClass: 'products-filter__input',      placeholder: 'To',    });    const separator = new ElementBuilder({      tag: 'span',      content: '—',    });    priceFieldBuilder.append([      fieldName.getElement(),      inputFrom.getElement(),      separator.getElement(),      inputTo.getElement(),    ]);    return priceFieldBuilder;  }}
