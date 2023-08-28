@@ -1,0 +1,11 @@
+.product-view {
+  &__content {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__details {
+    display: flex;
+    flex-direction: column;
+  }
+}

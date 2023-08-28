@@ -1,6 +1,5 @@
 import ViewBuilder from '../shared/lib/view-builder';
-import ElementBuilder from '../shared/lib/element-builder';
-import Slider from '../features/slider/slider';
+import ProductView from '../widgets/product-view';
 
 export default class ProductPage extends ViewBuilder {
   constructor() {
@@ -8,33 +7,9 @@ export default class ProductPage extends ViewBuilder {
   }
 
   public configureView(): HTMLElement[] {
-    const slide1 = new ElementBuilder({
-      tag: 'div',
-      styleClass: 'slider__slide',
-      content: '<img src="../../assets/images/dress_1.png">',
-    });
-    const slide2 = new ElementBuilder({
-      tag: 'div',
-      styleClass: 'slider__slide',
-      content: '<img src="../../assets/images/dress_2.png">',
-    });
-    const slide3 = new ElementBuilder({
-      tag: 'div',
-      styleClass: 'slider__slide',
-      content: '<img src="../../assets/images/dress_3.png">',
-    });
-    const slide4 = new ElementBuilder({
-      tag: 'div',
-      styleClass: 'slider__slide',
-      content: '<img src="../../assets/images/dress_4.png">',
-    });
+    const productView = new ProductView();
 
-    const slides: HTMLElement[] = [];
-    slides.push(slide1.getElement(), slide2.getElement(), slide3.getElement(), slide4.getElement());
-
-    const slider = new Slider(slides);
-
-    return [slider.getElement()];
+    return [productView.getElement()];
   }
 
   public buildView(): void {

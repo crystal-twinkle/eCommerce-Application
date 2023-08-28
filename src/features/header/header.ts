@@ -41,12 +41,6 @@ export default class Header extends CommonBuilderWrapper {
       icon: { name: 'heart', position: ButtonIconPosition.LEFT },
       size: ButtonSize.SMALL,
     });
-    const productButton = new Button({
-      callback: () => appRouter.navigate(Page.PRODUCT),
-      type: ButtonType.CIRCLE_WITHOUT_BORDER,
-      icon: { name: 'heart', position: ButtonIconPosition.LEFT },
-      size: ButtonSize.SMALL,
-    });
     const cartButton = new Button({
       callback: () => {},
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
@@ -55,12 +49,7 @@ export default class Header extends CommonBuilderWrapper {
     });
     cartButton.setBadge(4);
 
-    navigation.append([
-      userHeaderButton.getElement(),
-      favoritesButton.getElement(),
-      cartButton.getElement(),
-      productButton.getElement(),
-    ]);
+    navigation.append([userHeaderButton.getElement(), favoritesButton.getElement(), cartButton.getElement()]);
     container.append([logo.getElement(), navigation.getElement()]);
 
     this.builder.append([container.getElement()]);
