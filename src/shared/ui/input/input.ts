@@ -14,6 +14,7 @@ interface IInputConfig {
   type?: string;
   placeholder?: string;
   name?: string;
+  styleClass?: string;
 }
 
 export default class Input extends CommonBuilderWrapper {
@@ -26,14 +27,16 @@ export default class Input extends CommonBuilderWrapper {
     this.config = config;
     this.builder = new ElementBuilder({
       tag: 'input',
-      styleClass: 'input',
+      styleClass: `input ${config.styleClass || ''}`,
       tagSettings: {
         type: config.type || 'text',
       },
     });
+    this.builder.setTagSettings({
+      placeholder: config.placeholder || '',
+    });
     if (config.name) {
       this.builder.setTagSettings({
-        placeholder: config.placeholder || '',
         name: config.name,
         autocomplete: 'off',
       });

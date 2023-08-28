@@ -1,8 +1,8 @@
 import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
-import './title.scss';
+import './page-title.scss';
 import ElementBuilder from '../../shared/lib/element-builder';
 
-export default class Title extends CommonBuilderWrapper {
+export default class PageTitle extends CommonBuilderWrapper {
   constructor(title: string, option?: string) {
     super();
     this.builder = new ElementBuilder({
@@ -21,7 +21,7 @@ export default class Title extends CommonBuilderWrapper {
       const optionBuilder = new ElementBuilder({
         tag: 'span',
         content: option,
-        styleClass: 'title__value',
+        styleClass: 'title__option',
       });
       this.builder.append([optionBuilder.getElement()]);
     }

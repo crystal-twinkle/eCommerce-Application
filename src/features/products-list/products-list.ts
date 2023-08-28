@@ -3,6 +3,7 @@ import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
 import './products-list.scss';
 import ElementBuilder from '../../shared/lib/element-builder';
 import Loader from '../../shared/ui/loader/loader';
+import ProductListCard from '../product-list-card/product-list-card';
 
 export default class ProductsList extends CommonBuilderWrapper {
   private productCards: HTMLElement[];
@@ -18,21 +19,13 @@ export default class ProductsList extends CommonBuilderWrapper {
     }).getElement();
 
     this.builder = new ElementBuilder({
-      tag: 'section',
+      tag: 'div',
+      styleClass: 'products-list',
     });
   }
 
-  private getProductCard = (product: Product): HTMLElement => {
-    const productCardBuilder = new ElementBuilder({
-      tag: 'div',
-      styleClass: 'products-list__card',
-    });
-
-    return productCardBuilder.getElement();
-  };
-
   public setProducts(products: Product[]): void {
-    this.productCards = products.map((product: Product) => this.getProductCard(product));
+    this.productCards = products.map((product: Product) => new ProductListCard(product).getElement());
     this.builder.append(this.productCards);
   }
 

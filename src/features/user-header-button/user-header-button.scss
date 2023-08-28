@@ -5,7 +5,7 @@
   display: inline;
 
   &__popup {
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     background-color: $white-1;
@@ -15,7 +15,6 @@
     right: 0;
     top: 45px;
     transition: opacity 0.2s linear;
-    opacity: 0;
 
     & > *:not(:last-child) {
       margin-bottom: 6px;
@@ -23,6 +22,6 @@
   }
 
   &__button:focus + .user-header-button__popup {
-    opacity: 1;
+    display: flex;
   }
 }
