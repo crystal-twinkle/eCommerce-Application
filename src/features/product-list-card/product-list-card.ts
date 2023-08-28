@@ -4,6 +4,8 @@ import ElementBuilder from '../../shared/lib/element-builder';
 import Button from '../../shared/ui/button/button';
 import { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/models';
 import './product-list-card.scss';
+import appRouter from '../../shared/lib/router/router';
+import { ID_SELECTOR, Page } from '../../shared/lib/router/pages';
 
 export default class ProductListCard extends CommonBuilderWrapper {
   constructor(private data: Product) {
@@ -51,16 +53,19 @@ export default class ProductListCard extends CommonBuilderWrapper {
     const detailsButton = new Button({
       type: ButtonType.DEFAULT,
       text: 'Details',
+      callback: () => appRouter.navigate(`${Page.PRODUCTS}/${ID_SELECTOR}`),
     });
 
     const info = new ElementBuilder({
       tag: 'div',
+      styleClass: 'product-list-card__row',
     });
     const infoButtons = new ElementBuilder({
       tag: 'div',
     });
     const details = new ElementBuilder({
       tag: 'div',
+      styleClass: 'product-list-card__row',
     });
 
     infoButtons.append([likeButton.getElement(), toCartButton.getElement()]);

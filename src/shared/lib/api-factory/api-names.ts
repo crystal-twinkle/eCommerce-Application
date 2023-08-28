@@ -1,5 +1,4 @@
 enum ApiNames {
-  AUTHENTICATION = 'authenticationAPI',
   CUSTOMER = 'customerAPI',
   PRODUCTS = 'productsAPI',
 }

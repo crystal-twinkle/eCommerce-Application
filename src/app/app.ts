@@ -59,7 +59,7 @@ export default class App {
         },
       },
       {
-        path: `${Page.PRODUCT}/${ID_SELECTOR}`,
+        path: `${Page.PRODUCTS}/${ID_SELECTOR}`,
         callback: (id: string) => {
           this.main.setContent([new ProductPage(id).getElement()]);
         },
