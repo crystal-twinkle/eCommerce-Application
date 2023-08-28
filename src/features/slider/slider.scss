@@ -1,43 +1,39 @@
 @import '../../colors';
 $imageWidth: 575px;
-$imageMargin: 20px;
 
 .slider {
-  max-width: fit-content;
+  // max-width: max-content;
   display: flex;
   align-items: center;
   margin: 0 auto;
 
   &__wrapper {
-    margin: 0;
-    width: $imageWidth + $imageMargin * 2;
     overflow: hidden;
     cursor: pointer;
   }
 
   &__content-container {
-    margin: 0 auto;
+    max-width: $imageWidth;
     display: flex;
     transition: all ease-in-out 0.5s;
   }
 
   &__slide {
-    min-width: $imageWidth;
-    height: $imageWidth;
-    margin: 0 $imageMargin;
+    min-width: fit-content;
+    max-width: $imageWidth;
+    margin: 0 5%;
     user-select: none;
   }
 
   img {
-    height: 100%;
-    width: 100%;
+    max-width: 100%;
     object-fit: cover;
   }
 
   &__button {
     position: relative;
     z-index: 1;
-    margin: -$imageMargin * 2 - $imageWidth * 0.05;
+    // margin-right: - $imageWidth * 0.15;
     width: $imageWidth * 0.05;
     height: $imageWidth;
     cursor: pointer;
@@ -70,6 +66,8 @@ $imageMargin: 20px;
     }
 
     &_next {
+      margin-right: 0;
+      // margin-left: - $imageWidth * 0.15;
       transform: rotate(180deg);
     }
   }

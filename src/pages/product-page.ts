@@ -1,6 +1,4 @@
 import ViewBuilder from '../shared/lib/view-builder';
-import Button from '../shared/ui/button/button';
-import getProduct from '../entities/api/get-procuct';
 import ElementBuilder from '../shared/lib/element-builder';
 import Slider from '../features/slider/slider';
 
@@ -10,11 +8,6 @@ export default class ProductPage extends ViewBuilder {
   }
 
   public configureView(): HTMLElement[] {
-    const button = new Button(() => {}, 'get product');
-    button.getElement().addEventListener('click', () => {
-      getProduct('sport_coat');
-    });
-
     const slide1 = new ElementBuilder({
       tag: 'div',
       styleClass: 'slider__slide',

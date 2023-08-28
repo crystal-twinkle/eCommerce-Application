@@ -1,6 +1,5 @@
 import './slider.scss';
 import ElementBuilder from '../../shared/lib/element-builder';
-import Button, { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/button';
 
 export default class Slider {
   private slider: ElementBuilder;
@@ -69,6 +68,7 @@ export default class Slider {
 
   private nextSlide = (): void => {
     this.buttonNext.getElement().removeEventListener('click', this.nextSlide);
+    this.buttonPrev.getElement().removeEventListener('click', this.prevSlide);
 
     if (this.index === this.slidesAmount) {
       this.index = 0;
@@ -85,12 +85,14 @@ export default class Slider {
       this.contentContainer.getElement().removeEventListener('transitionend', transitionEndHandler);
 
       this.buttonNext.getElement().addEventListener('click', this.nextSlide);
+      this.buttonPrev.getElement().addEventListener('click', this.prevSlide);
     };
 
     this.contentContainer.getElement().addEventListener('transitionend', transitionEndHandler);
   };
 
   private prevSlide = (): void => {
+    this.buttonNext.getElement().removeEventListener('click', this.nextSlide);
     this.buttonPrev.getElement().removeEventListener('click', this.prevSlide);
 
     if (this.index === 0) {
@@ -107,6 +109,7 @@ export default class Slider {
       this.contentContainer.getElement().lastChild.remove();
       this.contentContainer.getElement().removeEventListener('transitionend', transitionEndHandler);
 
+      this.buttonNext.getElement().addEventListener('click', this.nextSlide);
       this.buttonPrev.getElement().addEventListener('click', this.prevSlide);
     };
 
