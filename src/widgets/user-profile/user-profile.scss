@@ -1,0 +1,36 @@
+@import '../../../src/shared/assets/style/flex-column';
+
+.user {
+  @extend %flex-column;
+  margin: 20px;
+
+  &__info,
+  &__address {
+    @extend %flex-column;
+    width: 228px;
+    margin: auto;
+    gap: 20px;
+  }
+
+  &__input {
+    border-bottom: 2px solid #097ef1;
+
+    &::placeholder {
+      text-align: left;
+      color: #097ef1;
+      font-size: 20px;
+      font-weight: 500;
+    }
+  }
+
+  h4 {
+    font-size: 20px;
+    align-self: center;
+  }
+
+  &__addresses {
+    width: 228px;
+    margin: 50px auto;
+    @extend %flex-column;
+  }
+}

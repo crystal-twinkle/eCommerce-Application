@@ -32,13 +32,11 @@ export default class Input extends CommonBuilderWrapper {
         type: config.type || 'text',
       },
     });
-    this.builder.setTagSettings({
-      placeholder: config.placeholder || '',
-    });
     if (config.name) {
       this.builder.setTagSettings({
         name: config.name,
         autocomplete: 'off',
+        placeholder: config.placeholder || '',
       });
 
       this.message = new ElementBuilder({
@@ -70,5 +68,10 @@ export default class Input extends CommonBuilderWrapper {
 
   getElement(): HTMLInputElement {
     return this.builder.getElement() as HTMLInputElement;
+  }
+
+  public setTagSettings(tagSettings: { [id: string]: string }): Input {
+    this.builder.setTagSettings(tagSettings);
+    return this;
   }
 }

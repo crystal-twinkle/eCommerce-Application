@@ -38,7 +38,9 @@ export default class UserHeaderButton extends CommonBuilderWrapper {
       size: ButtonSize.SMALL,
       styleClass: 'user-header-button__button',
     });
-    this.avatar = new Avatar('default-avatar.png', () => {});
+    this.avatar = new Avatar('default-avatar.png', () => {
+      appRouter.navigate(Page.USER_PROFILE);
+    });
     this.user = new ElementBuilder({
       tag: 'span',
     });
