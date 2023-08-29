@@ -42,6 +42,10 @@ export default class UserProfile extends CommonBuilderWrapper {
         name: 'lastName',
       }).getElement(),
       new Input({
+        value: data.email,
+        name: 'email',
+      }).getElement(),
+      new Input({
         type: 'date',
         name: 'dob',
       })
@@ -175,7 +179,7 @@ export default class UserProfile extends CommonBuilderWrapper {
   }
 
   protected async editInfo(inputs: HTMLInputElement[]) {
-    const [firstname, lastname, dob] = inputs;
+    const [firstname, lastname, email, dob] = inputs;
     try {
       const result = await flowFactory.clientCredentialsFlow
         .customers()
@@ -190,6 +194,7 @@ export default class UserProfile extends CommonBuilderWrapper {
               },
               { action: 'setFirstName', firstName: firstname.value },
               { action: 'setLastName', lastName: lastname.value },
+              { action: 'changeEmail', email: email.value },
             ],
           },
         })
