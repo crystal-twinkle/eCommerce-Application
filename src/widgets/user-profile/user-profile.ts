@@ -168,6 +168,7 @@ export default class UserProfile extends CommonBuilderWrapper {
     elements.forEach((element) => {
       element.setAttribute('disabled', '');
       element.classList.add('user__input');
+      element.classList.remove('_edit');
     });
   }
 
