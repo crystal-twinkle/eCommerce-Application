@@ -1,36 +1,43 @@
 @import '../../../src/shared/assets/style/flex-column';
+@import '../../colors';
 
 .user {
   @extend %flex-column;
-  margin: 20px;
+  margin: 20px auto;
+  width: 228px;
 
   &__info,
   &__address {
     @extend %flex-column;
-    width: 228px;
-    margin: auto;
+    margin-bottom: 20px;
     gap: 20px;
   }
 
   &__input {
-    border-bottom: 2px solid #097ef1;
+    border-bottom: 2px solid #000000;
 
-    &::placeholder {
-      text-align: left;
-      color: #097ef1;
+    &[value] {
+      color: #2465b0;
       font-size: 20px;
       font-weight: 500;
     }
+
+    &._edit {
+      background-color: rgba(151, 155, 151, 0.27);
+    }
+
+    &._edit:focus {
+      background-color: $primary;
+    }
+  }
+
+  &__addresses {
+    margin: 50px auto;
+    @extend %flex-column;
   }
 
   h4 {
     font-size: 20px;
     align-self: center;
-  }
-
-  &__addresses {
-    width: 228px;
-    margin: 50px auto;
-    @extend %flex-column;
   }
 }

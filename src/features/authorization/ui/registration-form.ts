@@ -13,7 +13,7 @@ import { Page } from '../../../shared/lib/router/pages';
 import InputEmail from '../../../shared/ui/input/input-email';
 import flowFactory from '../../../app/api-flow/flow-factory';
 import store from '../../../app/store';
-import RequestMessage from './request-message';
+import RequestMessage from '../../request-message/request-message';
 import { Mutable } from '../../../shared/lib/mutable';
 
 export default class RegistrationFormView extends ViewBuilder {

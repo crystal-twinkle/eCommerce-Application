@@ -2,10 +2,11 @@ import Input from './input';
 import countryDropdown from '../../../features/authorization/ui/country-dropdown';
 
 export default class InputPostalCode extends Input {
-  constructor(config?: { placeholder?: string }) {
+  constructor(config?: { placeholder?: string; value?: string }) {
     super({
       type: 'text',
       placeholder: config?.placeholder || 'PostalCode',
+      value: config?.value,
       name: 'postalCode',
     });
     this.showErrorMessage = this.showErrorMessage.bind(this);

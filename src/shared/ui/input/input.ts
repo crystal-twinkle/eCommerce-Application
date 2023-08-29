@@ -7,12 +7,7 @@ import checkValidator from '../../lib/validate/check-validaror';
 interface IInputConfig {
   type?: string;
   placeholder?: string;
-  name?: string;
-}
-
-interface IInputConfig {
-  type?: string;
-  placeholder?: string;
+  value?: string;
   name?: string;
   styleClass?: string;
 }
@@ -32,11 +27,20 @@ export default class Input extends CommonBuilderWrapper {
         type: config.type || 'text',
       },
     });
+    if (config.placeholder) {
+      this.builder.setTagSettings({
+        placeholder: config.placeholder,
+      });
+    }
+    if (config.value) {
+      this.builder.setTagSettings({
+        value: config.value,
+      });
+    }
     if (config.name) {
       this.builder.setTagSettings({
         name: config.name,
         autocomplete: 'off',
-        placeholder: config.placeholder || '',
       });
 
       this.message = new ElementBuilder({

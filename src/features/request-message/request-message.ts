@@ -1,10 +1,10 @@
-import ElementBuilder from '../../../shared/lib/element-builder';
+import ElementBuilder from '../../shared/lib/element-builder';
 import './request-message.scss';
-import '../../../shared/assets/style/visible.scss';
-import blackout from '../../blackout/blackout';
-import Button from '../../../shared/ui/button/button';
-import { ButtonIconPosition, ButtonSize, ButtonType } from '../../../shared/ui/button/models';
-import CommonBuilderWrapper from '../../../shared/lib/common-builder-wrapper';
+import '../../shared/assets/style/visible.scss';
+import blackout from '../blackout/blackout';
+import Button from '../../shared/ui/button/button';
+import { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/models';
+import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
 
 export default class RequestMessage extends CommonBuilderWrapper {
   private readonly requestMessage: HTMLElement;
@@ -49,6 +49,11 @@ export default class RequestMessage extends CommonBuilderWrapper {
 
   public logSuccess() {
     this.requestMessageText.textContent = 'You are logged in!';
+    this.basicAction();
+  }
+
+  public showWithText(context: string) {
+    this.requestMessageText.textContent = context;
     this.basicAction();
   }
 

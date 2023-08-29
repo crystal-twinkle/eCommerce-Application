@@ -7,8 +7,13 @@ import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
 import './user-profile.scss';
 import Button from '../../shared/ui/button/button';
 import { ButtonType } from '../../shared/ui/button/models';
+import flowFactory from '../../app/api-flow/flow-factory';
+import RequestMessage from '../../features/request-message/request-message';
+import checkValidator from '../../shared/lib/validate/check-validaror';
 
 export default class UserProfile extends CommonBuilderWrapper {
+  private id: string;
+  private version: number;
   constructor() {
     super();
     this.builder = new ElementBuilder({
@@ -16,8 +21,12 @@ export default class UserProfile extends CommonBuilderWrapper {
       styleClass: 'user',
     });
     eventBus.subscribe(EventBusActions.UPDATE_CUSTOMER, (data) => {
+      const updateData = data as Customer;
       if (data) {
-        this.show(data as Customer);
+        console.log(data);
+        this.id = updateData.id;
+        this.version = updateData.version;
+        this.show(updateData);
       }
     });
   }
@@ -25,11 +34,11 @@ export default class UserProfile extends CommonBuilderWrapper {
   protected show(data: Customer) {
     const userInfoElements = [
       new Input({
-        placeholder: `First name: ${data.firstName}`,
+        value: data.firstName,
         name: 'firstName',
       }).getElement(),
       new Input({
-        placeholder: `Last name: ${data.lastName}`,
+        value: data.lastName,
         name: 'lastName',
       }).getElement(),
       new Input({
@@ -40,19 +49,26 @@ export default class UserProfile extends CommonBuilderWrapper {
         .getElement(),
     ];
 
-    userInfoElements.forEach((element) => {
-      element.setAttribute('disabled', '');
-      element.classList.add('user__input');
-    });
-
     const userInfoTitle = new ElementBuilder({
       tag: 'h4',
       content: 'You Info',
     }).getElement();
+
     const editUserInfo = new Button({
       type: ButtonType.DEFAULT_COLORED,
       text: 'Edit info',
+      callback: () => {
+        if (editUserInfo.textContent === 'Edit info') {
+          editUserInfo.textContent = 'Save info';
+          this.changeInputStyle(userInfoElements);
+        } else if (userInfoElements.every((elem) => checkValidator(elem))) {
+          editUserInfo.textContent = 'Edit info';
+          this.addInputStyle(userInfoElements);
+          this.editInfo(userInfoElements);
+        }
+      },
     }).getElement();
+
     const userInfo = new ElementBuilder({
       tag: 'div',
       styleClass: 'user__info',
@@ -63,21 +79,18 @@ export default class UserProfile extends CommonBuilderWrapper {
     const shipAddressElements = [
       new Input({
         styleClass: 'user__input',
-        placeholder: `City: ${data.addresses[0].city}`,
+        value: `City: ${data.addresses[0].city}`,
         name: 'city',
       }).getElement(),
       new Input({
         styleClass: 'user__input',
-        placeholder: data.addresses[0].streetName,
+        value: data.addresses[0].streetName,
         name: 'street',
       }).getElement(),
-      new InputPostalCode({ placeholder: data.addresses[0].postalCode }).getElement(),
+      new InputPostalCode({ value: data.addresses[0].postalCode }).getElement(),
     ];
 
-    shipAddressElements.forEach((element) => {
-      element.setAttribute('disabled', '');
-      element.classList.add('user__input');
-    });
+    this.addInputStyle([...userInfoElements, ...shipAddressElements]);
 
     const shipDefault = new ElementBuilder({
       tag: 'div',
@@ -105,16 +118,14 @@ export default class UserProfile extends CommonBuilderWrapper {
       const billTitle = new ElementBuilder({ tag: 'h4', content: 'Billing Address' }).getElement();
       const billAddressElements = [
         new Input({
-          styleClass: 'user__input',
-          placeholder: data.addresses[1].city,
+          value: data.addresses[1].city,
           name: 'city',
         }).getElement(),
         new Input({
-          styleClass: 'user__input',
-          placeholder: data.addresses[1].streetName,
+          value: data.addresses[1].streetName,
           name: 'street',
         }).getElement(),
-        new InputPostalCode({ placeholder: data.addresses[1].postalCode }).getElement(),
+        new InputPostalCode({ value: data.addresses[1].postalCode }).getElement(),
       ];
 
       billAddressElements.forEach((element) => {
@@ -136,14 +147,59 @@ export default class UserProfile extends CommonBuilderWrapper {
         content: 'Set as default address',
       }).getElement();
       billDefault.append(billDefaultCheckbox, billDefaultText);
-
+      this.addInputStyle(billAddressElements);
       addresses.append([billAddress.getElement()]);
     }
+
     const editAddress = new Button({
       type: ButtonType.DEFAULT_COLORED,
       text: 'Edit address',
     }).getElement();
     addresses.append([editAddress]);
+
     this.builder.append([userInfo.getElement(), addresses.getElement()]);
+  }
+
+  private addInputStyle(elements: HTMLInputElement[]) {
+    elements.forEach((element) => {
+      element.setAttribute('disabled', '');
+      element.classList.add('user__input');
+    });
+  }
+
+  private changeInputStyle(elements: HTMLInputElement[]) {
+    elements.forEach((element) => {
+      element.classList.add('_edit');
+      element.removeAttribute('disabled');
+    });
+  }
+
+  protected async editInfo(inputs: HTMLInputElement[]) {
+    const [firstname, lastname, dob] = inputs;
+    try {
+      const result = await flowFactory.clientCredentialsFlow
+        .customers()
+        .withId({ ID: this.id })
+        .post({
+          body: {
+            version: this.version,
+            actions: [
+              {
+                action: 'setDateOfBirth',
+                dateOfBirth: dob.value,
+              },
+              { action: 'setFirstName', firstName: firstname.value },
+              { action: 'setLastName', lastName: lastname.value },
+            ],
+          },
+        })
+        .execute();
+      if (result.statusCode === 200) {
+        console.log(result);
+        new RequestMessage().showWithText('New data added');
+      }
+    } catch (e) {
+      new RequestMessage().badResult();
+    }
   }
 }

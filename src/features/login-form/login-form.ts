@@ -8,7 +8,7 @@ import InputEmail from '../../shared/ui/input/input-email';
 import checkValidator from '../../shared/lib/validate/check-validaror';
 import flowFactory from '../../app/api-flow/flow-factory';
 import store from '../../app/store';
-import RequestMessage from '../authorization/ui/request-message';
+import RequestMessage from '../request-message/request-message';
 
 export default class LoginForm extends ViewBuilder {
   constructor() {
