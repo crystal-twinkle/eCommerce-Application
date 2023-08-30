@@ -53,7 +53,7 @@ export default class UserHeaderButton extends CommonBuilderWrapper {
     this.logoutButton = new Button({
       callback: () => {
         localStorage.removeItem('token_store');
-        store.setCustomer(null);
+        store.setUser(null);
         this.logout();
         this.headerButtonClick();
       },
@@ -87,9 +87,7 @@ export default class UserHeaderButton extends CommonBuilderWrapper {
 
     this.logout();
 
-    eventBus.subscribe(EventBusActions.UPDATE_CUSTOMER, (data) =>
-      data ? this.login(data as Customer) : this.logout(),
-    );
+    eventBus.subscribe(EventBusActions.UPDATE_USER, (data) => (data ? this.login(data as Customer) : this.logout()));
   }
 
   private headerButtonClick = (): void => {

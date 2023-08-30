@@ -1,4 +1,4 @@
-import { Page } from './pages';
+import { ID_SELECTOR, Page } from './pages';
 
 export interface IRouterLink {
   path: string;
@@ -8,6 +8,12 @@ export interface IRouterLink {
 export interface IParseUrl {
   path?: string;
   resource?: string;
+}
+
+enum NavigateType {
+  DEFAULT,
+  CONTENT_LOADED,
+  BROWSER_CHANGE_EVENT,
 }
 
 export class Router {
@@ -20,22 +26,24 @@ export class Router {
     this.notFoundRouterLink = this.routes.find((item: IRouterLink) => item.path === Page.NOT_FOUND);
     this.overviewLink = this.routes.find((item: IRouterLink) => item.path === Page.OVERVIEW);
     window.addEventListener('DOMContentLoaded', () => {
-      this.navigate(this.getCurrentPath());
+      this.navigate(this.getCurrentPath(), NavigateType.CONTENT_LOADED);
     });
     window.addEventListener('popstate', this.browserChangeHandler.bind(this));
     window.addEventListener('hashchange', this.browserChangeHandler.bind(this));
   }
 
-  public navigate(url: string, browserChangeEvent?: boolean): void {
+  public navigate(url: string, browserChangeEvent: NavigateType = NavigateType.DEFAULT): void {
     const request: IParseUrl = this.parseURL(url);
-    const pathForFind = request.resource === '' ? request.path : `${request.path}/${request.resource}`;
+    const pathForFind = request.resource === '' ? request.path : `${request.path}/${ID_SELECTOR}`;
     const route =
       localStorage.getItem('token_store') && (url === Page.LOGIN || url === Page.REGISTRATION)
         ? this.overviewLink
         : this.routes.find((item) => item.path === pathForFind) || this.notFoundRouterLink;
 
-    !browserChangeEvent && window.history.pushState({}, '', route.path || '/');
-    route.callback();
+    if (browserChangeEvent === NavigateType.DEFAULT) {
+      window.history.pushState({}, '', request.resource ? `${request.path}/${request.resource}` : route.path || '/');
+    }
+    route.callback(request.resource);
   }
 
   private parseURL(url: string): IParseUrl {
@@ -46,7 +54,7 @@ export class Router {
   }
 
   private browserChangeHandler(): void {
-    this.navigate(this.getCurrentPath(), true);
+    this.navigate(this.getCurrentPath(), NavigateType.BROWSER_CHANGE_EVENT);
   }
 
   private getCurrentPath(): string {

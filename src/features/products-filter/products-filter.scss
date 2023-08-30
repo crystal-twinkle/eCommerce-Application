@@ -1,10 +1,23 @@
 .products-filter {
-  min-width: 200px;
+  width: fit-content;
+  padding-right: 16px;
 
-  &__price-title {
+  & > *:not(:last-child) {
+    margin-bottom: 8px;
+  }
+
+  &__field-title {
     margin-bottom: 4px;
   }
-  &__input {
-    width: 70px;
+
+  &__price {
+    &-input {
+      width: 45%;
+
+      &-wrapper {
+        display: flex;
+        justify-content: space-between;
+      }
+    }
   }
 }
