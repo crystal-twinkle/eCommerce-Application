@@ -23,9 +23,11 @@ $imageWidth: 575px;
     max-width: $imageWidth;
     margin: 0 5%;
     user-select: none;
+    display: flex;
   }
 
   img {
+    flex-grow: 1;
     max-width: 100%;
     object-fit: cover;
   }

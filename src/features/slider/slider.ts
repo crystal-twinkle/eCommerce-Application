@@ -62,7 +62,7 @@ export default class Slider {
     }
   }
 
-  private setContent(): void {
+  private setContent() {
     this.contentContainer.append([this.slides[this.index]]);
   }
 
