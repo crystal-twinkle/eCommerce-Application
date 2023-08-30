@@ -5,6 +5,7 @@ export interface IElementEvent {
 
 interface IElementBuilderConfig {
   tag: string;
+  id?: string;
   tagSettings?: { [id: string]: string }; // for specific tag input, button etc
   content?: string;
   styleClass?: string;
@@ -17,6 +18,9 @@ export default class ElementBuilder {
 
   constructor(config: IElementBuilderConfig) {
     this.element = document.createElement(config.tag);
+    if (config.id) {
+      this.element.id = config.id;
+    }
     this.setContent(config.content);
     this.setStyleClass(config.styleClass);
     this.setEventHandler(config.event);

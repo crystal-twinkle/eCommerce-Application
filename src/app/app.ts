@@ -1,5 +1,4 @@
-import { TokenStore } from '@commercetools/sdk-client-v2/dist/declarations/src/types/sdk';
-import flowFactory from './api-flow/flow-factory';
+import { Customer } from '@commercetools/platform-sdk';
 import OverviewPage from '../pages/overview-page';
 import Header from '../features/header/header';
 import { IRouterLink } from '../shared/lib/router/router';
@@ -13,6 +12,7 @@ import ShowcasesPage from '../pages/showcases/showcases-page';
 import Footer from '../features/footer/footer';
 import ProductsListPage from '../pages/products-list-page/products-list-page';
 import store from './store';
+import UserApi from '../entities/user-api';
 
 export default class App {
   private header: Header;
@@ -20,28 +20,17 @@ export default class App {
   private footer: Footer;
 
   constructor() {
-    this.initApi();
-
     this.header = new Header();
     this.main = new Main();
     this.footer = new Footer();
 
-    document.body.append(this.header.getElement(), this.main.getElement(), this.footer.getElement());
-  }
-
-  private initApi(): void {
-    const tokenStore: TokenStore = JSON.parse(localStorage.getItem('token_store'));
-
-    if (tokenStore?.refreshToken) {
-      flowFactory.createRefreshTokenFlow(tokenStore.refreshToken);
-      flowFactory.refreshTokenFlow
-        .me()
-        .get()
-        .execute()
-        .then((data) => store.setCustomer(data.body));
+    if (localStorage.getItem('token_store')) {
+      UserApi.getUser().then((data: Customer) => store.setUser(data));
     } else {
-      store.setCustomer(null);
+      store.setUser(null);
     }
+
+    document.body.append(this.header.getElement(), this.main.getElement(), this.footer.getElement());
   }
 
   public createRoutes(): IRouterLink[] {
@@ -59,8 +48,7 @@ export default class App {
         },
       },
       {
-        // path: `${Page.PRODUCT}/${ID_SELECTOR}`,
-        path: `${Page.PRODUCT}`,
+        path: `${Page.PRODUCTS}/${ID_SELECTOR}`,
         callback: (id: string) => {
           this.main.setContent([new ProductPage().getElement()]);
         },

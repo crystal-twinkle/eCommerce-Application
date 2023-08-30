@@ -4,9 +4,9 @@ import ElementBuilder from '../../shared/lib/element-builder';
 import ProductsFilter from '../../features/products-filter/products-filter';
 import './products-list-page.scss';
 import ProductsList from '../../features/products-list/products-list';
-import flowFactory from '../../app/api-flow/flow-factory';
 import { SortButtonCallbackValue } from '../../features/sort-bar/sort-bar.models';
 import SortBar from '../../features/sort-bar/sort-bar';
+import ProductApi from '../../entities/product-api';
 
 export default class ProductsListPage extends ViewBuilder {
   private productsFilter: ProductsFilter;
@@ -35,19 +35,13 @@ export default class ProductsListPage extends ViewBuilder {
     this.view.getElement().append(...this.configureView());
   }
 
-  public sortClick(sortValue: SortButtonCallbackValue): void {
-    console.log(sortValue);
-  }
+  public sortClick(sortValue: SortButtonCallbackValue): void {}
 
   public loadProducts(): void {
     this.productsList.showLoader(true);
-    flowFactory.refreshTokenFlow
-      .products()
-      .get()
-      .execute()
-      .then((data) => {
-        this.productsList.setProducts(data.body.results);
-        this.productsList.showLoader(false);
-      });
+    ProductApi.getProducts().then((data) => {
+      this.productsList.setProducts(data);
+      this.productsList.showLoader(false);
+    });
   }
 }

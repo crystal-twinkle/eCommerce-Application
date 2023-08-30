@@ -3,6 +3,8 @@ import ViewBuilder from '../../shared/lib/view-builder';
 import ElementBuilder from '../../shared/lib/element-builder';
 import Button from '../../shared/ui/button/button';
 import { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/models';
+import appRouter from '../../shared/lib/router/router';
+import { Page } from '../../shared/lib/router/pages';
 
 export default class WelcomeView extends ViewBuilder {
   constructor() {
@@ -52,7 +54,7 @@ export default class WelcomeView extends ViewBuilder {
       .append(welcomeImageFirst.getElement(), welcomeHeading.getElement(), welcomeText.getElement());
 
     const welcomeButton = new Button({
-      callback: () => {},
+      callback: () => appRouter.navigate(Page.PRODUCTS),
       text: 'Catalog',
       type: ButtonType.CIRCLE,
       icon: { name: 'arrow-right', position: ButtonIconPosition.RIGHT },

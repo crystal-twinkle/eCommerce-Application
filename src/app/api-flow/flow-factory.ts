@@ -6,7 +6,10 @@ import {
   HttpMiddlewareOptions,
 } from '@commercetools/sdk-client-v2';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
-import { PasswordAuthMiddlewareOptions } from '@commercetools/sdk-client-v2/dist/declarations/src/types/sdk';
+import {
+  PasswordAuthMiddlewareOptions,
+  TokenStore,
+} from '@commercetools/sdk-client-v2/dist/declarations/src/types/sdk';
 import ApiConfig from './api-config';
 import ApiTokenCache from '../token-cache';
 
@@ -26,6 +29,18 @@ export class FlowFactory {
   constructor() {
     this.apiTokenCache = new ApiTokenCache();
     this.createClientCredentialsFlow();
+  }
+
+  public getWorkingFlow(): ByProjectKeyRequestBuilder {
+    const tokenStore: TokenStore = JSON.parse(localStorage.getItem('token_store'));
+
+    if (tokenStore?.refreshToken) {
+      if (!this.refreshTokenFlow) {
+        this.createRefreshTokenFlow(tokenStore.refreshToken);
+      }
+      return this.refreshTokenFlow;
+    }
+    return this.clientCredentialsFlow;
   }
 
   public createRefreshTokenFlow = (refreshToken: string): void => {

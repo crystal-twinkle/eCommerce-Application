@@ -37,16 +37,16 @@ export default class NotFoundView extends ViewBuilder {
 
     contentContainer.getElement().append(imageFirst.getElement(), noPageText.getElement());
 
-    const overviewButton = new Button({
-      callback: () => appRouter.navigate(Page.OVERVIEW),
+    const catalogButton = new Button({
+      callback: () => appRouter.navigate(Page.PRODUCTS),
       text: 'Catalog',
       type: ButtonType.CIRCLE,
       icon: { name: 'arrow-right', position: ButtonIconPosition.RIGHT },
       size: ButtonSize.BIG,
     });
 
-    overviewButton.getElement().classList.add('button-container');
+    catalogButton.getElement().classList.add('button-container');
 
-    return [contentContainer.getElement(), imageSecond.getElement(), overviewButton.getElement()];
+    return [contentContainer.getElement(), imageSecond.getElement(), catalogButton.getElement()];
   }
 }

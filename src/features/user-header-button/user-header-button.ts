@@ -11,13 +11,18 @@ import Avatar from '../../shared/ui/avatar/avatar';
 import store from '../../app/store';
 
 export default class UserHeaderButton extends CommonBuilderWrapper {
-  private avatarButton: Button;
+  private readonly POPUP_ID = 'userHeaderButtonPopupId';
+  private readonly POPUP_WRAPPER_ID = 'userHeaderButtonPopupWrapperId';
+
+  private headerButton: Button;
   private loginButton: Button;
   private logoutButton: Button;
   private registerButton: Button;
   private user: ElementBuilder;
-  private popup: ElementBuilder;
   private avatar: Avatar;
+  private popup: ElementBuilder;
+  private popupWrapper: ElementBuilder;
+  private opened: boolean;
 
   constructor() {
     super();
@@ -26,49 +31,74 @@ export default class UserHeaderButton extends CommonBuilderWrapper {
       tag: 'div',
       styleClass: 'user-header-button',
     });
-    this.avatarButton = new Button({
-      callback: () => {},
+    this.headerButton = new Button({
+      callback: this.headerButtonClick,
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
       icon: { name: 'avatar', position: ButtonIconPosition.LEFT },
       size: ButtonSize.SMALL,
       styleClass: 'user-header-button__button',
-    });
-    this.popup = new ElementBuilder({
-      tag: 'div',
-      styleClass: 'user-header-button__popup',
     });
     this.avatar = new Avatar('default-avatar.png', () => {});
     this.user = new ElementBuilder({
       tag: 'span',
     });
     this.loginButton = new Button({
-      callback: () => appRouter.navigate(Page.LOGIN),
+      callback: () => {
+        appRouter.navigate(Page.LOGIN);
+        this.headerButtonClick();
+      },
       text: 'Login',
       type: ButtonType.DEFAULT_COLORED,
     });
     this.logoutButton = new Button({
       callback: () => {
         localStorage.removeItem('token_store');
-        store.setCustomer(null);
+        store.setUser(null);
         this.logout();
+        this.headerButtonClick();
       },
       text: 'Logout',
       type: ButtonType.DEFAULT_COLORED,
     });
     this.registerButton = new Button({
-      callback: () => appRouter.navigate(Page.REGISTRATION),
+      callback: () => {
+        appRouter.navigate(Page.REGISTRATION);
+        this.headerButtonClick();
+      },
       text: 'Registration',
       type: ButtonType.DEFAULT_COLORED,
     });
+    this.popup = new ElementBuilder({
+      id: this.POPUP_ID,
+      tag: 'div',
+      styleClass: 'user-header-button__popup',
+    });
+    this.popupWrapper = new ElementBuilder({
+      id: this.POPUP_WRAPPER_ID,
+      tag: 'div',
+      styleClass: 'user-header-button__popup-wrapper',
+      event: {
+        type: 'click',
+        callback: this.headerButtonClick,
+      },
+    });
 
-    this.builder.append([this.avatarButton.getElement(), this.popup.getElement()]);
+    this.builder.append([this.headerButton.getElement()]);
 
     this.logout();
 
-    eventBus.subscribe(EventBusActions.UPDATE_CUSTOMER, (data) =>
-      data ? this.login(data as Customer) : this.logout(),
-    );
+    eventBus.subscribe(EventBusActions.UPDATE_USER, (data) => (data ? this.login(data as Customer) : this.logout()));
   }
+
+  private headerButtonClick = (): void => {
+    this.opened = !this.opened;
+    if (this.opened) {
+      this.builder.append([this.popup.getElement(), this.popupWrapper.getElement()]);
+    } else {
+      this.builder.setContent();
+      this.builder.append([this.headerButton.getElement()]);
+    }
+  };
 
   public login = (data: Customer): void => {
     this.popup.setContent();

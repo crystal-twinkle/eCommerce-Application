@@ -1,7 +1,11 @@
 .product-list-card {
   width: 280px;
+  height: 415px;
 
-  &__price {
+  & > * {
+    &:not(:last-child) {
+      margin-bottom: 6px;
+    }
   }
 
   &__img {
@@ -10,5 +14,11 @@
   }
 
   &__description {
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 }
