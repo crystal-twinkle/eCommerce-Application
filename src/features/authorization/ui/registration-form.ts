@@ -14,7 +14,8 @@ import InputEmail from '../../../shared/ui/input/input-email';
 import flowFactory from '../../../app/api-flow/flow-factory';
 import store from '../../../app/store';
 import RequestMessage from '../../request-message/request-message';
-import { Mutable } from '../../../shared/lib/mutable';
+import { Mutable } from '../../../shared/const/mutable';
+import { IResultsCheckbox } from '../../../shared/const/results-checkbox';
 
 export default class RegistrationFormView extends ViewBuilder {
   constructor() {
@@ -26,10 +27,10 @@ export default class RegistrationFormView extends ViewBuilder {
     const emailReg = emailRegClass.getElement();
     const passwordReg = new PasswordInput();
 
-    const resultsCheckbox: { billDefaultCheck: boolean; shipDefaultCheck: boolean; shipAsBillCheck: boolean } = {
-      shipDefaultCheck: false,
-      shipAsBillCheck: true,
-      billDefaultCheck: false,
+    const resultsCheckbox: IResultsCheckbox = {
+      shipDefault: false,
+      shipAsBill: true,
+      billDefault: false,
     };
 
     const firstName = new Input({
@@ -123,7 +124,7 @@ export default class RegistrationFormView extends ViewBuilder {
     }).getElement();
 
     shipDefaultCheckbox.addEventListener('change', () => {
-      resultsCheckbox.shipDefaultCheck = shipDefaultCheckbox.checked;
+      resultsCheckbox.shipDefault = shipDefaultCheckbox.checked;
     });
 
     shipAsBillCheckbox.addEventListener('change', () => {
@@ -132,11 +133,11 @@ export default class RegistrationFormView extends ViewBuilder {
       } else {
         billAddress.style.display = 'flex';
       }
-      resultsCheckbox.shipAsBillCheck = shipAsBillCheckbox.checked;
+      resultsCheckbox.shipAsBill = shipAsBillCheckbox.checked;
     });
 
     billDefaultCheckbox.addEventListener('change', () => {
-      resultsCheckbox.billDefaultCheck = billDefaultCheckbox.checked;
+      resultsCheckbox.billDefault = billDefaultCheckbox.checked;
     });
 
     const registrationForm = new Form({
@@ -166,7 +167,7 @@ export default class RegistrationFormView extends ViewBuilder {
           shipPCode,
           dob,
         ].every((elem) => checkValidator(elem));
-        if (!resultsCheckbox.shipAsBillCheck) {
+        if (!resultsCheckbox.shipAsBill) {
           checkValid = [billCity, billStreet, billPCode].every((elem) => checkValidator(elem));
         }
 
@@ -194,7 +195,7 @@ export default class RegistrationFormView extends ViewBuilder {
               billingAddresses: [],
             };
 
-            if (!resultsCheckbox.shipAsBillCheck) {
+            if (!resultsCheckbox.shipAsBill) {
               customerParams.billingAddresses.push(1);
               customerParams.addresses.push({
                 email: emailReg.value,
@@ -207,16 +208,16 @@ export default class RegistrationFormView extends ViewBuilder {
               });
             }
 
-            if (resultsCheckbox.shipDefaultCheck) {
+            if (resultsCheckbox.shipDefault) {
               customerParams.defaultShippingAddress = 0;
             }
-            if (resultsCheckbox.shipDefaultCheck && resultsCheckbox.shipAsBillCheck) {
+            if (resultsCheckbox.shipDefault && resultsCheckbox.shipAsBill) {
               customerParams.defaultShippingAddress = 0;
               customerParams.billingAddresses.push(0);
               customerParams.defaultBillingAddress = 0;
             }
 
-            if (resultsCheckbox.billDefaultCheck && !resultsCheckbox.shipAsBillCheck) {
+            if (resultsCheckbox.billDefault && !resultsCheckbox.shipAsBill) {
               customerParams.defaultBillingAddress = 1;
             }
 

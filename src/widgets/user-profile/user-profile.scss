@@ -4,18 +4,18 @@
 .user {
   @extend %flex-column;
   margin: 20px auto;
-  width: 228px;
-
+  width: 40%;
+  @media (max-width: 500px) {
+    width: 80%;
+  }
   &__info,
   &__address {
     @extend %flex-column;
-    margin-bottom: 20px;
+    margin: 15px 0;
     gap: 20px;
   }
 
-  &__input {
-    border-bottom: 2px solid #000000;
-
+  & .input {
     &[value] {
       color: #2465b0;
       font-size: 20px;
@@ -32,8 +32,25 @@
   }
 
   &__addresses {
+    width: 100%;
     margin: 50px auto;
     @extend %flex-column;
+
+    &._modal {
+      display: none;
+      align-items: center;
+      padding: 10px;
+      position: fixed;
+      width: 50%;
+      top: 50%;
+      left: 50%;
+      z-index: 5;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      border-radius: 30px;
+      border: 1px solid #0a0909;
+      background: $primary;
+    }
   }
 
   h4 {
