@@ -29,11 +29,11 @@ export default class UserProfile extends CommonBuilderWrapper {
   private readonly editAddressButton: HTMLElement;
   private readonly addAddressButton: HTMLElement;
   private readonly changePasswordButton: HTMLElement;
+  private readonly actionsAddress: CustomerUpdateAction[];
   private callbackEditAddress: () => void;
   private callbackAddAddress: () => void;
   private addresses: ElementBuilder;
   private data: Customer;
-  private actionsAddress: CustomerUpdateAction[];
   private checkboxes: { call: (parameter: string, content: string) => HTMLElement };
   private modalInfo: ElementBuilder;
   private currentPassword: PasswordInput | undefined;
@@ -254,10 +254,10 @@ export default class UserProfile extends CommonBuilderWrapper {
           size: ButtonSize.SMALL,
           callback: () => {
             if (this.resultsCheckbox.shipUse && shipAddressElems.every((elem) => checkValidator(elem))) {
-              this.addNewAddress(shipAddressElems);
+              this.addNewAddress(shipAddressElems, 'shipUse');
             }
             if (this.resultsCheckbox.billUse && billAddressElems.every((elem) => checkValidator(elem))) {
-              this.addNewAddress(billAddressElems);
+              this.addNewAddress(billAddressElems, 'billUse');
             }
             if (!this.resultsCheckbox.billUse && !this.resultsCheckbox.shipUse) {
               blackout.classList.remove('blackout_show');
@@ -270,12 +270,11 @@ export default class UserProfile extends CommonBuilderWrapper {
           elementsAdded = true;
         }
       };
-      this.addAddressButton.style.margin = '10px 0';
       this.editAddressButton.before(this.addAddressButton);
     }
   }
 
-  protected addNewAddress(inputElems: HTMLInputElement[]) {
+  protected addNewAddress(inputElems: HTMLInputElement[], whatUse: string) {
     this.modalInfo.getElement().classList.add('hidden');
     const countryDropdownText: string = countryDropdown?.getSelectedItem()?.content;
     const [cityInput, streetInput, postalCodeInput] = inputElems;
@@ -296,12 +295,13 @@ export default class UserProfile extends CommonBuilderWrapper {
       action: 'addAddress',
       address: { country: countryDropdownText, city, streetName, postalCode, key: addressKey },
     });
-    if (this.resultsCheckbox.shipUse) {
+    if (whatUse === 'shipUse') {
       this.actionsAddress.push({ action: 'addShippingAddressId', addressKey });
     }
-    if (this.resultsCheckbox.billUse) {
+    if (whatUse === 'billUse') {
       this.actionsAddress.push({ action: 'addBillingAddressId', addressKey });
     }
+    console.log(this.actionsAddress);
   }
 
   protected async editInfo(inputs: HTMLInputElement[]) {
