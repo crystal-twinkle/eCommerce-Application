@@ -13,7 +13,6 @@ import ShowcasesPage from '../pages/showcases/showcases-page';
 import Footer from '../features/footer/footer';
 import ProductsListPage from '../pages/products-list-page/products-list-page';
 import store from './store';
-import UserPage from '../pages/user-page';
 
 export default class App {
   private header: Header;
@@ -21,28 +20,17 @@ export default class App {
   private footer: Footer;
 
   constructor() {
-    this.initApi();
-
     this.header = new Header();
     this.main = new Main();
     this.footer = new Footer();
 
-    document.body.append(this.header.getElement(), this.main.getElement(), this.footer.getElement());
-  }
-
-  private initApi(): void {
-    const tokenStore: TokenStore = JSON.parse(localStorage.getItem('token_store'));
-
-    if (tokenStore?.refreshToken) {
-      flowFactory.createRefreshTokenFlow(tokenStore.refreshToken);
-      flowFactory.refreshTokenFlow
-        .me()
-        .get()
-        .execute()
-        .then((data) => store.setCustomer(data.body));
+    if (localStorage.getItem('token_store')) {
+      UserApi.getUser().then((data: Customer) => store.setUser(data));
     } else {
-      store.setCustomer(null);
+      store.setUser(null);
     }
+
+    document.body.append(this.header.getElement(), this.main.getElement(), this.footer.getElement());
   }
 
   public createRoutes(): IRouterLink[] {

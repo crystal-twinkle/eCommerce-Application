@@ -239,7 +239,7 @@ export default class RegistrationFormView extends ViewBuilder {
                 })
                 .execute();
               new RequestMessage().createSuccess();
-              store.setCustomer(loginResult.body.customer);
+              store.setUser(loginResult.body.customer);
               appRouter.navigate(Page.OVERVIEW);
             }
           } catch (e) {

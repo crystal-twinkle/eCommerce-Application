@@ -53,7 +53,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
     const detailsButton = new Button({
       type: ButtonType.DEFAULT,
       text: 'Details',
-      callback: () => appRouter.navigate(`${Page.PRODUCTS}/${ID_SELECTOR}`),
+      callback: () => appRouter.navigate(`${Page.PRODUCTS}/${data.id}`),
     });
 
     const info = new ElementBuilder({

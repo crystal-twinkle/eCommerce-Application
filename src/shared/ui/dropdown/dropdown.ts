@@ -32,7 +32,7 @@ export default class Dropdown extends CommonBuilderWrapper {
   constructor(config: IDropdownConfig) {
     super();
     this.items = config.items;
-    this.selectedItem = config.selectedItemIndex ? this.items[0] : null;
+    this.selectedItem = typeof config.selectedItemIndex === 'number' ? this.items[config.selectedItemIndex] : null;
 
     this.builder = new ElementBuilder({
       tag: 'div',
@@ -49,7 +49,7 @@ export default class Dropdown extends CommonBuilderWrapper {
     this.textBuilder = new ElementBuilder({
       tag: 'span',
       styleClass: 'dropdown-empty',
-      content: this.selectedItem?.content || config.placeholder || 'Select country',
+      content: this.selectedItem?.content || config.placeholder,
     });
     this.arrowBuilder = new ElementBuilder({
       tag: 'span',

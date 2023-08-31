@@ -40,7 +40,7 @@ export default class LoginForm extends ViewBuilder {
               .login()
               .post({ body: { email: emailLogin.getElement().value, password: passwordLogin.value } })
               .execute();
-            store.setCustomer(result.body.customer);
+            store.setUser(result.body.customer);
 
             new RequestMessage().logSuccess();
             appRouter.navigate(Page.OVERVIEW);

@@ -5,6 +5,7 @@
   display: inline;
 
   &__popup {
+    width: max-content;
     z-index: 10;
     overflow: auto;
     display: flex;
@@ -18,6 +19,17 @@
     transition: opacity 0.2s linear;
     opacity: 1;
     padding: 20px 20px;
+
+    &-button {
+      width: 100%;
+      color: $black-1;
+      fill: $gray-1;
+      stroke: $gray-1;
+
+      & > span {
+        justify-content: flex-start;
+      }
+    }
 
     & > *:not(:last-child) {
       margin-bottom: 6px;
