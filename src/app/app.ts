@@ -1,5 +1,4 @@
-import { TokenStore } from '@commercetools/sdk-client-v2/dist/declarations/src/types/sdk';
-import flowFactory from './api-flow/flow-factory';
+import { Customer } from '@commercetools/platform-sdk';
 import OverviewPage from '../pages/overview-page';
 import Header from '../features/header/header';
 import { IRouterLink } from '../shared/lib/router/router';
@@ -7,12 +6,14 @@ import { ID_SELECTOR, Page } from '../shared/lib/router/pages';
 import NotFoundPage from '../pages/not-found-page';
 import LoginPage from '../pages/login-page';
 import ProductPage from '../pages/product-page';
+import UserPage from '../pages/user-page';
 import Main from '../features/main/main';
 import RegisterPage from '../pages/register-page';
 import ShowcasesPage from '../pages/showcases/showcases-page';
 import Footer from '../features/footer/footer';
 import ProductsListPage from '../pages/products-list-page/products-list-page';
 import store from './store';
+import UserApi from '../entities/user-api';
 
 export default class App {
   private header: Header;

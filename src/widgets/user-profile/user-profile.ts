@@ -81,7 +81,7 @@ export default class UserProfile extends CommonBuilderWrapper {
       styleClass: 'hidden modal',
     });
 
-    eventBus.subscribe(EventBusActions.UPDATE_CUSTOMER, (data) => {
+    eventBus.subscribe(EventBusActions.UPDATE_USER, (data) => {
       const updateData = data as Customer;
       if (data) {
         this.data = updateData;
@@ -327,7 +327,7 @@ export default class UserProfile extends CommonBuilderWrapper {
         .execute();
       if (result.statusCode === 200) {
         appRouter.navigate(Page.USER_PROFILE);
-        store.setCustomer(result.body);
+        store.setUser(result.body);
         new RequestMessage().showWithText('New data added');
       }
     } catch (e) {
@@ -365,7 +365,7 @@ export default class UserProfile extends CommonBuilderWrapper {
       if (result.statusCode === 200) {
         new RequestMessage().showWithText('New data added');
         appRouter.navigate(Page.USER_PROFILE);
-        store.setCustomer(result.body);
+        store.setUser(result.body);
       }
     } catch (e) {
       new RequestMessage().badResult();
@@ -401,7 +401,7 @@ export default class UserProfile extends CommonBuilderWrapper {
         if (result.statusCode === 200) {
           new RequestMessage().showWithText('New data added');
           appRouter.navigate(Page.USER_PROFILE);
-          store.setCustomer(result.body);
+          store.setUser(result.body);
         }
       } catch (e) {
         new RequestMessage().showWithText('The given current password does not match.');
