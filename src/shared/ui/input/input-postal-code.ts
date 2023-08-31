@@ -1,5 +1,5 @@
 import Input from './input';
-import countryDropdown from '../../../features/authorization/ui/country-dropdown';
+import countryDropdown from '../../../features/authorization/country-dropdown';
 
 export default class InputPostalCode extends Input {
   constructor(config?: { placeholder?: string; value?: string }) {

@@ -1,9 +1,9 @@
-import LoginForm from '../features/login-form/login-form';
+import LoginForm from '../features/authorization/login-form';
 import ViewBuilder from '../shared/lib/view-builder';
 
 export default class LoginPage extends ViewBuilder {
   constructor() {
-    super('page login-page');
+    super('page form-page');
   }
 
   public configureView(): HTMLElement[] {

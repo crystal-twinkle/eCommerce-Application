@@ -1,24 +1,26 @@
 import { CustomerUpdateAction } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/customer';
 import { Customer } from '@commercetools/platform-sdk';
+import '../../shared/assets/style/hidden.scss';
+import './user-profile.scss';
 import ElementBuilder from '../../shared/lib/element-builder';
 import Input from '../../shared/ui/input/input';
 import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
 import addAddress from '../../shared/lib/add-address';
 import addCheckbox from '../../shared/lib/add-checkbox';
 import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
-import './user-profile.scss';
 import Button from '../../shared/ui/button/button';
 import { ButtonSize, ButtonType } from '../../shared/ui/button/models';
 import flowFactory from '../../app/api-flow/flow-factory';
 import RequestMessage from '../../features/request-message/request-message';
 import checkValidator from '../../shared/lib/validate/check-validaror';
 import { IResultsCheckbox } from '../../shared/const/results-checkbox';
-import countryDropdown from '../../features/authorization/ui/country-dropdown';
+import countryDropdown from '../../features/authorization/country-dropdown';
 import store from '../../app/store';
 import blackout from '../../features/blackout/blackout';
-import '../../shared/assets/style/visible.scss';
 import appRouter from '../../shared/lib/router/router';
 import { Page } from '../../shared/lib/router/pages';
+import PasswordInput from '../../shared/ui/input/input-password';
+import Form from '../../shared/ui/form/form';
 
 export default class UserProfile extends CommonBuilderWrapper {
   private id: string;
@@ -26,12 +28,16 @@ export default class UserProfile extends CommonBuilderWrapper {
   private readonly resultsCheckbox: IResultsCheckbox;
   private readonly editAddressButton: HTMLElement;
   private readonly addAddressButton: HTMLElement;
+  private readonly changePasswordButton: HTMLElement;
   private callbackEditAddress: () => void;
   private callbackAddAddress: () => void;
   private addresses: ElementBuilder;
   private data: Customer;
   private actionsAddress: CustomerUpdateAction[];
   private checkboxes: { call: (parameter: string, content: string) => HTMLElement };
+  private modalInfo: ElementBuilder;
+  private currentPassword: PasswordInput | undefined;
+  private newPassword: PasswordInput | undefined;
 
   constructor() {
     super();
@@ -61,10 +67,18 @@ export default class UserProfile extends CommonBuilderWrapper {
       text: 'Add address',
       callback: () => this.callbackAddAddress(),
     }).getElement();
-
+    this.changePasswordButton = new Button({
+      type: ButtonType.DEFAULT_COLORED,
+      text: 'Change password',
+      callback: () => this.callbackChangePassword(),
+    }).getElement();
     this.addresses = new ElementBuilder({
       tag: 'div',
       styleClass: 'user__addresses',
+    });
+    this.modalInfo = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'hidden modal',
     });
 
     eventBus.subscribe(EventBusActions.UPDATE_CUSTOMER, (data) => {
@@ -171,7 +185,12 @@ export default class UserProfile extends CommonBuilderWrapper {
     };
 
     this.addresses.append([this.editAddressButton]);
-    this.builder.append([userInfo.getElement(), this.addresses.getElement()]);
+    this.builder.append([
+      userInfo.getElement(),
+      this.addresses.getElement(),
+      this.changePasswordButton,
+      this.modalInfo.getElement(),
+    ]);
   }
 
   private addInputStyle(elements: HTMLInputElement[]) {
@@ -206,10 +225,6 @@ export default class UserProfile extends CommonBuilderWrapper {
     this.addresses.prepend([countryDropdown.getElement()]);
     const shipAddressElems: HTMLInputElement[] = [];
     const billAddressElems: HTMLInputElement[] = [];
-    const modalAddress = new ElementBuilder({
-      tag: 'div',
-      styleClass: 'user__addresses _modal',
-    });
     let elementsAdded = false;
     if (!userShipAddressExist || !userBillAddressExist) {
       this.callbackAddAddress = () => {
@@ -231,6 +246,7 @@ export default class UserProfile extends CommonBuilderWrapper {
           this.changeInputStyle(billAddressElems);
           modalBillAddress.append([this.checkboxes.call('billUse', 'Add billing address')]);
         }
+        this.modalInfo.getElement().classList.remove('hidden');
         blackout.classList.add('blackout_show');
         const modalOk = new Button({
           type: ButtonType.CIRCLE_COLORED,
@@ -239,31 +255,28 @@ export default class UserProfile extends CommonBuilderWrapper {
           callback: () => {
             if (this.resultsCheckbox.shipUse && shipAddressElems.every((elem) => checkValidator(elem))) {
               this.addNewAddress(shipAddressElems);
-              modalAddress.getElement().style.display = 'none';
             }
             if (this.resultsCheckbox.billUse && billAddressElems.every((elem) => checkValidator(elem))) {
               this.addNewAddress(billAddressElems);
-              modalAddress.getElement().style.display = 'none';
             }
             if (!this.resultsCheckbox.billUse && !this.resultsCheckbox.shipUse) {
               blackout.classList.remove('blackout_show');
-              modalAddress.getElement().style.display = 'none';
+              this.modalInfo.getElement().classList.add('hidden');
             }
           },
         });
         if (!elementsAdded) {
-          modalAddress.append([modalShipAddress.getElement(), modalBillAddress.getElement(), modalOk.getElement()]);
+          this.modalInfo.append([modalShipAddress.getElement(), modalBillAddress.getElement(), modalOk.getElement()]);
           elementsAdded = true;
         }
-        modalAddress.getElement().style.display = 'flex';
       };
       this.addAddressButton.style.margin = '10px 0';
       this.editAddressButton.before(this.addAddressButton);
     }
-    this.builder.append([modalAddress.getElement()]);
   }
 
   protected addNewAddress(inputElems: HTMLInputElement[]) {
+    this.modalInfo.getElement().classList.add('hidden');
     const countryDropdownText: string = countryDropdown?.getSelectedItem()?.content;
     const [cityInput, streetInput, postalCodeInput] = inputElems;
     const generateRandomKey = () => {
@@ -356,6 +369,43 @@ export default class UserProfile extends CommonBuilderWrapper {
       }
     } catch (e) {
       new RequestMessage().badResult();
+    }
+  }
+
+  private async callbackChangePassword() {
+    if (this.changePasswordButton.textContent === 'Change password') {
+      this.currentPassword = new PasswordInput('Current password');
+      this.newPassword = new PasswordInput('New password');
+      const userInfoPassword = new Form({
+        title: 'Change password :)',
+        fields: [this.currentPassword.getElement(), this.newPassword.getElement()],
+      });
+      this.changePasswordButton.before(userInfoPassword.getElement());
+      this.changePasswordButton.textContent = 'Save new password';
+    } else if ([this.currentPassword?.getElement(), this.newPassword?.getElement()].every((e) => checkValidator(e))) {
+      try {
+        console.log(1);
+        const result = await flowFactory.clientCredentialsFlow
+          .customers()
+          .password()
+          .post({
+            body: {
+              id: this.id,
+              version: this.version,
+              currentPassword: this.currentPassword?.getElement().value,
+              newPassword: this.newPassword?.getElement().value,
+            },
+          })
+          .execute();
+
+        if (result.statusCode === 200) {
+          new RequestMessage().showWithText('New data added');
+          appRouter.navigate(Page.USER_PROFILE);
+          store.setCustomer(result.body);
+        }
+      } catch (e) {
+        new RequestMessage().showWithText('The given current password does not match.');
+      }
     }
   }
 }

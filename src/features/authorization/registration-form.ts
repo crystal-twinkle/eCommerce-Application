@@ -1,21 +1,20 @@
 import { CustomerDraft } from '@commercetools/platform-sdk';
-import Input from '../../../shared/ui/input/input';
-import PasswordInput from '../../../shared/ui/input/input-password';
+import Input from '../../shared/ui/input/input';
+import PasswordInput from '../../shared/ui/input/input-password';
 import countryDropdown from './country-dropdown';
-import Form from '../../../shared/ui/form/form';
-import './tooltip.scss';
-import ViewBuilder from '../../../shared/lib/view-builder';
-import InputPostalCode from '../../../shared/ui/input/input-postal-code';
-import ElementBuilder from '../../../shared/lib/element-builder';
-import checkValidator from '../../../shared/lib/validate/check-validaror';
-import appRouter from '../../../shared/lib/router/router';
-import { Page } from '../../../shared/lib/router/pages';
-import InputEmail from '../../../shared/ui/input/input-email';
-import flowFactory from '../../../app/api-flow/flow-factory';
-import store from '../../../app/store';
-import RequestMessage from '../../request-message/request-message';
-import { Mutable } from '../../../shared/const/mutable';
-import { IResultsCheckbox } from '../../../shared/const/results-checkbox';
+import Form from '../../shared/ui/form/form';
+import ViewBuilder from '../../shared/lib/view-builder';
+import InputPostalCode from '../../shared/ui/input/input-postal-code';
+import ElementBuilder from '../../shared/lib/element-builder';
+import checkValidator from '../../shared/lib/validate/check-validaror';
+import appRouter from '../../shared/lib/router/router';
+import { Page } from '../../shared/lib/router/pages';
+import InputEmail from '../../shared/ui/input/input-email';
+import flowFactory from '../../app/api-flow/flow-factory';
+import store from '../../app/store';
+import RequestMessage from '../request-message/request-message';
+import { Mutable } from '../../shared/const/mutable';
+import { IResultsCheckbox } from '../../shared/const/results-checkbox';
 
 export default class RegistrationFormView extends ViewBuilder {
   constructor() {
@@ -250,8 +249,6 @@ export default class RegistrationFormView extends ViewBuilder {
         }
       },
     });
-
-    passwordReg.addShowButton();
 
     return [registrationForm.getElement()];
   }

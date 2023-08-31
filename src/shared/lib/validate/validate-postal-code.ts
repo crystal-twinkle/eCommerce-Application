@@ -1,4 +1,4 @@
-import countryDropdown from '../../../features/authorization/ui/country-dropdown';
+import countryDropdown from '../../../features/authorization/country-dropdown';
 
 const postalCodeMap: Map<string, RegExp> = new Map<string, RegExp>([
   ['US', /^\d{5}(-\d{4})?$/],
