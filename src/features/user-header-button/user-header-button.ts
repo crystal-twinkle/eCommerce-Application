@@ -7,7 +7,6 @@ import { Page } from '../../shared/lib/router/pages';
 import appRouter from '../../shared/lib/router/router';
 import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
 import { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/models';
-import Avatar from '../../shared/ui/avatar/avatar';
 import store from '../../app/store';
 
 export default class UserHeaderButton extends CommonBuilderWrapper {
@@ -18,8 +17,8 @@ export default class UserHeaderButton extends CommonBuilderWrapper {
   private loginButton: Button;
   private logoutButton: Button;
   private registerButton: Button;
+  private privateAccountButton: Button;
   private user: ElementBuilder;
-  private avatar: Avatar;
   private popup: ElementBuilder;
   private popupWrapper: ElementBuilder;
   private opened: boolean;
@@ -38,7 +37,6 @@ export default class UserHeaderButton extends CommonBuilderWrapper {
       size: ButtonSize.SMALL,
       styleClass: 'user-header-button__button',
     });
-    this.avatar = new Avatar('default-avatar.png', () => {});
     this.user = new ElementBuilder({
       tag: 'span',
     });
@@ -57,8 +55,13 @@ export default class UserHeaderButton extends CommonBuilderWrapper {
         this.logout();
         this.headerButtonClick();
       },
+      styleClass: 'user-header-button__popup-button',
       text: 'Logout',
-      type: ButtonType.DEFAULT_COLORED,
+      icon: {
+        name: 'exit',
+        position: ButtonIconPosition.LEFT,
+      },
+      type: ButtonType.DEFAULT_WITHOUT_BORDER,
     });
     this.registerButton = new Button({
       callback: () => {
@@ -68,13 +71,25 @@ export default class UserHeaderButton extends CommonBuilderWrapper {
       text: 'Registration',
       type: ButtonType.DEFAULT_COLORED,
     });
+    this.privateAccountButton = new Button({
+      callback: () => {
+        // appRouter.navigate(Page.REGISTRATION);
+        this.headerButtonClick();
+      },
+      styleClass: 'user-header-button__popup-button',
+      icon: {
+        name: 'avatar',
+        position: ButtonIconPosition.LEFT,
+      },
+      text: 'Private Account',
+      type: ButtonType.DEFAULT_WITHOUT_BORDER,
+    });
+
     this.popup = new ElementBuilder({
-      id: this.POPUP_ID,
       tag: 'div',
       styleClass: 'user-header-button__popup',
     });
     this.popupWrapper = new ElementBuilder({
-      id: this.POPUP_WRAPPER_ID,
       tag: 'div',
       styleClass: 'user-header-button__popup-wrapper',
       event: {
@@ -103,13 +118,11 @@ export default class UserHeaderButton extends CommonBuilderWrapper {
   public login = (data: Customer): void => {
     this.popup.setContent();
     this.user.setContent(data.firstName);
-    this.popup.append([this.avatar.getElement(), this.user.getElement(), this.logoutButton.getElement()]);
+    this.popup.append([this.user.getElement(), this.privateAccountButton.getElement(), this.logoutButton.getElement()]);
   };
 
   public logout = (): void => {
     this.popup.setContent();
-
-    this.avatar = new Avatar('default-avatar.png', () => {});
-    this.popup.append([this.avatar.getElement(), this.loginButton.getElement(), this.registerButton.getElement()]);
+    this.popup.append([this.loginButton.getElement(), this.registerButton.getElement()]);
   };
 }
