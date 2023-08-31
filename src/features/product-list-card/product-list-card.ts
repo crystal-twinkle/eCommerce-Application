@@ -27,12 +27,12 @@ export default class ProductListCard extends CommonBuilderWrapper {
     const price = new ElementBuilder({
       tag: 'div',
       styleClass: 'product-list-card__price',
-      content: '20$',
+      content: `${data.masterData.current.masterVariant.prices[0]?.value?.centAmount || '2000'}$`,
     });
     const description = new ElementBuilder({
       tag: 'span',
       styleClass: 'product-list-card__description',
-      content: data.masterData.current.description?.['en-US'],
+      content: data.masterData.current.name?.['en-US'],
     });
     const likeButton = new Button({
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
@@ -69,9 +69,9 @@ export default class ProductListCard extends CommonBuilderWrapper {
     });
 
     infoButtons.append([likeButton.getElement(), toCartButton.getElement()]);
-    info.append([description.getElement(), infoButtons.getElement()]);
+    info.append([infoButtons.getElement(), price.getElement()]);
     details.append([detailsButton.getElement()]);
-
-    this.builder.append([img.getElement(), price.getElement(), info.getElement(), details.getElement()]);
+    this.builder.prepend([description.getElement()]);
+    this.builder.append([img.getElement(), info.getElement(), details.getElement()]);
   }
 }

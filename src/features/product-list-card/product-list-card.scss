@@ -1,6 +1,6 @@
 .product-list-card {
   width: 280px;
-  height: 415px;
+  margin-top: 10px;
 
   & > * {
     &:not(:last-child) {
@@ -14,6 +14,7 @@
   }
 
   &__description {
+    font-size: 20px;
   }
 
   &__row {
