@@ -9,6 +9,20 @@ class Store {
     this.user = newData;
     eventBus.publish(EventBusActions.UPDATE_USER, this.user);
   };
+
+  public setCategory = (value: string): void => {
+    eventBus.publish(EventBusActions.SORT_CATALOG, value);
+  };
+
+  public setSearch = (value: string): void => {
+    eventBus.publish(EventBusActions.SEARCH_PRODUCT, value);
+  };
+  public setSortPrice = (arrow: string): void => {
+    eventBus.publish(EventBusActions.SORT_BY_PRICE, arrow);
+  };
+  public setSortAlphabet = (arrow: string): void => {
+    eventBus.publish(EventBusActions.SORT_BY_ALPHABET, arrow);
+  };
 }
 
 const store = new Store();
