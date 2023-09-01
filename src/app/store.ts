@@ -17,6 +17,9 @@ class Store {
   public setSearch = (value: string): void => {
     eventBus.publish(EventBusActions.SEARCH_PRODUCT, value);
   };
+  public setSortPrice = (arrow: string): void => {
+    eventBus.publish(EventBusActions.SORT_BY_PRICE, arrow);
+  };
 }
 
 const store = new Store();

@@ -4,6 +4,7 @@ export enum EventBusActions {
   UPDATE_USER = 'update-user',
   SORT_CATALOG = 'sort-catalog',
   SEARCH_PRODUCT = 'search-product',
+  SORT_BY_PRICE = 'search-by-price',
 }
 
 class EventBus {

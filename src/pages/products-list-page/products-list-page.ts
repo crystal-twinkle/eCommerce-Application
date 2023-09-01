@@ -14,6 +14,7 @@ export default class ProductsListPage extends ViewBuilder {
   private productsFilter: ProductsFilter;
   private productsList: ProductsList;
   private filterData: Product[];
+  private data: Product[];
 
   constructor() {
     super('page main-page');
@@ -22,8 +23,10 @@ export default class ProductsListPage extends ViewBuilder {
       this.searchByDropdown(categoryName as string);
     });
     eventBus.subscribe(EventBusActions.SEARCH_PRODUCT, (value) => {
-      console.log(value);
       this.searchByProduct(value as string);
+    });
+    eventBus.subscribe(EventBusActions.SORT_BY_PRICE, (value) => {
+      this.sortByPrice(value as string);
     });
   }
 
@@ -48,15 +51,13 @@ export default class ProductsListPage extends ViewBuilder {
   public sortClick(sortValue: SortButtonCallbackValue): void {}
 
   protected searchByDropdown(value: string): void {
-    ProductApi.getProducts().then((data: Product[]) => {
-      this.filterData = data.filter((e) => {
-        return e.masterData.current.name?.['en-US'].includes(value);
-      });
-      if (!this.filterData.length) {
-        this.filterData = data;
-      }
-      this.productsList.setProducts(this.filterData);
+    this.filterData = this.data.filter((e) => {
+      return e.masterData.current.name?.['en-US'].includes(value);
     });
+    if (!this.filterData.length) {
+      this.filterData = this.data;
+    }
+    this.productsList.setProducts(this.filterData);
   }
 
   protected searchByProduct(value: string): void {
@@ -66,9 +67,23 @@ export default class ProductsListPage extends ViewBuilder {
     this.productsList.setProducts(this.filterData);
   }
 
+  protected sortByPrice(value: string) {
+    const getPrice = (item: Product) => item.masterData.current.masterVariant.prices[0]?.value?.centAmount || 0;
+    if (value === '↓') {
+      // Сортировка по убыванию цены
+      this.filterData.sort((a, b) => getPrice(b) - getPrice(a));
+    }
+    if (value === '↑') {
+      // Сортировка по возрастанию цены
+      this.filterData.sort((a, b) => getPrice(a) - getPrice(b));
+    }
+    this.productsList.setProducts(this.filterData);
+  }
+
   public loadProducts(): void {
     this.productsList.showLoader(true);
     ProductApi.getProducts().then((data: Product[]) => {
+      this.data = data;
       this.filterData = data;
       this.productsList.setProducts(data);
       this.productsList.showLoader(false);
