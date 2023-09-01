@@ -13,14 +13,13 @@ interface FormConfig {
   title: string;
   id?: string;
   fields: HTMLElement[];
-  buttons: FormButton[];
-  callback: (event: Event) => void;
+  buttons?: FormButton[];
+  callback?: (event: Event) => void;
 }
 
 export default class Form extends CommonBuilderWrapper {
   constructor(config: FormConfig) {
     super();
-
     this.builder = new ElementBuilder({
       tag: 'form',
       styleClass: 'form',
@@ -43,30 +42,31 @@ export default class Form extends CommonBuilderWrapper {
     }).getElement();
     fieldsContainer.prepend(...config.fields);
     this.builder.prepend([titleForm, fieldsContainer, btnContainer]);
-    config.buttons.forEach((button: FormButton) => {
-      let createButton: HTMLElement;
-      if (button.text === 'Submit') {
-        createButton = new Button({
-          callback: button.callback,
-          text: button.text,
-          type: ButtonType.DEFAULT_COLORED,
-          icon: {
-            name: 'arrow-right',
-            position: ButtonIconPosition.RIGHT,
-          },
-        }).getElement();
-        createButton.setAttribute('type', 'submit');
-      } else {
-        createButton = new Button({
-          callback: button.callback,
-          text: button.text,
-          type: ButtonType.DEFAULT,
-        }).getElement();
-        createButton.setAttribute('type', 'button');
-      }
-      createButton.classList.add('form__btn');
-      btnContainer.append(createButton);
-    });
+    config.buttons &&
+      config.buttons.forEach((button: FormButton) => {
+        let createButton: HTMLElement;
+        if (button.text === 'Submit') {
+          createButton = new Button({
+            callback: button.callback,
+            text: button.text,
+            type: ButtonType.DEFAULT_COLORED,
+            icon: {
+              name: 'arrow-right',
+              position: ButtonIconPosition.RIGHT,
+            },
+          }).getElement();
+          createButton.setAttribute('type', 'submit');
+        } else {
+          createButton = new Button({
+            callback: button.callback,
+            text: button.text,
+            type: ButtonType.DEFAULT,
+          }).getElement();
+          createButton.setAttribute('type', 'button');
+        }
+        createButton.classList.add('form__btn');
+        btnContainer.append(createButton);
+      });
     this.builder.setEventHandler({ type: 'submit', callback: config.callback });
   }
 }

@@ -3,12 +3,11 @@ import ViewBuilder from '../../shared/lib/view-builder';
 import PasswordInput from '../../shared/ui/input/input-password';
 import appRouter from '../../shared/lib/router/router';
 import { Page } from '../../shared/lib/router/pages';
-import '../authorization/ui/tooltip.scss';
 import InputEmail from '../../shared/ui/input/input-email';
 import checkValidator from '../../shared/lib/validate/check-validaror';
 import flowFactory from '../../app/api-flow/flow-factory';
 import store from '../../app/store';
-import RequestMessage from '../authorization/ui/request-message';
+import RequestMessage from '../request-message/request-message';
 
 export default class LoginForm extends ViewBuilder {
   constructor() {
@@ -52,7 +51,6 @@ export default class LoginForm extends ViewBuilder {
         }
       },
     });
-    passwordLoginClass.addShowButton();
 
     return [loginForm.getElement()];
   }

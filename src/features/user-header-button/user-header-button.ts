@@ -73,7 +73,7 @@ export default class UserHeaderButton extends CommonBuilderWrapper {
     });
     this.privateAccountButton = new Button({
       callback: () => {
-        // appRouter.navigate(Page.REGISTRATION);
+        appRouter.navigate(Page.USER_PROFILE);
         this.headerButtonClick();
       },
       styleClass: 'user-header-button__popup-button',

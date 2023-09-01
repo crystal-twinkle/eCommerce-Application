@@ -1,4 +1,4 @@
-import Dropdown, { DropdownType, IDropdownItem } from '../../../shared/ui/dropdown/dropdown';
+import Dropdown, { DropdownType, IDropdownItem } from '../../shared/ui/dropdown/dropdown';
 
 const countryItems: IDropdownItem[] = [
   {
