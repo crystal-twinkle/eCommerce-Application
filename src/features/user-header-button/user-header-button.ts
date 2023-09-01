@@ -52,6 +52,9 @@ export default class UserHeaderButton extends CommonBuilderWrapper {
       callback: () => {
         localStorage.removeItem('token_store');
         store.setUser(null);
+        if (appRouter.getCurrentPath() === Page.USER_PROFILE) {
+          appRouter.navigate(Page.OVERVIEW);
+        }
         this.logout();
         this.headerButtonClick();
       },

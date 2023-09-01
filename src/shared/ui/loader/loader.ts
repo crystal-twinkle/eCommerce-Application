@@ -3,11 +3,11 @@ import ElementBuilder from '../../lib/element-builder';
 import './loader.scss';
 
 export default class Loader extends CommonBuilderWrapper {
-  constructor() {
+  constructor(styleClass: string = '') {
     super();
     this.builder = new ElementBuilder({
       tag: 'div',
-      styleClass: 'loader',
+      styleClass: `loader ${styleClass}`,
     });
     this.builder.append([
       ...new Array<null>(8).fill(null).map(() =>
