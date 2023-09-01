@@ -1,3 +1,4 @@
+import { Product } from '@commercetools/platform-sdk';
 import ViewBuilder from '../../shared/lib/view-builder';
 import PageTitle from '../../features/page-title/page-title';
 import ElementBuilder from '../../shared/lib/element-builder';
@@ -7,6 +8,7 @@ import ProductsList from '../../features/products-list/products-list';
 import { SortButtonCallbackValue } from '../../features/sort-bar/sort-bar.models';
 import SortBar from '../../features/sort-bar/sort-bar';
 import ProductApi from '../../entities/product-api';
+import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
 
 export default class ProductsListPage extends ViewBuilder {
   private productsFilter: ProductsFilter;
@@ -15,6 +17,10 @@ export default class ProductsListPage extends ViewBuilder {
   constructor() {
     super('page main-page');
     this.loadProducts();
+
+    eventBus.subscribe(EventBusActions.SORT_CATALOG, (categoryName) => {
+      this.sortCatalog(categoryName as string);
+    });
   }
 
   public configureView(): HTMLElement[] {
@@ -37,9 +43,23 @@ export default class ProductsListPage extends ViewBuilder {
 
   public sortClick(sortValue: SortButtonCallbackValue): void {}
 
+  public sortCatalog(value: string): void {
+    let dataSave: Product[];
+    ProductApi.getProducts().then((data: Product[]) => {
+      dataSave = data;
+      const filteredData = data.filter((e) => {
+        return e.masterData.current.name?.['en-US'].includes(value);
+      });
+      this.productsList.setProducts(filteredData);
+      if (value === 'All') {
+        this.productsList.setProducts(dataSave);
+      }
+    });
+  }
+
   public loadProducts(): void {
     this.productsList.showLoader(true);
-    ProductApi.getProducts().then((data) => {
+    ProductApi.getProducts().then((data: Product[]) => {
       this.productsList.setProducts(data);
       this.productsList.showLoader(false);
     });

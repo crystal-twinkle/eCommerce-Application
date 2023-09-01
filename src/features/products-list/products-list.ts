@@ -25,6 +25,7 @@ export default class ProductsList extends CommonBuilderWrapper {
   }
 
   public setProducts(products: Product[]): void {
+    this.builder.getElement().textContent = '';
     this.productCards = products.map((product: Product) => new ProductListCard(product).getElement());
     this.builder.append(this.productCards);
   }

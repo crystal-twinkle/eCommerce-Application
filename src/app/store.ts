@@ -9,6 +9,10 @@ class Store {
     this.user = newData;
     eventBus.publish(EventBusActions.UPDATE_USER, this.user);
   };
+
+  public setCategory = (value: string): void => {
+    eventBus.publish(EventBusActions.SORT_CATALOG, value);
+  };
 }
 
 const store = new Store();
