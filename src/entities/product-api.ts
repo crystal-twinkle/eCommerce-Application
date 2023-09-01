@@ -12,6 +12,13 @@ export default class ProductApi {
       .execute();
     return response.body.results;
   }
+  public static async getSome(): Promise<Product[]> {
+    const response: ClientResponse<ProductPagedQueryResponse> = await flowFactory.clientCredentialsFlow
+      .products()
+      .get()
+      .execute();
+    return response.body.results;
+  }
 
   public static async getProduct(ID: string): Promise<Product> {
     const response: ClientResponse<Product> = await flowFactory

@@ -5,10 +5,10 @@ import './input-password.scss';
 export default class PasswordInput extends Input {
   showButton: ElementBuilder;
 
-  constructor() {
+  constructor(placeholder?: string) {
     super({
       type: 'password',
-      placeholder: 'Password',
+      placeholder: placeholder || 'Password',
       name: 'password',
     });
 
@@ -20,10 +20,12 @@ export default class PasswordInput extends Input {
         callback: this.showPassword.bind(this),
       },
     });
+    setTimeout(this.addShowButton.bind(this), 0);
   }
 
   public addShowButton(): void {
-    this.builder.getElement().before(this.showButton.getElement());
+    const input = this.builder.getElement();
+    input.parentNode.insertBefore(this.showButton.getElement(), input);
   }
 
   private showPassword(): void {

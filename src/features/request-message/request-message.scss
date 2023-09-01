@@ -1,4 +1,4 @@
-@import '../../../colors';
+@import '../../colors';
 
 .request-message {
   display: none;
@@ -6,9 +6,10 @@
   z-index: 7;
   padding: 45px 15px 20px;
   font-size: 24px;
-  width: 200px;
-  top: 20%;
-  left: calc(45vw - 90px);
+  width: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   text-align: center;
   border-radius: 30px;
   border: 1px solid #0a0909;

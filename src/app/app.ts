@@ -6,6 +6,7 @@ import { ID_SELECTOR, Page } from '../shared/lib/router/pages';
 import NotFoundPage from '../pages/not-found-page';
 import LoginPage from '../pages/login-page';
 import ProductPage from '../pages/product-page';
+import UserPage from '../pages/user-page';
 import Main from '../features/main/main';
 import RegisterPage from '../pages/register-page';
 import ShowcasesPage from '../pages/showcases/showcases-page';
@@ -75,6 +76,12 @@ export default class App {
         path: Page.NOT_FOUND,
         callback: () => {
           this.main.setContent([new NotFoundPage().getElement()]);
+        },
+      },
+      {
+        path: Page.USER_PROFILE,
+        callback: () => {
+          this.main.setContent([new UserPage().getElement()]);
         },
       },
     ];
