@@ -9,12 +9,12 @@ import { SortButtonCallbackValue } from '../../features/sort-bar/sort-bar.models
 import SortBar from '../../features/sort-bar/sort-bar';
 import ProductApi from '../../entities/product-api';
 import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
+import store from '../../app/store';
 
 export default class ProductsListPage extends ViewBuilder {
   private productsFilter: ProductsFilter;
   private productsList: ProductsList;
   private filterData: Product[];
-  private data: Product[];
 
   constructor() {
     super('page main-page');
@@ -30,6 +30,9 @@ export default class ProductsListPage extends ViewBuilder {
     });
     eventBus.subscribe(EventBusActions.SORT_BY_ALPHABET, (value) => {
       this.sortByAlphabet(value as string);
+    });
+    eventBus.subscribe(EventBusActions.SORT_BY_PRICE_FROM, (value) => {
+      this.sortByPriceInput().call(value as number[]);
     });
   }
 
@@ -54,11 +57,11 @@ export default class ProductsListPage extends ViewBuilder {
   public sortClick(sortValue: SortButtonCallbackValue): void {}
 
   protected searchByDropdown(value: string): void {
-    this.filterData = this.data.filter((e) => {
+    this.filterData = store.products.filter((e) => {
       return e.masterData.current.name?.['en-US'].includes(value);
     });
     if (!this.filterData.length) {
-      this.filterData = this.data;
+      this.filterData = store.products;
     }
     this.productsList.setProducts(this.filterData);
   }
@@ -70,7 +73,7 @@ export default class ProductsListPage extends ViewBuilder {
     this.productsList.setProducts(this.filterData);
   }
 
-  protected sortByPrice(value: string) {
+  protected sortByPrice(value: string): void {
     const getPrice = (item: Product) => item.masterData.current.masterVariant.prices[0]?.value?.centAmount || 0;
     if (value === '↓') {
       // Сортировка по убыванию цены
@@ -83,7 +86,30 @@ export default class ProductsListPage extends ViewBuilder {
     this.productsList.setProducts(this.filterData);
   }
 
-  protected sortByAlphabet(value: string) {
+  protected sortByPriceInput(): { call: (value: number[]) => void } {
+    let newFilterData = [...this.filterData];
+    const call = (value: number[]): void => {
+      const [from, to] = value;
+      newFilterData = this.filterData.filter((e) => {
+        const price = e.masterData.current.masterVariant.prices[0]?.value?.centAmount || 0;
+        if (!to) {
+          return price >= from;
+        }
+        if (!from) {
+          return price <= to;
+        }
+        return price >= from && price <= to;
+      });
+      if (!to && !from) {
+        this.productsList.setProducts(this.filterData);
+      } else {
+        this.productsList.setProducts(newFilterData);
+      }
+    };
+    return { call };
+  }
+
+  protected sortByAlphabet(value: string): void {
     const getLetter = (item: Product) => item.masterData.current.name?.['en-US'] || '';
     this.filterData.forEach((e) => console.log(getLetter(e)));
     if (value === '↓') {
@@ -98,7 +124,7 @@ export default class ProductsListPage extends ViewBuilder {
   public loadProducts(): void {
     this.productsList.showLoader(true);
     ProductApi.getProducts().then((data: Product[]) => {
-      this.data = data;
+      store.products = data;
       this.filterData = data;
       this.productsList.setProducts(data);
       this.productsList.showLoader(false);
