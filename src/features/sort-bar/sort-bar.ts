@@ -53,20 +53,27 @@ export default class SortBar extends CommonBuilderWrapper {
       styleClass: 'sort-bar__title',
       content: 'Sort by:',
     });
-    const priceSortButton = this.getSortButton(SortButtonType.PRICE);
+    const priceSortButton: Button = this.getSortButton(SortButtonType.PRICE);
     priceSortButton.getElement().addEventListener('click', () => {
       const priceText = priceSortButton.getElement().textContent;
       const lastChar = priceText[priceText.length - 1];
       store.setSortPrice(lastChar);
     });
+    const alphabetSortButton: Button = this.getSortButton(SortButtonType.ALPHABET);
+    alphabetSortButton.getElement().addEventListener('click', () => {
+      const priceText = alphabetSortButton.getElement().textContent;
+      const lastChar = priceText[priceText.length - 1];
+      store.setSortAlphabet(lastChar);
+    });
+
     this.buttons = [
       {
         text: SortButtonType.PRICE,
         button: priceSortButton,
       },
       {
-        text: SortButtonType.POPULARITY,
-        button: this.getSortButton(SortButtonType.POPULARITY),
+        text: SortButtonType.ALPHABET,
+        button: alphabetSortButton,
       },
     ];
     const sortControlPanel = new ElementBuilder({

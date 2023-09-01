@@ -20,6 +20,9 @@ class Store {
   public setSortPrice = (arrow: string): void => {
     eventBus.publish(EventBusActions.SORT_BY_PRICE, arrow);
   };
+  public setSortAlphabet = (arrow: string): void => {
+    eventBus.publish(EventBusActions.SORT_BY_ALPHABET, arrow);
+  };
 }
 
 const store = new Store();

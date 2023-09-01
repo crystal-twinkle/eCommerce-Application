@@ -1,6 +1,6 @@
 export enum SortButtonType {
   PRICE = 'Price',
-  POPULARITY = 'Popularity',
+  ALPHABET = 'Alphabet',
 }
 
 export enum SortCriteria {
