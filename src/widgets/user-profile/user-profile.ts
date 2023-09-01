@@ -92,7 +92,7 @@ export default class UserProfile extends CommonBuilderWrapper {
     });
   }
 
-  protected show(data: Customer) {
+  protected show(data: Customer): void {
     const userInfoElements = [
       new Input({
         value: data.firstName,
@@ -193,21 +193,21 @@ export default class UserProfile extends CommonBuilderWrapper {
     ]);
   }
 
-  private addInputStyle(elements: HTMLInputElement[]) {
+  private addInputStyle(elements: HTMLInputElement[]): void {
     elements.forEach((element) => {
       element.setAttribute('disabled', '');
       element.classList.remove('_edit');
     });
   }
 
-  private changeInputStyle(elements: HTMLInputElement[]) {
+  private changeInputStyle(elements: HTMLInputElement[]): void {
     elements.forEach((element) => {
       element.classList.add('_edit');
       element.removeAttribute('disabled');
     });
   }
 
-  protected changeAddress() {
+  protected changeAddress(): void {
     const userShipAddressExist = document.getElementById('userShipAddressExist');
     if (userShipAddressExist) {
       if (!this.data.defaultShippingAddressId) {
@@ -274,7 +274,7 @@ export default class UserProfile extends CommonBuilderWrapper {
     }
   }
 
-  protected addNewAddress(inputElems: HTMLInputElement[], whatUse: string) {
+  protected addNewAddress(inputElems: HTMLInputElement[], whatUse: string): void {
     this.modalInfo.getElement().classList.add('hidden');
     const countryDropdownText: string = countryDropdown?.getSelectedItem()?.content;
     const [cityInput, streetInput, postalCodeInput] = inputElems;
@@ -301,13 +301,13 @@ export default class UserProfile extends CommonBuilderWrapper {
     if (whatUse === 'billUse') {
       this.actionsAddress.push({ action: 'addBillingAddressId', addressKey });
     }
-    console.log(this.actionsAddress);
   }
 
-  protected async editInfo(inputs: HTMLInputElement[]) {
+  protected async editInfo(inputs: HTMLInputElement[]): Promise<void> {
     const [firstname, lastname, email, dob] = inputs;
     try {
-      const result = await flowFactory.clientCredentialsFlow
+      const result = await flowFactory
+        .getWorkingFlow()
         .customers()
         .withId({ ID: this.id })
         .post({
@@ -335,7 +335,7 @@ export default class UserProfile extends CommonBuilderWrapper {
     }
   }
 
-  protected async changeAddressInfo() {
+  protected async changeAddressInfo(): Promise<void> {
     if (this.resultsCheckbox.shipDefault && !this.resultsCheckbox.shipDelete) {
       this.actionsAddress.push({ action: 'setDefaultShippingAddress', addressId: this.data.addresses[0].id });
     }
@@ -352,7 +352,8 @@ export default class UserProfile extends CommonBuilderWrapper {
     }
 
     try {
-      const result = await flowFactory.clientCredentialsFlow
+      const result = await flowFactory
+        .getWorkingFlow()
         .customers()
         .withId({ ID: this.id })
         .post({
@@ -372,7 +373,7 @@ export default class UserProfile extends CommonBuilderWrapper {
     }
   }
 
-  private async callbackChangePassword() {
+  private async callbackChangePassword(): Promise<void> {
     if (this.changePasswordButton.textContent === 'Change password') {
       this.currentPassword = new PasswordInput('Current password');
       this.newPassword = new PasswordInput('New password');
@@ -384,8 +385,8 @@ export default class UserProfile extends CommonBuilderWrapper {
       this.changePasswordButton.textContent = 'Save new password';
     } else if ([this.currentPassword?.getElement(), this.newPassword?.getElement()].every((e) => checkValidator(e))) {
       try {
-        console.log(1);
-        const result = await flowFactory.clientCredentialsFlow
+        const result = await flowFactory
+          .getWorkingFlow()
           .customers()
           .password()
           .post({
