@@ -34,6 +34,9 @@ export default class ProductListCard extends CommonBuilderWrapper {
       styleClass: 'product-list-card__description',
       content: data.masterData.current.name?.['en-US'],
     });
+    if (data.masterData.current.name?.['en-US'].length <= 28) {
+      description.getElement().classList.add('_add');
+    }
     const likeButton = new Button({
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
       size: ButtonSize.SMALL,

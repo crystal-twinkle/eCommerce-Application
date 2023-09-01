@@ -1,11 +1,14 @@
 .product-list-card {
   width: 280px;
+  height: 492px;
   margin-top: 10px;
 
-  & > * {
-    &:not(:last-child) {
-      margin-bottom: 6px;
-    }
+  &:hover {
+    background-color: #efebe4;
+    cursor: pointer;
+    box-shadow: 0 2px 35px 14px rgba(13, 13, 13, 0.04);
+    transition: transform 0.3s ease;
+    transform: scale(1.1);
   }
 
   &__img {
@@ -15,6 +18,10 @@
 
   &__description {
     font-size: 20px;
+
+    &._add {
+      margin-bottom: 20px;
+    }
   }
 
   &__row {
