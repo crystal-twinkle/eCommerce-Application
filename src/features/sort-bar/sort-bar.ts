@@ -5,6 +5,7 @@ import { ButtonType } from '../../shared/ui/button/models';
 import './sort.bar.scss';
 import { SortButtonCallbackValue, SortButtonType, SortCriteria } from './sort-bar.models';
 import Input from '../../shared/ui/input/input';
+import store from '../../app/store';
 
 export default class SortBar extends CommonBuilderWrapper {
   private buttons: {
@@ -31,6 +32,12 @@ export default class SortBar extends CommonBuilderWrapper {
     const searchInput = new Input({
       type: 'text',
       placeholder: 'Search',
+    });
+    searchInput.getElement().addEventListener('keypress', (e: KeyboardEvent) => {
+      if (e.code === 'Enter') {
+        const searchValue = searchInput.getElement().value.toLowerCase().replace(/\n/g, '');
+        store.setSearch(searchValue);
+      }
     });
     const searchField = new ElementBuilder({
       tag: 'span',

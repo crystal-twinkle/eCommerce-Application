@@ -3,6 +3,7 @@ export enum EventBusActions {
   REGISTER = 'register',
   UPDATE_USER = 'update-user',
   SORT_CATALOG = 'sort-catalog',
+  SEARCH_PRODUCT = 'search-product',
 }
 
 class EventBus {

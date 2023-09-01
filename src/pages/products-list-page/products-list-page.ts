@@ -13,13 +13,17 @@ import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
 export default class ProductsListPage extends ViewBuilder {
   private productsFilter: ProductsFilter;
   private productsList: ProductsList;
+  private filterData: Product[];
 
   constructor() {
     super('page main-page');
     this.loadProducts();
-
     eventBus.subscribe(EventBusActions.SORT_CATALOG, (categoryName) => {
-      this.sortCatalog(categoryName as string);
+      this.searchByDropdown(categoryName as string);
+    });
+    eventBus.subscribe(EventBusActions.SEARCH_PRODUCT, (value) => {
+      console.log(value);
+      this.searchByProduct(value as string);
     });
   }
 
@@ -43,23 +47,29 @@ export default class ProductsListPage extends ViewBuilder {
 
   public sortClick(sortValue: SortButtonCallbackValue): void {}
 
-  public sortCatalog(value: string): void {
-    let dataSave: Product[];
+  protected searchByDropdown(value: string): void {
     ProductApi.getProducts().then((data: Product[]) => {
-      dataSave = data;
-      const filteredData = data.filter((e) => {
+      this.filterData = data.filter((e) => {
         return e.masterData.current.name?.['en-US'].includes(value);
       });
-      this.productsList.setProducts(filteredData);
-      if (value === 'All') {
-        this.productsList.setProducts(dataSave);
+      if (!this.filterData.length) {
+        this.filterData = data;
       }
+      this.productsList.setProducts(this.filterData);
     });
+  }
+
+  protected searchByProduct(value: string): void {
+    this.filterData = this.filterData.filter((e) => {
+      return e.masterData.current.name?.['en-US'].toLowerCase().includes(value);
+    });
+    this.productsList.setProducts(this.filterData);
   }
 
   public loadProducts(): void {
     this.productsList.showLoader(true);
     ProductApi.getProducts().then((data: Product[]) => {
+      this.filterData = data;
       this.productsList.setProducts(data);
       this.productsList.showLoader(false);
     });

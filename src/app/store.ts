@@ -13,6 +13,10 @@ class Store {
   public setCategory = (value: string): void => {
     eventBus.publish(EventBusActions.SORT_CATALOG, value);
   };
+
+  public setSearch = (value: string): void => {
+    eventBus.publish(EventBusActions.SEARCH_PRODUCT, value);
+  };
 }
 
 const store = new Store();
