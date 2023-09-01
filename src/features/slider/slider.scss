@@ -7,6 +7,14 @@ $imageWidth: 575px;
   align-items: center;
   margin: 0 auto;
 
+  &_pop-up {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+  }
+
   &__wrapper {
     overflow: hidden;
     cursor: pointer;
@@ -75,7 +83,22 @@ $imageWidth: 575px;
   }
 
   &:hover &__button {
-    opacity: 0.7;
+    opacity: 0.3;
+  }
+
+  &__blur {
+    position: fixed;
+    z-index: 10;
+    width: 100%;
+    height: 200vh;
+    background: rgba(255, 255, 255, 0.693);
+    backdrop-filter: blur(5px);
+    opacity: 1;
+    transition: all ease-in-out 0.5s;
+
+    &_hide {
+      opacity: 0;
+    }
   }
 }
 
@@ -92,4 +115,11 @@ $imageWidth: 575px;
 .stop {
   transition: none;
   transform: translateX(0);
+}
+
+.modal-close-button {
+  z-index: 500;
+  position: sticky;
+  top: 15px;
+  left: 95%;
 }

@@ -2,7 +2,7 @@ import ViewBuilder from '../shared/lib/view-builder';
 import ProductView from '../widgets/product-view';
 
 export default class ProductPage extends ViewBuilder {
-  constructor() {
+  constructor(private id: string) {
     super('page product-page');
   }
 

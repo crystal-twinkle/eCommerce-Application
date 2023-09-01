@@ -1,30 +1,48 @@
 import './product-view.scss';
-import { ClientResponse, Product } from '@commercetools/platform-sdk';
+import { Product } from '@commercetools/platform-sdk';
 import ElementBuilder from '../shared/lib/element-builder';
 import ViewBuilder from '../shared/lib/view-builder';
 import PageTitle from '../features/page-title/page-title';
 import Slider from '../features/slider/slider';
-import flowFactory from '../app/api-flow/flow-factory';
+import ProductApi from '../entities/product-api';
 
 export default class ProductView extends ViewBuilder {
   slides: HTMLElement[];
   slider: Slider;
+  id: string;
+  data: Product;
 
-  // constructor(private id: string) {
   constructor() {
     super('product-view');
   }
 
-  public configureView() {
-    this.getProductData().then((productData) => {
-      const productName = productData.body.masterData.current.name;
-    });
-    const pageTitle = new PageTitle('Title');
+  private createSlides() {
+    const slides: HTMLElement[] = [];
 
+    const images = this.data.masterData.staged.masterVariant.images;
+    images.forEach((image) => {
+      const slide = new ElementBuilder({
+        tag: 'div',
+        styleClass: 'slider__slide',
+      });
+
+      const slideImage = new Image();
+      slideImage.src = image.url;
+      slideImage.alt = '';
+      slide.append([slideImage]);
+      slides.push(slide.getElement());
+    });
+    console.log(images);
+    return slides;
+  }
+
+  public configureView() {
+    console.log(ProductApi.getProducts());
+    const pageTitle = new PageTitle(this.data.masterData.current.name['en-US']);
     const price = new ElementBuilder({
       tag: 'div',
       styleClass: 'product-view__price',
-      content: '$50',
+      // content: `${this.data.masterData.current.masterVariant.prices[1].value.centAmount}`,
     });
 
     // const sizes = new ElementBuilder({
@@ -50,42 +68,17 @@ export default class ProductView extends ViewBuilder {
       styleClass: 'product-view__content',
     });
 
-    this.createSlides().then((slides) => {
-      this.slides = slides as HTMLElement[];
-      this.slider = new Slider(this.slides);
-      content.append([this.slider.getElement(), details.getElement()]);
-    });
-
+    this.slider = new Slider(this.createSlides());
+    content.append([this.slider.getElement(), details.getElement()]);
     return [pageTitle.getElement(), content.getElement()];
   }
 
-  private async createSlides() {
-    const images = (await this.getProductData()).body.masterData.staged.masterVariant.images;
-    const slides: HTMLElement[] = [];
-
-    images.forEach((image) => {
-      const slide = new ElementBuilder({
-        tag: 'div',
-        styleClass: 'slider__slide',
-      });
-
-      const slideImage = new Image();
-      slideImage.src = image.url;
-      slideImage.alt = '';
-      slide.append([slideImage]);
-      slides.push(slide.getElement());
+  public buildView() {
+    this.id = window.location.pathname.split('/')[window.location.pathname.split('/').length - 1];
+    ProductApi.getProduct(this.id).then((data) => {
+      this.data = data;
+      this.wrapper.getElement().append(...this.configureView());
+      this.view.getElement().append(this.wrapper.getElement());
     });
-
-    return slides;
-  }
-
-  private async getProductData(): Promise<ClientResponse<Product>> {
-    const productData: ClientResponse<Product> = await flowFactory.refreshTokenFlow
-      .products()
-      .withId({ ID: 'd991cc27-ea91-4950-a175-94683d20c623' })
-      .get()
-      .execute();
-    console.log(productData);
-    return productData;
   }
 }

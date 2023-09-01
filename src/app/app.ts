@@ -50,7 +50,7 @@ export default class App {
       {
         path: `${Page.PRODUCTS}/${ID_SELECTOR}`,
         callback: (id: string) => {
-          this.main.setContent([new ProductPage().getElement()]);
+          this.main.setContent([new ProductPage(id).getElement()]);
         },
       },
       {
