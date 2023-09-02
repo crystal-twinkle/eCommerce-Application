@@ -5,6 +5,7 @@ import { ButtonType } from '../../shared/ui/button/models';
 import './sort.bar.scss';
 import { SortButtonCallbackValue, SortButtonType, SortCriteria } from './sort-bar.models';
 import Input from '../../shared/ui/input/input';
+import store from '../../app/store';
 
 export default class SortBar extends CommonBuilderWrapper {
   private buttons: {
@@ -32,6 +33,12 @@ export default class SortBar extends CommonBuilderWrapper {
       type: 'text',
       placeholder: 'Search',
     });
+    searchInput.getElement().addEventListener('keypress', (e: KeyboardEvent) => {
+      if (e.code === 'Enter') {
+        const searchValue = searchInput.getElement().value.toLowerCase().replace(/\n/g, '');
+        store.setSearch(searchValue);
+      }
+    });
     const searchField = new ElementBuilder({
       tag: 'span',
       styleClass: 'sort-bar__search',
@@ -46,14 +53,27 @@ export default class SortBar extends CommonBuilderWrapper {
       styleClass: 'sort-bar__title',
       content: 'Sort by:',
     });
+    const priceSortButton: Button = this.getSortButton(SortButtonType.PRICE);
+    priceSortButton.getElement().addEventListener('click', () => {
+      const priceText = priceSortButton.getElement().textContent;
+      const lastChar = priceText[priceText.length - 1];
+      store.setSortPrice(lastChar);
+    });
+    const alphabetSortButton: Button = this.getSortButton(SortButtonType.ALPHABET);
+    alphabetSortButton.getElement().addEventListener('click', () => {
+      const priceText = alphabetSortButton.getElement().textContent;
+      const lastChar = priceText[priceText.length - 1];
+      store.setSortAlphabet(lastChar);
+    });
+
     this.buttons = [
       {
         text: SortButtonType.PRICE,
-        button: this.getSortButton(SortButtonType.PRICE),
+        button: priceSortButton,
       },
       {
-        text: SortButtonType.POPULARITY,
-        button: this.getSortButton(SortButtonType.POPULARITY),
+        text: SortButtonType.ALPHABET,
+        button: alphabetSortButton,
       },
     ];
     const sortControlPanel = new ElementBuilder({

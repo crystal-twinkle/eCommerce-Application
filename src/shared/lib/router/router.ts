@@ -35,15 +35,22 @@ export class Router {
   public navigate(url: string, browserChangeEvent: NavigateType = NavigateType.DEFAULT): void {
     const request: IParseUrl = this.parseURL(url);
     const pathForFind = request.resource === '' ? request.path : `${request.path}/${ID_SELECTOR}`;
-    const route =
-      localStorage.getItem('token_store') && (url === Page.LOGIN || url === Page.REGISTRATION)
-        ? this.overviewLink
-        : this.routes.find((item) => item.path === pathForFind) || this.notFoundRouterLink;
+    const route = this.isDisabledRoute(url)
+      ? this.overviewLink
+      : this.routes.find((item: IRouterLink) => item.path === pathForFind) || this.notFoundRouterLink;
 
-    if (browserChangeEvent === NavigateType.DEFAULT) {
+    if (route === this.overviewLink || route === this.notFoundRouterLink) {
+      window.history.pushState({}, '', route.path || '/');
+    } else if (browserChangeEvent === NavigateType.DEFAULT) {
       window.history.pushState({}, '', request.resource ? `${request.path}/${request.resource}` : route.path || '/');
     }
     route.callback(request.resource);
+  }
+
+  private isDisabledRoute(url: string): boolean {
+    return localStorage.getItem('token_store')
+      ? url === Page.LOGIN || url === Page.REGISTRATION
+      : url === Page.USER_PROFILE;
   }
 
   private parseURL(url: string): IParseUrl {
@@ -57,11 +64,8 @@ export class Router {
     this.navigate(this.getCurrentPath(), NavigateType.BROWSER_CHANGE_EVENT);
   }
 
-  private getCurrentPath(): string {
-    if (window.location.hash) {
-      return window.location.hash.slice(1);
-    }
-    return window.location.pathname.slice(1);
+  public getCurrentPath(): string {
+    return window.location.hash ? window.location.hash.slice(1) : window.location.pathname.slice(1);
   }
 }
 

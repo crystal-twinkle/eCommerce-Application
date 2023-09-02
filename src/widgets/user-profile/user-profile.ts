@@ -21,15 +21,17 @@ import appRouter from '../../shared/lib/router/router';
 import { Page } from '../../shared/lib/router/pages';
 import PasswordInput from '../../shared/ui/input/input-password';
 import Form from '../../shared/ui/form/form';
+import Loader from '../../shared/ui/loader/loader';
 
 export default class UserProfile extends CommonBuilderWrapper {
-  private id: string;
-  private version: number;
   private readonly resultsCheckbox: IResultsCheckbox;
   private readonly editAddressButton: HTMLElement;
   private readonly addAddressButton: HTMLElement;
   private readonly changePasswordButton: HTMLElement;
   private readonly actionsAddress: CustomerUpdateAction[];
+
+  private id: string;
+  private version: number;
   private callbackEditAddress: () => void;
   private callbackAddAddress: () => void;
   private addresses: ElementBuilder;
@@ -47,6 +49,7 @@ export default class UserProfile extends CommonBuilderWrapper {
       tag: 'div',
       styleClass: 'user',
     });
+    this.builder.append([new Loader('user__loader').getElement()]);
 
     this.resultsCheckbox = {
       shipDefault: false,
@@ -85,16 +88,19 @@ export default class UserProfile extends CommonBuilderWrapper {
     this.modalShipAddressElems = [];
     this.modalBillAddressElems = [];
 
-    eventBus.subscribe(EventBusActions.UPDATE_USER, (data) => {
-      const updateData = data as Customer;
-      if (data) {
-        this.data = updateData;
-        this.id = updateData.id;
-        this.version = updateData.version;
-        this.show(updateData);
-      }
-    });
+    this.initData(store.user);
+    eventBus.subscribe(EventBusActions.UPDATE_USER, (data) => this.initData(data as Customer));
   }
+
+  private initData = (data: Customer): void => {
+    const updateData = data as Customer;
+    if (data) {
+      this.data = updateData;
+      this.id = updateData.id;
+      this.version = updateData.version;
+      this.show(updateData);
+    }
+  };
 
   protected show(data: Customer): void {
     const userInfoElements = [
@@ -195,6 +201,7 @@ export default class UserProfile extends CommonBuilderWrapper {
     };
 
     this.addresses.append([this.editAddressButton]);
+    this.builder.setContent();
     this.builder.append([
       userInfo.getElement(),
       this.addresses.getElement(),
