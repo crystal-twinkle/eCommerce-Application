@@ -38,6 +38,8 @@ export default class UserProfile extends CommonBuilderWrapper {
   private modalInfo: ElementBuilder;
   private currentPassword: PasswordInput | undefined;
   private newPassword: PasswordInput | undefined;
+  private readonly modalShipAddressElems: HTMLInputElement[];
+  private readonly modalBillAddressElems: HTMLInputElement[];
 
   constructor() {
     super();
@@ -80,6 +82,8 @@ export default class UserProfile extends CommonBuilderWrapper {
       tag: 'div',
       styleClass: 'hidden modal',
     });
+    this.modalShipAddressElems = [];
+    this.modalBillAddressElems = [];
 
     eventBus.subscribe(EventBusActions.UPDATE_USER, (data) => {
       const updateData = data as Customer;
@@ -180,6 +184,12 @@ export default class UserProfile extends CommonBuilderWrapper {
         this.changeAddress();
         this.changeInputStyle(addressElems);
       } else if (addressElems.every((elem) => checkValidator(elem))) {
+        if (this.resultsCheckbox.shipUse && this.modalShipAddressElems.every((elem) => checkValidator(elem))) {
+          this.addNewAddress(this.modalShipAddressElems, 'shipUse');
+        }
+        if (this.resultsCheckbox.billUse && this.modalBillAddressElems.every((elem) => checkValidator(elem))) {
+          this.addNewAddress(this.modalBillAddressElems, 'billUse');
+        }
         this.changeAddressInfo();
       }
     };
@@ -223,8 +233,6 @@ export default class UserProfile extends CommonBuilderWrapper {
       userBillAddressExist.append(this.checkboxes.call('billDelete', 'Delete billing address'));
     }
     this.addresses.prepend([countryDropdown.getElement()]);
-    const shipAddressElems: HTMLInputElement[] = [];
-    const billAddressElems: HTMLInputElement[] = [];
     let elementsAdded = false;
     if (!userShipAddressExist || !userBillAddressExist) {
       this.callbackAddAddress = () => {
@@ -237,13 +245,13 @@ export default class UserProfile extends CommonBuilderWrapper {
           styleClass: 'user__address',
         });
         if (!userShipAddressExist && !elementsAdded) {
-          shipAddressElems.push(...addAddress([], modalShipAddress, 'Shipping Address'));
-          this.changeInputStyle(shipAddressElems);
+          this.modalShipAddressElems.push(...addAddress([], modalShipAddress, 'Shipping Address'));
+          this.changeInputStyle(this.modalShipAddressElems);
           modalShipAddress.append([this.checkboxes.call('shipUse', 'Add shipping address')]);
         }
         if (!userBillAddressExist && !elementsAdded) {
-          billAddressElems.push(...addAddress([], modalBillAddress, 'Billing Address'));
-          this.changeInputStyle(billAddressElems);
+          this.modalBillAddressElems.push(...addAddress([], modalBillAddress, 'Billing Address'));
+          this.changeInputStyle(this.modalBillAddressElems);
           modalBillAddress.append([this.checkboxes.call('billUse', 'Add billing address')]);
         }
         this.modalInfo.getElement().classList.remove('hidden');
@@ -253,13 +261,14 @@ export default class UserProfile extends CommonBuilderWrapper {
           text: 'Ok',
           size: ButtonSize.SMALL,
           callback: () => {
-            if (this.resultsCheckbox.shipUse && shipAddressElems.every((elem) => checkValidator(elem))) {
-              this.addNewAddress(shipAddressElems, 'shipUse');
+            if (
+              (this.resultsCheckbox.billUse && this.modalBillAddressElems.every((elem) => checkValidator(elem))) ||
+              (this.resultsCheckbox.shipUse && this.modalShipAddressElems.every((elem) => checkValidator(elem)))
+            ) {
+              blackout.classList.remove('blackout_show');
+              this.modalInfo.getElement().classList.add('hidden');
             }
-            if (this.resultsCheckbox.billUse && billAddressElems.every((elem) => checkValidator(elem))) {
-              this.addNewAddress(billAddressElems, 'billUse');
-            }
-            if (!this.resultsCheckbox.billUse && !this.resultsCheckbox.shipUse) {
+            if (!this.resultsCheckbox.billUse || !this.resultsCheckbox.shipUse) {
               blackout.classList.remove('blackout_show');
               this.modalInfo.getElement().classList.add('hidden');
             }
@@ -288,9 +297,6 @@ export default class UserProfile extends CommonBuilderWrapper {
     const postalCode = postalCodeInput.value;
     const addressKey = generateRandomKey();
     blackout.classList.remove('blackout_show');
-    if (this.addAddressButton.parentNode) {
-      this.addAddressButton.parentNode.removeChild(this.addAddressButton);
-    }
     this.actionsAddress.push({
       action: 'addAddress',
       address: { country: countryDropdownText, city, streetName, postalCode, key: addressKey },
@@ -301,6 +307,7 @@ export default class UserProfile extends CommonBuilderWrapper {
     if (whatUse === 'billUse') {
       this.actionsAddress.push({ action: 'addBillingAddressId', addressKey });
     }
+    console.log(this.actionsAddress);
   }
 
   protected async editInfo(inputs: HTMLInputElement[]): Promise<void> {
