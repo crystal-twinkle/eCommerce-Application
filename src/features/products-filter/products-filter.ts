@@ -72,9 +72,9 @@ export default class ProductsFilter extends CommonBuilderWrapper {
       type: ButtonType.DEFAULT,
       text: 'Search',
       callback: () => {
-        const fromText = Number(inputFrom.getElement().value);
-        const toText = Number(inputTo.getElement().value);
-        eventBus.publish(EventBusActions.SORT_BY_PRICE_FROM, [fromText, toText]);
+        const fromNumber: number = Number(inputFrom.getElement().value);
+        const toNumber: number = Number(inputTo.getElement().value);
+        eventBus.publish(EventBusActions.SORT_BY_PRICE_FROM, [fromNumber, toNumber]);
       },
     });
 

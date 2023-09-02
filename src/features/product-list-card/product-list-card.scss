@@ -17,11 +17,11 @@
   }
 
   &__description {
+    display: block;
     font-size: 20px;
-
-    &._add {
-      margin-bottom: 20px;
-    }
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &__row {

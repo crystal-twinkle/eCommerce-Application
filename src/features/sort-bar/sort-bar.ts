@@ -55,15 +55,13 @@ export default class SortBar extends CommonBuilderWrapper {
     });
     const priceSortButton: Button = this.getSortButton(SortButtonType.PRICE);
     priceSortButton.getElement().addEventListener('click', () => {
-      const priceText = priceSortButton.getElement().textContent;
-      const arrow = priceText[priceText.length - 1];
-      eventBus.publish(EventBusActions.SORT_BY_PRICE, arrow);
+      const priceText: string = priceSortButton.getElement().textContent;
+      eventBus.publish(EventBusActions.SORT_BY_PRICE, priceText);
     });
     const alphabetSortButton: Button = this.getSortButton(SortButtonType.ALPHABET);
     alphabetSortButton.getElement().addEventListener('click', () => {
-      const priceText = alphabetSortButton.getElement().textContent;
-      const arrow = priceText[priceText.length - 1];
-      eventBus.publish(EventBusActions.SORT_BY_ALPHABET, arrow);
+      const alphabetText = alphabetSortButton.getElement().textContent;
+      eventBus.publish(EventBusActions.SORT_BY_ALPHABET, alphabetText);
     });
 
     this.buttons = [

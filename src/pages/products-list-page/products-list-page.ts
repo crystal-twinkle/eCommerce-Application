@@ -23,7 +23,7 @@ export default class ProductsListPage extends ViewBuilder {
       this.searchByDropdown(categoryName as string);
     });
     eventBus.subscribe(EventBusActions.SEARCH_PRODUCT, (value) => {
-      this.searchByProduct(value as string);
+      this.searchByProduct().call(value as string);
     });
     eventBus.subscribe(EventBusActions.SORT_BY_PRICE, (value) => {
       this.sortByPrice(value as string);
@@ -66,20 +66,24 @@ export default class ProductsListPage extends ViewBuilder {
     this.productsList.setProducts(this.filterData);
   }
 
-  protected searchByProduct(value: string): void {
-    this.filterData = this.filterData.filter((e) => {
-      return e.masterData.current.name?.['en-US'].toLowerCase().includes(value);
-    });
-    this.productsList.setProducts(this.filterData);
+  protected searchByProduct(): { call: (value: string) => void } {
+    let newFilterData = [...this.filterData];
+    const call = (value: string): void => {
+      newFilterData = this.filterData.filter((e) => {
+        return e.masterData.current.name?.['en-US'].toLowerCase().includes(value);
+      });
+      this.productsList.setProducts(newFilterData);
+    };
+    return { call };
   }
 
   protected sortByPrice(value: string): void {
     const getPrice = (item: Product) => item.masterData.current.masterVariant.prices[0]?.value?.centAmount || 0;
-    if (value === '↓') {
+    if (value.includes('↓')) {
       // Сортировка по убыванию цены
       this.filterData.sort((a, b) => getPrice(a) - getPrice(b));
     }
-    if (value === '↑') {
+    if (value.includes('↑')) {
       // Сортировка по возрастанию цены
       this.filterData.sort((a, b) => getPrice(b) - getPrice(a));
     }
@@ -100,11 +104,7 @@ export default class ProductsListPage extends ViewBuilder {
         }
         return price >= from && price <= to;
       });
-      if (!to && !from) {
-        this.productsList.setProducts(this.filterData);
-      } else {
-        this.productsList.setProducts(newFilterData);
-      }
+      this.productsList.setProducts(newFilterData);
     };
     return { call };
   }
@@ -112,10 +112,10 @@ export default class ProductsListPage extends ViewBuilder {
   protected sortByAlphabet(value: string): void {
     const getLetter = (item: Product) => item.masterData.current.name?.['en-US'] || '';
     this.filterData.forEach((e) => console.log(getLetter(e)));
-    if (value === '↓') {
+    if (value.includes('↓')) {
       this.filterData.sort((a, b) => getLetter(a).localeCompare(getLetter(b)));
     }
-    if (value === '↑') {
+    if (value.includes('↑')) {
       this.filterData.sort((a, b) => getLetter(b).localeCompare(getLetter(a)));
     }
     this.productsList.setProducts(this.filterData);
