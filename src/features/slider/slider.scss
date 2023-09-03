@@ -2,10 +2,10 @@
 $imageWidth: 575px;
 
 .slider {
-  // max-width: max-content;
   display: flex;
+  flex: 1;
   align-items: center;
-  margin: 0 auto;
+  margin: 0 $imageWidth * 0.15;
 
   &_pop-up {
     position: fixed;
@@ -13,6 +13,7 @@ $imageWidth: 575px;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 20;
+    margin: 0 auto;
   }
 
   &__wrapper {
@@ -24,6 +25,11 @@ $imageWidth: 575px;
     max-width: $imageWidth;
     display: flex;
     transition: all ease-in-out 0.5s;
+
+    &_pop-up {
+      max-width: 100vh;
+      max-height: 95vh;
+    }
   }
 
   &__slide {
@@ -31,13 +37,18 @@ $imageWidth: 575px;
     max-width: $imageWidth;
     margin: 0 5%;
     user-select: none;
-    display: flex;
+    transition: all ease-in-out 0.5s;
+
+    &_pop-up {
+      max-width: 100vh;
+      max-height: 95vh;
+    }
   }
 
   img {
-    flex-grow: 1;
     max-width: 100%;
     object-fit: cover;
+    box-shadow: 0px 4px 10px 0px rgba(81, 74, 126, 0.2);
   }
 
   &__button {
@@ -45,7 +56,7 @@ $imageWidth: 575px;
     z-index: 1;
     margin: -$imageWidth * 0.12;
     width: $imageWidth * 0.05;
-    height: $imageWidth;
+    height: $imageWidth * 0.5;
     cursor: pointer;
     opacity: 0;
     transition: all ease-in-out 0.2s;
@@ -76,9 +87,12 @@ $imageWidth: 575px;
     }
 
     &_next {
-      // margin-right: 0;
-      // margin-left: - $imageWidth * 0.15;
       transform: rotate(180deg);
+    }
+
+    &_hide {
+      z-index: -1;
+      opacity: 0;
     }
   }
 
@@ -118,8 +132,7 @@ $imageWidth: 575px;
 }
 
 .modal-close-button {
-  z-index: 500;
   position: sticky;
   top: 15px;
-  left: 95%;
+  left: calc(95%);
 }

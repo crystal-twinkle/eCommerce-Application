@@ -11,6 +11,7 @@ export default class Slider {
   private sliderWraper: ElementBuilder;
   private buttonNext: ElementBuilder;
   private buttonPrev: ElementBuilder;
+  private sliderBlur: ElementBuilder;
   private slides: HTMLElement[];
   private index: number;
 
@@ -61,10 +62,10 @@ export default class Slider {
 
   private buildSlider(): void {
     this.sliderWraper.append([this.contentContainer.getElement()]);
-    if (this.slides.length > 1) {
-      this.slider.append([this.buttonPrev.getElement(), this.sliderWraper.getElement(), this.buttonNext.getElement()]);
-    } else {
-      this.slider.append([this.sliderWraper.getElement()]);
+    this.slider.append([this.buttonPrev.getElement(), this.sliderWraper.getElement(), this.buttonNext.getElement()]);
+    if (this.slides.length === 1) {
+      this.buttonNext.getElement().classList.add('slider__button_hide');
+      this.buttonPrev.getElement().classList.add('slider__button_hide');
     }
   }
 
@@ -83,10 +84,12 @@ export default class Slider {
     }
 
     this.setContent();
-    this.contentContainer.setStyleClass('slider__content-container next');
+    this.contentContainer.getElement().classList.remove('stop');
+    this.contentContainer.getElement().classList.add('next');
 
     const transitionEndHandler = () => {
-      this.contentContainer.setStyleClass('slider__content-container stop');
+      this.contentContainer.getElement().classList.remove('next');
+      this.contentContainer.getElement().classList.add('stop');
       this.contentContainer.getElement().firstChild.remove();
       this.contentContainer.getElement().removeEventListener('transitionend', transitionEndHandler);
 
@@ -108,10 +111,12 @@ export default class Slider {
     }
 
     this.contentContainer.prepend([this.slides[this.index]]);
-    this.contentContainer.setStyleClass('slider__content-container prev');
+    this.contentContainer.getElement().classList.remove('stop');
+    this.contentContainer.getElement().classList.add('prev');
 
     const transitionEndHandler = () => {
-      this.contentContainer.setStyleClass('slider__content-container stop');
+      this.contentContainer.getElement().classList.remove('prev');
+      this.contentContainer.getElement().classList.add('stop');
       this.contentContainer.getElement().lastChild.remove();
       this.contentContainer.getElement().removeEventListener('transitionend', transitionEndHandler);
 
@@ -128,23 +133,18 @@ export default class Slider {
     disableScroll();
 
     this.slider.getElement().classList.add('slider_pop-up');
+    this.contentContainer.getElement().classList.add('slider__content-container_pop-up');
+    this.slides.forEach((slide) => {
+      slide.classList.add('slider__slide_pop-up');
+    });
 
-    const sliderBlur = new ElementBuilder({
+    this.sliderBlur = new ElementBuilder({
       tag: 'div',
       styleClass: 'slider__blur slider__blur_hide',
     });
 
     const closeButton = new Button({
-      callback: () => {
-        sliderBlur.setStyleClass('slider__blur slider__blur_hide');
-        setTimeout(() => {
-          sliderBlur.getElement().remove();
-          enableScroll();
-        }, 500);
-        this.slider.getElement().classList.remove('slider_pop-up');
-        this.contentContainer.getElement().addEventListener('click', this.openModal);
-      },
-
+      callback: this.closeModal,
       type: ButtonType.CIRCLE,
       icon: { name: 'cross', position: ButtonIconPosition.RIGHT },
       size: ButtonSize.SMALL,
@@ -152,11 +152,31 @@ export default class Slider {
 
     closeButton.getElement().classList.add('modal-close-button');
 
-    sliderBlur.append([closeButton.getElement()]);
-    document.body.append(sliderBlur.getElement());
+    this.sliderBlur.append([closeButton.getElement()]);
+    document.body.append(this.sliderBlur.getElement());
     setTimeout(() => {
-      sliderBlur.setStyleClass('slider__blur');
+      this.sliderBlur.setStyleClass('slider__blur');
     });
+  };
+
+  private closeModal = (): void => {
+    this.sliderBlur.setStyleClass('slider__blur slider__blur_hide');
+
+    setTimeout(() => {
+      this.sliderBlur.getElement().remove();
+      enableScroll();
+    }, 500);
+
+    this.slider.getElement().classList.remove('slider_pop-up');
+    this.contentContainer.getElement().classList.remove('slider__content-container_pop-up');
+    this.contentContainer.getElement().firstElementChild.classList.remove('slider__slide_pop-up');
+
+    this.slides.forEach((slide) => {
+      slide.classList.remove('slider__slide_pop-up');
+    });
+
+    this.contentContainer.getElement().addEventListener('click', this.openModal);
+    this.contentContainer.getElement().classList.remove('stop');
   };
 
   public getElement(): HTMLElement {

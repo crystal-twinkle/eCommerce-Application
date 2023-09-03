@@ -1,11 +1,66 @@
 .product-view {
+  &__title {
+    padding: 60px 0;
+    color: #121212;
+    font-family: Roboto;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 87.305%; /* 34.922px */
+  }
+
   &__content {
+    min-height: 575px;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
+  }
+
+  &__slider-wrapper {
+    width: 49%;
   }
 
   &__details {
     display: flex;
+    flex: 1;
     flex-direction: column;
+    gap: 10%;
+    padding-left: 9.4%;
+    margin: 0;
+  }
+
+  &__price {
+    padding: 10px 0;
+    color: #121212;
+    font-family: Roboto;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 87.305%;
+
+    &_cross-out {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    &_discounted {
+      color: red;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    gap: 5%;
+  }
+
+  &__description {
+    padding: 10px 0;
+    max-width: 490px;
+    color: #7d7d7d;
+    font-family: Roboto;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
   }
 }

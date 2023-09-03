@@ -1,8 +1,10 @@
 import './product-view.scss';
-import { Product } from '@commercetools/platform-sdk';
+import { DiscountedPrice, Price, Product } from '@commercetools/platform-sdk';
 import ElementBuilder from '../shared/lib/element-builder';
 import ViewBuilder from '../shared/lib/view-builder';
 import PageTitle from '../features/page-title/page-title';
+import Button from '../shared/ui/button/button';
+import { ButtonSize, ButtonType, ButtonIconPosition } from '../shared/ui/button/models';
 import Slider from '../features/slider/slider';
 import ProductApi from '../entities/product-api';
 
@@ -11,6 +13,8 @@ export default class ProductView extends ViewBuilder {
   slider: Slider;
   id: string;
   data: Product;
+  price: Price;
+  disountedPrice: DiscountedPrice;
 
   constructor() {
     super('product-view');
@@ -32,50 +36,126 @@ export default class ProductView extends ViewBuilder {
       slide.append([slideImage]);
       slides.push(slide.getElement());
     });
-    console.log(images);
+
     return slides;
   }
 
+  private getPrice(isDiscounted = false) {
+    this.price = this.data.masterData.current.masterVariant.prices[0];
+    let centAmount = this.price.value.centAmount;
+
+    if (isDiscounted) {
+      centAmount = this.price.discounted.value.centAmount;
+    }
+
+    const fractionDigits = this.price.value.fractionDigits;
+    const currencyCode = this.price.value.currencyCode;
+    const shortPrice = centAmount / 10 ** fractionDigits;
+    const formatedPrice = new Intl.NumberFormat(`us-US`, {
+      style: 'currency',
+      currency: `${currencyCode}`,
+    }).format(shortPrice);
+
+    return formatedPrice;
+  }
+
   public configureView() {
-    console.log(ProductApi.getProducts());
     const pageTitle = new PageTitle(this.data.masterData.current.name['en-US']);
-    const price = new ElementBuilder({
+    pageTitle.getElement().classList.add('product-view__title');
+
+    this.slider = new Slider(this.createSlides());
+
+    const sliderWrapper = new ElementBuilder({
       tag: 'div',
-      styleClass: 'product-view__price',
-      // content: `${this.data.masterData.current.masterVariant.prices[1].value.centAmount}`,
+      styleClass: 'product-view__slider-wrapper',
     });
-
-    // const sizes = new ElementBuilder({
-    //   tag: 'div',
-    //   styleClass: 'product-view__sizes',
-    //   content: '$50',
-    // });
-
-    // const sizes = new ElementBuilder({
-    //   tag: 'div',
-    //   styleClass: 'product-view__sizes',
-    // });
+    sliderWrapper.append([this.slider.getElement()]);
+    const productViewcontent = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'product-view__content',
+    });
 
     const details = new ElementBuilder({
       tag: 'div',
       styleClass: 'product-view__details',
     });
 
-    details.append([price.getElement()]);
-
-    const content = new ElementBuilder({
+    const priceContainer = new ElementBuilder({
       tag: 'div',
-      styleClass: 'product-view__content',
+      styleClass: 'product-view__price-container',
     });
 
-    this.slider = new Slider(this.createSlides());
-    content.append([this.slider.getElement(), details.getElement()]);
-    return [pageTitle.getElement(), content.getElement()];
+    const price = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'product-view__price',
+      content: `${this.getPrice()}`,
+    });
+    priceContainer.append([price.getElement()]);
+
+    const buttonContainer = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'product-view__buttons',
+    });
+
+    const toCartButton = new Button({
+      type: ButtonType.DEFAULT,
+      text: 'Add to cart',
+      icon: {
+        name: 'cart',
+        position: ButtonIconPosition.RIGHT,
+      },
+    });
+
+    const likeButton = new Button({
+      type: ButtonType.CIRCLE_WITHOUT_BORDER,
+      size: ButtonSize.SMALL,
+      icon: {
+        name: 'heart',
+        position: ButtonIconPosition.LEFT,
+      },
+    });
+
+    buttonContainer.append([toCartButton.getElement(), likeButton.getElement()]);
+
+    const descriptionContainer = new ElementBuilder({
+      tag: 'div',
+    });
+
+    const descriptionHeading = new ElementBuilder({
+      tag: 'h3',
+      content: 'Description',
+    });
+
+    const descritionData = this.data.masterData.current.description['en-US'];
+    const descrition = new ElementBuilder({
+      tag: 'p',
+      content: `${descritionData}`,
+      styleClass: 'product-view__description',
+    });
+
+    descriptionContainer.append([descriptionHeading.getElement(), descrition.getElement()]);
+
+    details.append([priceContainer.getElement(), buttonContainer.getElement(), descriptionContainer.getElement()]);
+
+    if (this.price.discounted) {
+      const descountedPrice = new ElementBuilder({
+        tag: 'div',
+        styleClass: 'product-view__price',
+        content: `${this.getPrice(true)}`,
+      });
+
+      priceContainer.prepend([descountedPrice.getElement()]);
+      descountedPrice.setStyleClass('product-view__price product-view__price_discounted');
+      price.setStyleClass('product-view__price product-view__price_cross-out');
+    }
+
+    productViewcontent.append([sliderWrapper.getElement(), details.getElement()]);
+    return [pageTitle.getElement(), productViewcontent.getElement()];
   }
 
   public buildView() {
     this.id = window.location.pathname.split('/')[window.location.pathname.split('/').length - 1];
-    ProductApi.getProduct(this.id).then((data) => {
+    ProductApi.getProduct(this.id).then(async (data) => {
       this.data = data;
       this.wrapper.getElement().append(...this.configureView());
       this.view.getElement().append(this.wrapper.getElement());
