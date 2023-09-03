@@ -2,25 +2,7 @@ import ElementBuilder from '../../lib/element-builder';
 import './dropdown.scss';
 import CommonBuilderWrapper from '../../lib/common-builder-wrapper';
 import iconsFactory from '../../lib/icons-factory';
-
-export interface IDropdownItem {
-  value: string;
-  content: string;
-}
-
-export interface IDropdownConfig {
-  items: IDropdownItem[];
-  selectedItemIndex?: number;
-  placeholder?: string;
-  type?: DropdownType;
-  required?: boolean;
-  styleClass?: string;
-}
-
-export enum DropdownType {
-  DEFAULT = '',
-  FORM = 'form',
-}
+import { IDropdownConfig, IDropdownItem } from './models';
 
 export default class Dropdown extends CommonBuilderWrapper {
   private selectedItem: IDropdownItem;
@@ -29,7 +11,7 @@ export default class Dropdown extends CommonBuilderWrapper {
   private textBuilder: ElementBuilder;
   private arrowBuilder: ElementBuilder;
 
-  constructor(config: IDropdownConfig) {
+  constructor(private config: IDropdownConfig) {
     super();
     this.items = config.items;
     this.selectedItem = typeof config.selectedItemIndex === 'number' ? this.items[config.selectedItemIndex] : null;
@@ -41,7 +23,7 @@ export default class Dropdown extends CommonBuilderWrapper {
 
     const button = new ElementBuilder({
       tag: 'button',
-      styleClass: `dropdown-button _${config.type}`,
+      styleClass: `dropdown-button _${config.type || ''}`,
       tagSettings: {
         type: 'button',
       },
@@ -49,7 +31,6 @@ export default class Dropdown extends CommonBuilderWrapper {
     this.textBuilder = new ElementBuilder({
       tag: 'span',
       styleClass: 'dropdown-empty',
-      content: this.selectedItem?.content || config.placeholder,
     });
     this.arrowBuilder = new ElementBuilder({
       tag: 'span',
@@ -66,7 +47,30 @@ export default class Dropdown extends CommonBuilderWrapper {
         callback: this.selectItem,
       },
     });
+    this.setItems(config.items);
+    this.builder.append([button.getElement(), this.itemsBuilder.getElement()]);
+  }
 
+  private selectItem = (event: Event): void => {
+    const htmlItemData: DOMStringMap = (event.srcElement as HTMLElement).dataset;
+    this.selectedItem = this.items[htmlItemData.index as unknown as number];
+    this.textBuilder.setContent(this.selectedItem.content);
+    this.textBuilder.setStyleClass();
+    this.config.callback?.(this.selectedItem);
+  };
+
+  public getSelectedItem(): IDropdownItem {
+    return this.selectedItem;
+  }
+
+  public setItems(items: IDropdownItem[], selectedItemIndex?: number): void {
+    this.items = items;
+    this.selectedItem = typeof selectedItemIndex === 'number' ? this.items[selectedItemIndex] : null;
+
+    this.textBuilder.setContent();
+    this.textBuilder.setContent(this.selectedItem?.content || this.config.placeholder);
+
+    this.itemsBuilder.setContent();
     this.itemsBuilder.append(
       this.items.map((item: IDropdownItem, index: number) => {
         return new ElementBuilder({
@@ -79,18 +83,5 @@ export default class Dropdown extends CommonBuilderWrapper {
         }).getElement();
       }),
     );
-
-    this.builder.append([button.getElement(), this.itemsBuilder.getElement()]);
-  }
-
-  private selectItem = (event: Event): void => {
-    const htmlItemData: DOMStringMap = (event.srcElement as HTMLElement).dataset;
-    this.selectedItem = this.items[htmlItemData.index as unknown as number];
-    this.textBuilder.setContent(this.selectedItem.content);
-    this.textBuilder.setStyleClass();
-  };
-
-  public getSelectedItem(): IDropdownItem {
-    return this.selectedItem;
   }
 }

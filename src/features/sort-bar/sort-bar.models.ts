@@ -4,8 +4,8 @@ export enum SortButtonType {
 }
 
 export enum SortCriteria {
-  BEST,
-  WORST,
+  ASC = 'asc',
+  DESC = 'desc',
 }
 
 export interface SortButtonCallbackValue {

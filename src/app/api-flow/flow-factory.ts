@@ -61,7 +61,6 @@ export class FlowFactory {
       .withProjectKey(ApiConfig.CTP_PROJECT_KEY)
       .withRefreshTokenFlow(options)
       .withHttpMiddleware(this.httpMiddlewareOptions)
-      .withLoggerMiddleware()
       .build();
 
     this.refreshTokenFlow = createApiBuilderFromCtpClient(ctpClient).withProjectKey({
@@ -93,7 +92,6 @@ export class FlowFactory {
       .withProjectKey(projectKey)
       .withPasswordFlow(passwordAuthMiddlewareOptions)
       .withHttpMiddleware(this.httpMiddlewareOptions)
-      .withLoggerMiddleware()
       .build();
 
     this.passwordFlow = createApiBuilderFromCtpClient(ctpClient).withProjectKey({
@@ -117,7 +115,6 @@ export class FlowFactory {
       .withProjectKey(ApiConfig.CTP_PROJECT_KEY)
       .withClientCredentialsFlow(authMiddlewareOptions)
       .withHttpMiddleware(this.httpMiddlewareOptions)
-      .withLoggerMiddleware()
       .build();
 
     this.clientCredentialsFlow = createApiBuilderFromCtpClient(ctpClient).withProjectKey({
@@ -130,7 +127,6 @@ export class FlowFactory {
       .withProjectKey(ApiConfig.CTP_PROJECT_KEY)
       .withExistingTokenFlow(token, { force: true })
       .withHttpMiddleware(this.httpMiddlewareOptions)
-      .withLoggerMiddleware()
       .build();
 
     this.existingTokenFlow = createApiBuilderFromCtpClient(ctpClient).withProjectKey({
@@ -155,7 +151,6 @@ export class FlowFactory {
       .withProjectKey(ApiConfig.CTP_PROJECT_KEY)
       .withAnonymousSessionFlow(options)
       .withHttpMiddleware(this.httpMiddlewareOptions)
-      .withLoggerMiddleware()
       .build();
 
     this.anonymousSessionFlow = createApiBuilderFromCtpClient(ctpClient).withProjectKey({

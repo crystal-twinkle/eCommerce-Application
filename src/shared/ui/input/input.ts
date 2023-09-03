@@ -1,4 +1,4 @@
-import ElementBuilder from '../../lib/element-builder';
+import ElementBuilder, { IElementEvent } from '../../lib/element-builder';
 import CommonBuilderWrapper from '../../lib/common-builder-wrapper';
 import { ValidationParams } from '../../lib/validate/validation-params';
 import './input.scss';
@@ -10,6 +10,7 @@ interface IInputConfig {
   value?: string;
   name?: string;
   styleClass?: string;
+  event?: IElementEvent;
 }
 
 export default class Input extends CommonBuilderWrapper {
@@ -27,6 +28,9 @@ export default class Input extends CommonBuilderWrapper {
         type: config.type || 'text',
       },
     });
+    if (config.event) {
+      this.builder.setEventHandler(config.event);
+    }
     if (config.placeholder) {
       this.builder.setTagSettings({
         placeholder: config.placeholder,
