@@ -5,6 +5,7 @@ export enum EventBusActions {
   SORT_CATALOG = 'sort-catalog',
   SEARCH_PRODUCT = 'search-product',
   SORT_BY_PRICE = 'sort-by-price',
+  SORT_BY_PRICE_FROM = 'sort-by-price-from',
   SORT_BY_ALPHABET = 'sort-by-alphabet',
 }
 

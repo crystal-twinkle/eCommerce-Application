@@ -5,7 +5,7 @@ import { ButtonType } from '../../shared/ui/button/models';
 import './sort.bar.scss';
 import { SortButtonCallbackValue, SortButtonType, SortCriteria } from './sort-bar.models';
 import Input from '../../shared/ui/input/input';
-import store from '../../app/store';
+import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
 
 export default class SortBar extends CommonBuilderWrapper {
   private buttons: {
@@ -36,7 +36,7 @@ export default class SortBar extends CommonBuilderWrapper {
     searchInput.getElement().addEventListener('keypress', (e: KeyboardEvent) => {
       if (e.code === 'Enter') {
         const searchValue = searchInput.getElement().value.toLowerCase().replace(/\n/g, '');
-        store.setSearch(searchValue);
+        eventBus.publish(EventBusActions.SEARCH_PRODUCT, searchValue);
       }
     });
     const searchField = new ElementBuilder({
@@ -55,15 +55,13 @@ export default class SortBar extends CommonBuilderWrapper {
     });
     const priceSortButton: Button = this.getSortButton(SortButtonType.PRICE);
     priceSortButton.getElement().addEventListener('click', () => {
-      const priceText = priceSortButton.getElement().textContent;
-      const lastChar = priceText[priceText.length - 1];
-      store.setSortPrice(lastChar);
+      const priceText: string = priceSortButton.getElement().textContent;
+      eventBus.publish(EventBusActions.SORT_BY_PRICE, priceText);
     });
     const alphabetSortButton: Button = this.getSortButton(SortButtonType.ALPHABET);
     alphabetSortButton.getElement().addEventListener('click', () => {
-      const priceText = alphabetSortButton.getElement().textContent;
-      const lastChar = priceText[priceText.length - 1];
-      store.setSortAlphabet(lastChar);
+      const alphabetText = alphabetSortButton.getElement().textContent;
+      eventBus.publish(EventBusActions.SORT_BY_ALPHABET, alphabetText);
     });
 
     this.buttons = [
