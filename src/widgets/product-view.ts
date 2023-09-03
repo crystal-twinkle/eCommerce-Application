@@ -6,7 +6,7 @@ import PageTitle from '../features/page-title/page-title';
 import Button from '../shared/ui/button/button';
 import { ButtonSize, ButtonType, ButtonIconPosition } from '../shared/ui/button/models';
 import Slider from '../features/slider/slider';
-import ProductApi from '../entities/product-api';
+import ProductApi from '../entities/product/api';
 
 export default class ProductView extends ViewBuilder {
   slides: HTMLElement[];
