@@ -94,18 +94,18 @@ export default class ProductListCard extends CommonBuilderWrapper {
     this.builder.append([img.getElement(), info.getElement(), details.getElement()]);
   }
 
-  private getPrice(isDiscounted = false) {
+  private getPrice(isDiscounted = false): string {
     this.price = this.data.masterVariant.prices[0];
-    let centAmount = this.price.value.centAmount;
+    let centAmount: number = this.price.value.centAmount;
 
     if (isDiscounted) {
       centAmount = this.price.discounted.value.centAmount;
     }
 
-    const fractionDigits = this.price.value.fractionDigits;
-    const currencyCode = this.price.value.currencyCode;
-    const shortPrice = centAmount / 10 ** fractionDigits;
-    const formatedPrice = new Intl.NumberFormat(`us-US`, {
+    const fractionDigits: number = this.price.value.fractionDigits;
+    const currencyCode: string = this.price.value.currencyCode;
+    const shortPrice: number = centAmount / 10 ** fractionDigits;
+    const formatedPrice: string = new Intl.NumberFormat(`us-US`, {
       style: 'currency',
       currency: `${currencyCode}`,
     }).format(shortPrice);

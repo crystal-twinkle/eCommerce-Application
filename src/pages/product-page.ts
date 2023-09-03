@@ -1,5 +1,5 @@
 import ViewBuilder from '../shared/lib/view-builder';
-import ProductView from '../widgets/product-view';
+import ProductView from '../widgets/product-view/product-view';
 
 export default class ProductPage extends ViewBuilder {
   constructor(private id: string) {
