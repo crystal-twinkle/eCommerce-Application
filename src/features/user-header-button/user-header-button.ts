@@ -10,9 +10,6 @@ import { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/butt
 import store from '../../app/store';
 
 export default class UserHeaderButton extends CommonBuilderWrapper {
-  private readonly POPUP_ID = 'userHeaderButtonPopupId';
-  private readonly POPUP_WRAPPER_ID = 'userHeaderButtonPopupWrapperId';
-
   private headerButton: Button;
   private loginButton: Button;
   private logoutButton: Button;

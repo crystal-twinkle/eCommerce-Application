@@ -4,19 +4,17 @@ import './products-list.scss';
 import ElementBuilder from '../../shared/lib/element-builder';
 import Loader from '../../shared/ui/loader/loader';
 import ProductListCard from '../product-list-card/product-list-card';
+import EmptyView from '../../shared/ui/empty-view/empty-view';
 
 export default class ProductsList extends CommonBuilderWrapper {
   private productCards: HTMLElement[];
   private loader: Loader;
-  private emptyView: HTMLElement;
+  private emptyView: EmptyView;
 
   constructor() {
     super();
     this.loader = new Loader();
-    this.emptyView = new ElementBuilder({
-      tag: 'span',
-      content: 'Empty',
-    }).getElement();
+    this.emptyView = new EmptyView('No Products');
 
     this.builder = new ElementBuilder({
       tag: 'div',
@@ -36,7 +34,9 @@ export default class ProductsList extends CommonBuilderWrapper {
     if (visible) {
       this.builder.append([this.loader.getElement()]);
     } else {
-      this.productCards?.length ? this.builder.append(this.productCards) : this.builder.append([this.emptyView]);
+      this.productCards?.length
+        ? this.builder.append(this.productCards)
+        : this.builder.append([this.emptyView.getElement()]);
     }
   }
 }

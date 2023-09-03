@@ -1,6 +1,5 @@
 import { ProductProjection } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/product';
 import ViewBuilder from '../../shared/lib/view-builder';
-import PageTitle from '../../features/page-title/page-title';
 import ElementBuilder from '../../shared/lib/element-builder';
 import ProductsFilter from '../../features/products-filter/products-filter';
 import './products-list-page.scss';
@@ -20,7 +19,6 @@ export default class ProductsListPage extends ViewBuilder {
   }
 
   public configureView(): HTMLElement[] {
-    const titleView = new PageTitle('Products list');
     const sortBarView = new SortBar((sortParams: string[], searchValue: string) =>
       this.loadProducts(this.productsFilter.getFilterParams(), sortParams, searchValue),
     );
@@ -34,7 +32,7 @@ export default class ProductsListPage extends ViewBuilder {
     });
     productsView.append([this.productsFilter.getElement(), this.productsList.getElement()]);
 
-    return [titleView.getElement(), sortBarView.getElement(), productsView.getElement()];
+    return [sortBarView.getElement(), productsView.getElement()];
   }
 
   public buildView(): void {
