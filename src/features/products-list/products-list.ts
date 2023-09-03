@@ -1,4 +1,4 @@
-import { Product } from '@commercetools/platform-sdk';
+import { ProductProjection } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/product';
 import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
 import './products-list.scss';
 import ElementBuilder from '../../shared/lib/element-builder';
@@ -24,9 +24,9 @@ export default class ProductsList extends CommonBuilderWrapper {
     });
   }
 
-  public setProducts(products: Product[]): void {
+  public setProducts(products: ProductProjection[]): void {
     this.builder.getElement().textContent = '';
-    this.productCards = products.map((product: Product) => new ProductListCard(product).getElement());
+    this.productCards = products.map((product: ProductProjection) => new ProductListCard(product).getElement());
     this.builder.append(this.productCards);
   }
 

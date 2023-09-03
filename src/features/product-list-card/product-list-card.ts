@@ -1,14 +1,14 @@
-import { Product } from '@commercetools/platform-sdk';
+import { ProductProjection } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/product';
 import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
 import ElementBuilder from '../../shared/lib/element-builder';
 import Button from '../../shared/ui/button/button';
 import { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/models';
 import './product-list-card.scss';
 import appRouter from '../../shared/lib/router/router';
-import { ID_SELECTOR, Page } from '../../shared/lib/router/pages';
+import { Page } from '../../shared/lib/router/pages';
 
 export default class ProductListCard extends CommonBuilderWrapper {
-  constructor(private data: Product) {
+  constructor(private data: ProductProjection) {
     super();
 
     this.builder = new ElementBuilder({
@@ -20,19 +20,19 @@ export default class ProductListCard extends CommonBuilderWrapper {
       tag: 'img',
       styleClass: 'product-list-card__img',
       tagSettings: {
-        src: data.masterData.current.masterVariant.images?.[0]?.url,
+        src: data.masterVariant.images?.[0]?.url,
         alt: 'Product image',
       },
     });
     const price = new ElementBuilder({
       tag: 'div',
       styleClass: 'product-list-card__price',
-      content: `${data.masterData.current.masterVariant.prices[0]?.value?.centAmount || '2000'}$`,
+      content: `${data.masterVariant.prices[0]?.value?.centAmount}$`,
     });
     const description = new ElementBuilder({
       tag: 'span',
       styleClass: 'product-list-card__description',
-      content: data.masterData.current.name?.['en-US'],
+      content: data.name?.['en-US'],
     });
     const likeButton = new Button({
       type: ButtonType.CIRCLE_WITHOUT_BORDER,

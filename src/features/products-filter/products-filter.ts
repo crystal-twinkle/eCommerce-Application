@@ -1,33 +1,31 @@
+import { Category } from '@commercetools/platform-sdk';
 import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
 import './products-filter.scss';
 import ElementBuilder from '../../shared/lib/element-builder';
 import Input from '../../shared/ui/input/input';
-import { CATALOG_ITEMS } from './products-filter.model';
-import store from '../../app/store';
-import Dropdown, { DropdownType } from '../../shared/ui/dropdown/dropdown';
-import Button from '../../shared/ui/button/button';
-import { ButtonType } from '../../shared/ui/button/models';
-import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
-
-const catalogDropdown = new Dropdown({
-  type: DropdownType.DEFAULT,
-  items: CATALOG_ITEMS,
-  selectedItemIndex: 0,
-});
+import { IProductsFilterParams } from '../../entities/product/model';
+import Dropdown from '../../shared/ui/dropdown/dropdown';
+import { IDropdownItem } from '../../shared/ui/dropdown/models';
 
 export default class ProductsFilter extends CommonBuilderWrapper {
-  constructor() {
-    super();
+  private filterParams: IProductsFilterParams;
+  private categoriesField: Dropdown;
+  private priceFromTimeout: ReturnType<typeof setTimeout>;
+  private priceToTimeout: ReturnType<typeof setTimeout>;
+  private priceFrom: number;
+  private priceTo: number;
 
+  constructor(private filterCallback: (params: IProductsFilterParams) => void) {
+    super();
+    this.filterParams = {};
     this.builder = new ElementBuilder({
       tag: 'div',
       styleClass: 'products-filter',
     });
-
-    this.builder.append([this.getCatalogField().getElement(), this.getPriceField().getElement()]);
+    this.builder.append([this.getCategoriesField().getElement(), this.getPriceField().getElement()]);
   }
 
-  private getCatalogField(): ElementBuilder {
+  private getCategoriesField(): ElementBuilder {
     const catalogFieldBuilder = new ElementBuilder({
       tag: 'div',
     });
@@ -36,15 +34,15 @@ export default class ProductsFilter extends CommonBuilderWrapper {
       content: 'Catalog',
       styleClass: 'products-filter__field-title',
     });
-    let oldText = 'All';
-    catalogDropdown.getElement().addEventListener('click', () => {
-      const catalogDropdownText: string = catalogDropdown?.getSelectedItem()?.content;
-      if (catalogDropdownText && catalogDropdownText !== oldText) {
-        store.setCategory(catalogDropdownText);
-        oldText = catalogDropdownText;
-      }
+    this.categoriesField = new Dropdown({
+      placeholder: 'Categories',
+      items: [],
+      callback: (selectedItem: IDropdownItem) => {
+        this.filterParams.categoryId = (selectedItem.data as Category).key !== 'all' ? selectedItem.value : null;
+        this.filterCallback(this.filterParams);
+      },
     });
-    catalogFieldBuilder.append([fieldName.getElement(), catalogDropdown.getElement()]);
+    catalogFieldBuilder.append([fieldName.getElement(), this.categoriesField.getElement()]);
     return catalogFieldBuilder;
   }
 
@@ -61,23 +59,34 @@ export default class ProductsFilter extends CommonBuilderWrapper {
       type: 'number',
       styleClass: 'products-filter__price-input',
       placeholder: 'From',
+      event: {
+        type: 'input',
+        callback: (event) => {
+          this.priceFrom = +(event.srcElement as HTMLInputElement).value;
+          clearTimeout(this.priceFromTimeout);
+          this.priceFromTimeout = setTimeout(() => {
+            this.updatePriceFilterParam();
+            this.filterCallback(this.filterParams);
+          }, 2000);
+        },
+      },
     });
     const inputTo = new Input({
       type: 'number',
       styleClass: 'products-filter__price-input',
       placeholder: 'To',
-    });
-
-    const priceSearchButton = new Button({
-      type: ButtonType.DEFAULT,
-      text: 'Search',
-      callback: () => {
-        const fromNumber: number = Number(inputFrom.getElement().value);
-        const toNumber: number = Number(inputTo.getElement().value);
-        eventBus.publish(EventBusActions.SORT_BY_PRICE_FROM, [fromNumber, toNumber]);
+      event: {
+        type: 'input',
+        callback: (event) => {
+          this.priceTo = +(event.srcElement as HTMLInputElement).value;
+          clearTimeout(this.priceToTimeout);
+          this.priceToTimeout = setTimeout(() => {
+            this.updatePriceFilterParam();
+            this.filterCallback(this.filterParams);
+          }, 2000);
+        },
       },
     });
-
     const separator = new ElementBuilder({
       tag: 'span',
       content: '—',
@@ -88,8 +97,23 @@ export default class ProductsFilter extends CommonBuilderWrapper {
     });
 
     inputWrapper.append([inputFrom.getElement(), separator.getElement(), inputTo.getElement()]);
-    priceFieldBuilder.append([fieldName.getElement(), inputWrapper.getElement(), priceSearchButton.getElement()]);
+    priceFieldBuilder.append([fieldName.getElement(), inputWrapper.getElement()]);
 
     return priceFieldBuilder;
+  }
+
+  private updatePriceFilterParam = (): void => {
+    this.filterParams.price = `(${this.priceFrom || '*'} to ${this.priceTo || '*'})`;
+  };
+
+  public setCategories = (categories: Category[]): void => {
+    this.categoriesField.setItems(
+      categories.map((category: Category) => ({ content: category.name['en-US'], value: category.id, data: category })),
+      0,
+    );
+  };
+
+  public getFilterParams(): IProductsFilterParams {
+    return this.filterParams;
   }
 }
