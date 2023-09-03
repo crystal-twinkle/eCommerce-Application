@@ -54,6 +54,7 @@ export default class Dropdown extends CommonBuilderWrapper {
   private selectItem = (event: Event): void => {
     const htmlItemData: DOMStringMap = (event.srcElement as HTMLElement).dataset;
     this.selectedItem = this.items[htmlItemData.index as unknown as number];
+    console.log(this.selectedItem, this.selectedItem.content);
     this.textBuilder.setContent(this.selectedItem.content);
     this.textBuilder.setStyleClass();
     this.config.callback?.(this.selectedItem);
@@ -61,6 +62,14 @@ export default class Dropdown extends CommonBuilderWrapper {
 
   public getSelectedItem(): IDropdownItem {
     return this.selectedItem;
+  }
+
+  public setSelectedItem(value: string): void {
+    this.textBuilder.setContent(value);
+  }
+
+  public getSelectedText(): string {
+    return this.textBuilder.getElement().textContent;
   }
 
   public setItems(items: IDropdownItem[], selectedItemIndex?: number): void {

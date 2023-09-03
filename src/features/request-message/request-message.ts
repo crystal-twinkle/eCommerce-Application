@@ -61,4 +61,9 @@ export default class RequestMessage extends CommonBuilderWrapper {
     this.requestMessageText.textContent = 'Something went wrong, try again later :)';
     this.basicAction();
   }
+
+  public updateUser() {
+    this.requestMessageText.textContent = 'Your details are up to date';
+    this.basicAction();
+  }
 }

@@ -28,10 +28,9 @@ export default class UserProfile extends CommonBuilderWrapper {
   private readonly editAddressButton: HTMLElement;
   private readonly addAddressButton: HTMLElement;
   private readonly changePasswordButton: HTMLElement;
-  private readonly actionsAddress: CustomerUpdateAction[];
+  private actionsAddress: CustomerUpdateAction[];
 
   private id: string;
-  private version: number;
   private callbackEditAddress: () => void;
   private callbackAddAddress: () => void;
   private addresses: ElementBuilder;
@@ -40,8 +39,8 @@ export default class UserProfile extends CommonBuilderWrapper {
   private modalInfo: ElementBuilder;
   private currentPassword: PasswordInput | undefined;
   private newPassword: PasswordInput | undefined;
-  private readonly modalShipAddressElems: HTMLInputElement[];
-  private readonly modalBillAddressElems: HTMLInputElement[];
+  private modalShipAddressElems: HTMLInputElement[];
+  private modalBillAddressElems: HTMLInputElement[];
 
   constructor() {
     super();
@@ -61,20 +60,22 @@ export default class UserProfile extends CommonBuilderWrapper {
     };
     this.checkboxes = addCheckbox(this.resultsCheckbox);
 
-    this.actionsAddress = [];
     this.editAddressButton = new Button({
       type: ButtonType.DEFAULT_COLORED,
       text: 'Edit addresses',
+      styleClass: 'user__btn',
       callback: () => this.callbackEditAddress(),
     }).getElement();
     this.addAddressButton = new Button({
       type: ButtonType.DEFAULT_COLORED,
       text: 'Add address',
+      styleClass: 'user__btn',
       callback: () => this.callbackAddAddress(),
     }).getElement();
     this.changePasswordButton = new Button({
       type: ButtonType.DEFAULT_COLORED,
       text: 'Change password',
+      styleClass: 'user__btn',
       callback: () => this.callbackChangePassword(),
     }).getElement();
     this.addresses = new ElementBuilder({
@@ -85,46 +86,54 @@ export default class UserProfile extends CommonBuilderWrapper {
       tag: 'div',
       styleClass: 'hidden modal',
     });
-    this.modalShipAddressElems = [];
-    this.modalBillAddressElems = [];
 
     this.initData(store.user);
     eventBus.subscribe(EventBusActions.UPDATE_USER, (data) => this.initData(data as Customer));
   }
 
   private initData = (data: Customer): void => {
+    this.builder.setContent();
+    this.addresses.setContent();
     const updateData = data as Customer;
     if (data) {
+      this.actionsAddress = [];
+      this.modalShipAddressElems = [];
+      this.modalBillAddressElems = [];
       this.data = updateData;
       this.id = updateData.id;
-      this.version = updateData.version;
-      this.show(updateData);
+      this.addressFill();
+      this.builder.append([
+        this.userInfo(),
+        this.addresses.getElement(),
+        this.changePasswordButton,
+        this.modalInfo.getElement(),
+      ]);
     }
   };
 
-  protected show(data: Customer): void {
+  protected userInfo(): HTMLElement {
     const userInfoElements = [
       new Input({
-        value: data.firstName,
+        value: this.data.firstName,
         name: 'firstName',
       }).getElement(),
       new Input({
-        value: data.lastName,
+        value: this.data.lastName,
         name: 'lastName',
       }).getElement(),
       new Input({
-        value: data.email,
+        value: this.data.email,
         name: 'email',
       }).getElement(),
       new Input({
         type: 'date',
         name: 'dob',
       })
-        .setTagSettings({ value: data.dateOfBirth })
+        .setTagSettings({ value: this.data.dateOfBirth })
         .getElement(),
     ];
-    this.addInputStyle(userInfoElements);
 
+    this.addInputStyle(userInfoElements);
     const userInfoTitle = new ElementBuilder({
       tag: 'h4',
       content: 'You Info',
@@ -133,6 +142,7 @@ export default class UserProfile extends CommonBuilderWrapper {
     const editUserInfo = new Button({
       type: ButtonType.DEFAULT_COLORED,
       text: 'Edit info',
+      styleClass: 'user__btn',
       callback: () => {
         if (editUserInfo.textContent === 'Edit info') {
           editUserInfo.textContent = 'Save info';
@@ -150,8 +160,12 @@ export default class UserProfile extends CommonBuilderWrapper {
       styleClass: 'user__info',
     }).append([userInfoTitle, ...userInfoElements, editUserInfo]);
 
+    return userInfo.getElement();
+  }
+
+  protected addressFill(): void {
     const addressElems: HTMLInputElement[] = [];
-    if (data.addresses.length) {
+    if (this.data.addresses.length) {
       const shipAddress = new ElementBuilder({
         tag: 'div',
         styleClass: 'user__address',
@@ -159,14 +173,14 @@ export default class UserProfile extends CommonBuilderWrapper {
       });
       addressElems.push(
         ...addAddress(
-          [data.addresses[0].city, data.addresses[0].streetName, data.addresses[0].postalCode],
+          [this.data.addresses[0].city, this.data.addresses[0].streetName, this.data.addresses[0].postalCode],
           shipAddress,
           'Shipping Address',
         ),
       );
       this.addresses.append([shipAddress.getElement()]);
 
-      if (data.addresses.length > 1) {
+      if (this.data.addresses.length > 1) {
         const billAddress = new ElementBuilder({
           tag: 'div',
           styleClass: 'user__address',
@@ -174,7 +188,7 @@ export default class UserProfile extends CommonBuilderWrapper {
         });
         addressElems.push(
           ...addAddress(
-            [data.addresses[1].city, data.addresses[1].streetName, data.addresses[1].postalCode],
+            [this.data.addresses[1].city, this.data.addresses[1].streetName, this.data.addresses[1].postalCode],
             billAddress,
             'Billing Address',
           ),
@@ -187,7 +201,7 @@ export default class UserProfile extends CommonBuilderWrapper {
     this.callbackEditAddress = () => {
       if (this.editAddressButton.textContent === 'Edit addresses') {
         this.editAddressButton.textContent = 'Save changes';
-        this.changeAddress();
+        this.modalAddress();
         this.changeInputStyle(addressElems);
       } else if (addressElems.every((elem) => checkValidator(elem))) {
         if (this.resultsCheckbox.shipUse && this.modalShipAddressElems.every((elem) => checkValidator(elem))) {
@@ -201,13 +215,6 @@ export default class UserProfile extends CommonBuilderWrapper {
     };
 
     this.addresses.append([this.editAddressButton]);
-    this.builder.setContent();
-    this.builder.append([
-      userInfo.getElement(),
-      this.addresses.getElement(),
-      this.changePasswordButton,
-      this.modalInfo.getElement(),
-    ]);
   }
 
   private addInputStyle(elements: HTMLInputElement[]): void {
@@ -224,7 +231,7 @@ export default class UserProfile extends CommonBuilderWrapper {
     });
   }
 
-  protected changeAddress(): void {
+  protected modalAddress(): void {
     const userShipAddressExist = document.getElementById('userShipAddressExist');
     if (userShipAddressExist) {
       if (!this.data.defaultShippingAddressId) {
@@ -239,6 +246,7 @@ export default class UserProfile extends CommonBuilderWrapper {
       }
       userBillAddressExist.append(this.checkboxes.call('billDelete', 'Delete billing address'));
     }
+    countryDropdown.setSelectedItem(this.data.addresses[0].country);
     this.addresses.prepend([countryDropdown.getElement()]);
     let elementsAdded = false;
     if (!userShipAddressExist || !userBillAddressExist) {
@@ -291,19 +299,17 @@ export default class UserProfile extends CommonBuilderWrapper {
   }
 
   protected addNewAddress(inputElems: HTMLInputElement[], whatUse: string): void {
-    this.modalInfo.getElement().classList.add('hidden');
-    const countryDropdownText: string = countryDropdown?.getSelectedItem()?.content;
+    const countryDropdownText: string = countryDropdown?.getSelectedText();
     const [cityInput, streetInput, postalCodeInput] = inputElems;
     const generateRandomKey = () => {
       const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
       const randomIndex = () => Math.floor(Math.random() * characters.length);
       return Array.from({ length: 7 }, () => characters[randomIndex()]).join('');
     };
-    const city = cityInput.value;
-    const streetName = streetInput.value;
-    const postalCode = postalCodeInput.value;
+    const city = cityInput?.value;
+    const streetName = streetInput?.value;
+    const postalCode = postalCodeInput?.value;
     const addressKey = generateRandomKey();
-    blackout.classList.remove('blackout_show');
     this.actionsAddress.push({
       action: 'addAddress',
       address: { country: countryDropdownText, city, streetName, postalCode, key: addressKey },
@@ -314,7 +320,6 @@ export default class UserProfile extends CommonBuilderWrapper {
     if (whatUse === 'billUse') {
       this.actionsAddress.push({ action: 'addBillingAddressId', addressKey });
     }
-    console.log(this.actionsAddress);
   }
 
   protected async editInfo(inputs: HTMLInputElement[]): Promise<void> {
@@ -326,7 +331,7 @@ export default class UserProfile extends CommonBuilderWrapper {
         .withId({ ID: this.id })
         .post({
           body: {
-            version: this.version,
+            version: this.data.version,
             actions: [
               {
                 action: 'setDateOfBirth',
@@ -342,7 +347,7 @@ export default class UserProfile extends CommonBuilderWrapper {
       if (result.statusCode === 200) {
         appRouter.navigate(Page.USER_PROFILE);
         store.setUser(result.body);
-        new RequestMessage().showWithText('New data added');
+        new RequestMessage().updateUser();
       }
     } catch (e) {
       new RequestMessage().badResult();
@@ -364,7 +369,6 @@ export default class UserProfile extends CommonBuilderWrapper {
       this.actionsAddress.push({ action: 'removeBillingAddressId', addressId: this.data.addresses[1].id });
       this.actionsAddress.push({ action: 'removeAddress', addressId: this.data.addresses[1].id });
     }
-
     try {
       const result = await flowFactory
         .getWorkingFlow()
@@ -372,13 +376,13 @@ export default class UserProfile extends CommonBuilderWrapper {
         .withId({ ID: this.id })
         .post({
           body: {
-            version: this.version,
+            version: this.data.version,
             actions: this.actionsAddress,
           },
         })
         .execute();
       if (result.statusCode === 200) {
-        new RequestMessage().showWithText('New data added');
+        new RequestMessage().updateUser();
         appRouter.navigate(Page.USER_PROFILE);
         store.setUser(result.body);
       }
@@ -406,7 +410,7 @@ export default class UserProfile extends CommonBuilderWrapper {
           .post({
             body: {
               id: this.id,
-              version: this.version,
+              version: this.data.version,
               currentPassword: this.currentPassword?.getElement().value,
               newPassword: this.newPassword?.getElement().value,
             },
@@ -414,7 +418,7 @@ export default class UserProfile extends CommonBuilderWrapper {
           .execute();
 
         if (result.statusCode === 200) {
-          new RequestMessage().showWithText('New data added');
+          new RequestMessage().updateUser();
           appRouter.navigate(Page.USER_PROFILE);
           store.setUser(result.body);
         }
