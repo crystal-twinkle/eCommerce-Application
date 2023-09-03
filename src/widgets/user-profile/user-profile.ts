@@ -1,5 +1,5 @@
 import { CustomerUpdateAction } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/customer';
-import { Customer } from '@commercetools/platform-sdk';
+import { Address, Customer } from '@commercetools/platform-sdk';
 import '../../shared/assets/style/hidden.scss';
 import './user-profile.scss';
 import ElementBuilder from '../../shared/lib/element-builder';
@@ -165,7 +165,17 @@ export default class UserProfile extends CommonBuilderWrapper {
 
   protected addressFill(): void {
     const addressElems: HTMLInputElement[] = [];
-    if (this.data.addresses.length) {
+    let infoShipAddress: Address;
+    let infoBillAddress: Address;
+    this.data.addresses.forEach((e) => {
+      if (this.data.shippingAddressIds[0] === e.id) {
+        infoShipAddress = e;
+      }
+      if (this.data.billingAddressIds[0] === e.id) {
+        infoBillAddress = e;
+      }
+    });
+    if (infoShipAddress?.key) {
       const shipAddress = new ElementBuilder({
         tag: 'div',
         styleClass: 'user__address',
@@ -173,14 +183,14 @@ export default class UserProfile extends CommonBuilderWrapper {
       });
       addressElems.push(
         ...addAddress(
-          [this.data.addresses[0].city, this.data.addresses[0].streetName, this.data.addresses[0].postalCode],
+          [infoShipAddress.city, infoShipAddress.streetName, infoShipAddress.postalCode],
           shipAddress,
           'Shipping Address',
         ),
       );
       this.addresses.append([shipAddress.getElement()]);
 
-      if (this.data.addresses.length > 1) {
+      if (infoBillAddress?.key) {
         const billAddress = new ElementBuilder({
           tag: 'div',
           styleClass: 'user__address',
@@ -188,7 +198,7 @@ export default class UserProfile extends CommonBuilderWrapper {
         });
         addressElems.push(
           ...addAddress(
-            [this.data.addresses[1].city, this.data.addresses[1].streetName, this.data.addresses[1].postalCode],
+            [infoBillAddress.city, infoBillAddress.streetName, infoBillAddress.postalCode],
             billAddress,
             'Billing Address',
           ),
