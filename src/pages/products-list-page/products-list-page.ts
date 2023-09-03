@@ -21,13 +21,12 @@ export default class ProductsListPage extends ViewBuilder {
 
   public configureView(): HTMLElement[] {
     const titleView = new PageTitle('Products list');
-    const sortBarView = new SortBar(
-      (sortParams: string[]) => this.loadProducts(this.productsFilter.getFilterParams(), sortParams),
-      () => {},
+    const sortBarView = new SortBar((sortParams: string[], searchValue: string) =>
+      this.loadProducts(this.productsFilter.getFilterParams(), sortParams, searchValue),
     );
     this.productsList = new ProductsList();
     this.productsFilter = new ProductsFilter((params: IProductsFilterParams) =>
-      this.loadProducts(params, sortBarView.getSortParams()),
+      this.loadProducts(params, sortBarView.getSortParams(), sortBarView.getSearchValue()),
     );
     const productsView = new ElementBuilder({
       tag: 'section',
@@ -42,9 +41,9 @@ export default class ProductsListPage extends ViewBuilder {
     this.view.getElement().append(...this.configureView());
   }
 
-  public loadProducts(filterParams?: IProductsFilterParams, sortParams?: string[]): void {
+  public loadProducts(filterParams?: IProductsFilterParams, sortParams?: string[], searchParams?: string): void {
     this.productsList.showLoader(true);
-    ProductApi.getProducts(filterParams, sortParams).then((data: ProductProjection[]) => {
+    ProductApi.getProductProjections(filterParams, sortParams, searchParams).then((data: ProductProjection[]) => {
       this.productsList.setProducts(data);
       this.productsList.showLoader(false);
     });

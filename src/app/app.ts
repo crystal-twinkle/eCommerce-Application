@@ -13,7 +13,7 @@ import ShowcasesPage from '../pages/showcases/showcases-page';
 import Footer from '../features/footer/footer';
 import ProductsListPage from '../pages/products-list-page/products-list-page';
 import store from './store';
-import UserApi from '../entities/user-api';
+import UserApi from '../entities/user/userApi';
 
 export default class App {
   private header: Header;

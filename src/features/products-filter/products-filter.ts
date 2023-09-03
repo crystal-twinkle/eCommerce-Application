@@ -8,12 +8,16 @@ import Dropdown from '../../shared/ui/dropdown/dropdown';
 import { IDropdownItem } from '../../shared/ui/dropdown/models';
 
 export default class ProductsFilter extends CommonBuilderWrapper {
+  private readonly INPUT_TIMEOUT: number = 1000;
+
   private filterParams: IProductsFilterParams;
   private categoriesField: Dropdown;
   private priceFromTimeout: ReturnType<typeof setTimeout>;
   private priceToTimeout: ReturnType<typeof setTimeout>;
   private priceFrom: number;
   private priceTo: number;
+  private priceFromInput: Input;
+  private priceToInput: Input;
 
   constructor(private filterCallback: (params: IProductsFilterParams) => void) {
     super();
@@ -38,8 +42,10 @@ export default class ProductsFilter extends CommonBuilderWrapper {
       placeholder: 'Categories',
       items: [],
       callback: (selectedItem: IDropdownItem) => {
-        this.filterParams.categoryId = (selectedItem.data as Category).key !== 'all' ? selectedItem.value : null;
-        this.filterCallback(this.filterParams);
+        if (this.filterParams.categoryId !== selectedItem.value) {
+          this.filterParams.categoryId = (selectedItem.data as Category).key !== 'all' ? selectedItem.value : null;
+          this.filterCallback(this.filterParams);
+        }
       },
     });
     catalogFieldBuilder.append([fieldName.getElement(), this.categoriesField.getElement()]);
@@ -55,36 +61,58 @@ export default class ProductsFilter extends CommonBuilderWrapper {
       content: 'Price, $',
       styleClass: 'products-filter__field-title',
     });
-    const inputFrom = new Input({
+    this.priceFromInput = new Input({
       type: 'number',
       styleClass: 'products-filter__price-input',
       placeholder: 'From',
-      event: {
-        type: 'input',
-        callback: (event) => {
-          this.priceFrom = +(event.srcElement as HTMLInputElement).value;
-          clearTimeout(this.priceFromTimeout);
-          this.priceFromTimeout = setTimeout(() => {
-            this.updatePriceFilterParam();
-            this.filterCallback(this.filterParams);
-          }, 2000);
-        },
+      settings: {
+        min: '0',
       },
     });
-    const inputTo = new Input({
+    this.priceFromInput.setEventHandler({
+      type: 'input',
+      callback: (event) => {
+        const value: number = +(event.srcElement as HTMLInputElement).value;
+        if (typeof value === 'number' && value > 0) {
+          clearTimeout(this.priceFromTimeout);
+          this.priceFromTimeout = setTimeout(() => {
+            this.priceFrom = value;
+            this.updatePriceFilterParam();
+            this.filterCallback(this.filterParams);
+          }, this.INPUT_TIMEOUT);
+        } else {
+          this.priceFrom = null;
+          this.priceFromInput.setValue('');
+          this.updatePriceFilterParam();
+          this.filterCallback(this.filterParams);
+        }
+      },
+    });
+    this.priceToInput = new Input({
       type: 'number',
       styleClass: 'products-filter__price-input',
       placeholder: 'To',
-      event: {
-        type: 'input',
-        callback: (event) => {
-          this.priceTo = +(event.srcElement as HTMLInputElement).value;
+      settings: {
+        min: '0',
+      },
+    });
+    this.priceToInput.setEventHandler({
+      type: 'input',
+      callback: (event) => {
+        const value: number = +(event.srcElement as HTMLInputElement).value;
+        if (typeof value === 'number' && value > 0) {
           clearTimeout(this.priceToTimeout);
           this.priceToTimeout = setTimeout(() => {
+            this.priceTo = value;
             this.updatePriceFilterParam();
             this.filterCallback(this.filterParams);
-          }, 2000);
-        },
+          }, this.INPUT_TIMEOUT);
+        } else {
+          this.priceTo = null;
+          this.priceToInput.setValue('');
+          this.updatePriceFilterParam();
+          this.filterCallback(this.filterParams);
+        }
       },
     });
     const separator = new ElementBuilder({
@@ -96,14 +124,15 @@ export default class ProductsFilter extends CommonBuilderWrapper {
       styleClass: 'products-filter__price-input-wrapper',
     });
 
-    inputWrapper.append([inputFrom.getElement(), separator.getElement(), inputTo.getElement()]);
+    inputWrapper.append([this.priceFromInput.getElement(), separator.getElement(), this.priceToInput.getElement()]);
     priceFieldBuilder.append([fieldName.getElement(), inputWrapper.getElement()]);
 
     return priceFieldBuilder;
   }
 
   private updatePriceFilterParam = (): void => {
-    this.filterParams.price = `(${this.priceFrom || '*'} to ${this.priceTo || '*'})`;
+    this.filterParams.price =
+      !this.priceFrom && !this.priceTo ? null : `(${this.priceFrom || '*'} to ${this.priceTo || '*'})`;
   };
 
   public setCategories = (categories: Category[]): void => {

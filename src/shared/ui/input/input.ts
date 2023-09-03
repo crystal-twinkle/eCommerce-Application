@@ -11,6 +11,7 @@ interface IInputConfig {
   name?: string;
   styleClass?: string;
   event?: IElementEvent;
+  settings?: { [id: string]: string };
 }
 
 export default class Input extends CommonBuilderWrapper {
@@ -26,6 +27,7 @@ export default class Input extends CommonBuilderWrapper {
       styleClass: `input ${config.styleClass || ''}`,
       tagSettings: {
         type: config.type || 'text',
+        ...(config.settings || {}),
       },
     });
     if (config.event) {
@@ -58,6 +60,14 @@ export default class Input extends CommonBuilderWrapper {
       this.builder.setEventHandler({ type: 'input', callback: this.showErrorMessage });
       this.builder.setEventHandler({ type: 'input', callback: this.checkInput.bind(this) });
     }
+  }
+
+  public setEventHandler(event: IElementEvent): void {
+    this.builder.setEventHandler(event);
+  }
+
+  public setValue(value: string): void {
+    (this.builder.getElement() as HTMLInputElement).value = value;
   }
 
   protected showErrorMessage() {

@@ -12,26 +12,25 @@ import flowFactory from '../../app/api-flow/flow-factory';
 import { IProductsFilterParams } from './model';
 
 export default class ProductApi {
-  public static async getProducts(
+  public static async getProductProjections(
     filterParams: IProductsFilterParams = {},
     sort: string[] = [],
+    search?: string,
   ): Promise<ProductProjection[]> {
     const queryArgs: Record<string, QueryParam> = {
       priceCurrency: 'USD',
       priceCountry: 'US',
+      fuzzy: true,
     };
-    let filter: string = '';
 
     if (filterParams.categoryId) {
-      filter += ` categories.id:"${filterParams.categoryId}" `;
+      queryArgs.filter = `categories.id:"${filterParams.categoryId}"`;
     }
     if (filterParams.price) {
-      filter += ` variants.price.centAmount:range ${filterParams.price} `;
+      queryArgs['filter.query'] = `variants.price.centAmount:range ${filterParams.price}`;
     }
-    filter = filter.trim().replace(' ', ',');
-
-    if (filter.length) {
-      queryArgs.filter = filter;
+    if (search && search !== '') {
+      queryArgs['text.en-US'] = search;
     }
     if (sort.length) {
       queryArgs.sort = sort;
@@ -42,7 +41,6 @@ export default class ProductApi {
       .search()
       .get({ queryArgs })
       .execute();
-
     return response.body.results;
   }
 

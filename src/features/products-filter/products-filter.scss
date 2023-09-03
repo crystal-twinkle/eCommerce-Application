@@ -2,6 +2,14 @@
   width: fit-content;
   padding-right: 16px;
 
+  & input {
+    font-size: 14px;
+
+    &::placeholder {
+      font-size: 14px;
+    }
+  }
+
   & > *:not(:last-child) {
     margin-bottom: 8px;
   }
@@ -17,6 +25,7 @@
       &-wrapper {
         display: flex;
         justify-content: space-between;
+        align-items: center;
       }
     }
   }

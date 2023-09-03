@@ -7,16 +7,18 @@ import { SortButtonType, SortCriteria } from './sort-bar.models';
 import Input from '../../shared/ui/input/input';
 
 export default class SortBar extends CommonBuilderWrapper {
+  private readonly INPUT_TIMEOUT: number = 1000;
+
   private buttons: {
     text: string;
     button: Button;
   }[];
   private sortParams: string[];
+  private searchTimeout: ReturnType<typeof setTimeout>;
+  private searchValue: string;
+  private searchInput: Input;
 
-  constructor(
-    private sortCallback: (sortParams: string[]) => void,
-    private searchCallback: (searchValue: string) => void,
-  ) {
+  constructor(private sortBarCallback: (sortParams: string[], searchValue: string) => void) {
     super();
     this.sortParams = [];
     this.builder = new ElementBuilder({
@@ -26,22 +28,36 @@ export default class SortBar extends CommonBuilderWrapper {
     this.builder.append([this.getSortControlPanel().getElement(), this.getSearchField().getElement()]);
   }
 
-  private getSearchField(): ElementBuilder {
+  private getSearchField = (): ElementBuilder => {
     const searchIcon = new ElementBuilder({
       tag: 'span',
       styleClass: 'sort-bar__search-icon',
     });
-    const searchInput = new Input({
+    this.searchInput = new Input({
       type: 'text',
       placeholder: 'Search',
+    });
+    this.searchInput.setEventHandler({
+      type: 'input',
+      callback: (event) => {
+        this.searchValue = (event.srcElement as HTMLInputElement).value;
+        if (this.searchValue === '') {
+          this.searchValue = null;
+        }
+        clearTimeout(this.searchTimeout);
+        this.searchTimeout = setTimeout(
+          () => this.sortBarCallback(this.sortParams, this.searchValue),
+          this.INPUT_TIMEOUT,
+        );
+      },
     });
     const searchField = new ElementBuilder({
       tag: 'span',
       styleClass: 'sort-bar__search',
     });
-    searchField.append([searchIcon.getElement(), searchInput.getElement()]);
+    searchField.append([searchIcon.getElement(), this.searchInput.getElement()]);
     return searchField;
-  }
+  };
 
   private getSortControlPanel(): ElementBuilder {
     const sortTitle = new ElementBuilder({
@@ -94,7 +110,7 @@ export default class SortBar extends CommonBuilderWrapper {
         }
         button.setContent(content);
         this.sortParams = [`${type === SortButtonType.ALPHABET ? 'name.en-us' : 'price'} ${sortCriteria}`];
-        this.sortCallback(this.sortParams);
+        this.sortBarCallback(this.sortParams, this.searchValue);
       },
     });
     return button;
@@ -102,5 +118,9 @@ export default class SortBar extends CommonBuilderWrapper {
 
   public getSortParams = (): string[] => {
     return this.sortParams;
+  };
+
+  public getSearchValue = (): string => {
+    return this.searchValue;
   };
 }
