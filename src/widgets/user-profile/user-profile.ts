@@ -256,7 +256,7 @@ export default class UserProfile extends CommonBuilderWrapper {
       }
       userBillAddressExist.append(this.checkboxes.call('billDelete', 'Delete billing address'));
     }
-    countryDropdown.setSelectedItem(this.data.addresses[0].country);
+    countryDropdown.setSelectedItem(this.data.addresses[0]?.country || 'US');
     this.addresses.prepend([countryDropdown.getElement()]);
     let elementsAdded = false;
     if (!userShipAddressExist || !userBillAddressExist) {
@@ -272,12 +272,18 @@ export default class UserProfile extends CommonBuilderWrapper {
         if (!userShipAddressExist && !elementsAdded) {
           this.modalShipAddressElems.push(...addAddress([], modalShipAddress, 'Shipping Address'));
           this.changeInputStyle(this.modalShipAddressElems);
-          modalShipAddress.append([this.checkboxes.call('shipUse', 'Add shipping address')]);
+          modalShipAddress.append([
+            this.checkboxes.call('shipUse', 'Add shipping address'),
+            this.checkboxes.call('shipDefaultNew', 'Set as default address'),
+          ]);
         }
         if (!userBillAddressExist && !elementsAdded) {
           this.modalBillAddressElems.push(...addAddress([], modalBillAddress, 'Billing Address'));
           this.changeInputStyle(this.modalBillAddressElems);
-          modalBillAddress.append([this.checkboxes.call('billUse', 'Add billing address')]);
+          modalBillAddress.append([
+            this.checkboxes.call('billUse', 'Add billing address'),
+            this.checkboxes.call('billDefaultNew', 'Set as default address'),
+          ]);
         }
         this.modalInfo.getElement().classList.remove('hidden');
         blackout.classList.add('blackout_show');
@@ -326,9 +332,16 @@ export default class UserProfile extends CommonBuilderWrapper {
     });
     if (whatUse === 'shipUse') {
       this.actionsAddress.push({ action: 'addShippingAddressId', addressKey });
+      if (this.resultsCheckbox.shipDefaultNew) {
+        this.actionsAddress.push({ action: 'setDefaultShippingAddress', addressKey });
+      }
+      this.actionsAddress.push({ action: 'addShippingAddressId', addressKey });
     }
     if (whatUse === 'billUse') {
       this.actionsAddress.push({ action: 'addBillingAddressId', addressKey });
+      if (this.resultsCheckbox.billDefaultNew) {
+        this.actionsAddress.push({ action: 'setDefaultBillingAddress', addressKey });
+      }
     }
   }
 
