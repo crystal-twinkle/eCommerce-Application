@@ -6,7 +6,7 @@ const postalCodeMap: Map<string, RegExp> = new Map<string, RegExp>([
 ]);
 
 export default function validatePostalCode(checkPostalCode: string): boolean {
-  const countryDropdownText: string = countryDropdown?.getSelectedItem()?.content;
+  const countryDropdownText: string = countryDropdown?.getSelectedText();
   const postalCodePattern: RegExp = postalCodeMap.get(countryDropdownText);
   return postalCodePattern ? postalCodePattern.test(checkPostalCode) : false;
 }

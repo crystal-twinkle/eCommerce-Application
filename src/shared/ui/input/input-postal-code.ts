@@ -16,7 +16,7 @@ export default class InputPostalCode extends Input {
   }
 
   protected showErrorMessage() {
-    const countryDropdownText: string = countryDropdown?.getSelectedItem()?.content;
+    const countryDropdownText: string = countryDropdown?.getSelectedText();
     if (countryDropdownText !== 'US' && countryDropdownText !== 'Canada') {
       this.message.setContent('Select country');
     }
