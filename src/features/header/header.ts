@@ -41,6 +41,7 @@ export default class Header extends CommonBuilderWrapper {
       icon: { name: 'heart', position: ButtonIconPosition.LEFT },
       size: ButtonSize.SMALL,
     });
+
     const cartButton = new Button({
       callback: () => {},
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
