@@ -3,6 +3,5 @@ export default function validateAge(birthDate: string): boolean {
   const userBirthDate = new Date(birthDate);
   const thirteenYearsAgo = new Date();
   thirteenYearsAgo.setFullYear(currentDate.getFullYear() - 13);
-
   return userBirthDate <= thirteenYearsAgo;
 }

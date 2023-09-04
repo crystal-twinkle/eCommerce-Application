@@ -1,38 +1,30 @@
+import { ProductProjection } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/product';
 import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
 import './products-list.scss';
 import ElementBuilder from '../../shared/lib/element-builder';
-import { Product } from '../../entities/product/models';
 import Loader from '../../shared/ui/loader/loader';
+import ProductListCard from '../product-list-card/product-list-card';
+import EmptyView from '../../shared/ui/empty-view/empty-view';
 
 export default class ProductsList extends CommonBuilderWrapper {
   private productCards: HTMLElement[];
   private loader: Loader;
-  private emptyView: HTMLElement;
+  private emptyView: EmptyView;
 
   constructor() {
     super();
     this.loader = new Loader();
-    this.emptyView = new ElementBuilder({
-      tag: 'span',
-      content: 'Empty',
-    }).getElement();
+    this.emptyView = new EmptyView('No Products');
 
     this.builder = new ElementBuilder({
-      tag: 'section',
+      tag: 'div',
+      styleClass: 'products-list',
     });
   }
 
-  private getProductCard = (product: Product): HTMLElement => {
-    const productCardBuilder = new ElementBuilder({
-      tag: 'div',
-      styleClass: 'products-list__card',
-    });
-
-    return productCardBuilder.getElement();
-  };
-
-  public setProducts(products: Product[]): void {
-    this.productCards = products.map((product: Product) => this.getProductCard(product));
+  public setProducts(products: ProductProjection[]): void {
+    this.builder.getElement().textContent = '';
+    this.productCards = products.map((product: ProductProjection) => new ProductListCard(product).getElement());
     this.builder.append(this.productCards);
   }
 
@@ -42,7 +34,9 @@ export default class ProductsList extends CommonBuilderWrapper {
     if (visible) {
       this.builder.append([this.loader.getElement()]);
     } else {
-      this.productCards?.length ? this.builder.append(this.productCards) : this.builder.append([this.emptyView]);
+      this.productCards?.length
+        ? this.builder.append(this.productCards)
+        : this.builder.append([this.emptyView.getElement()]);
     }
   }
 }

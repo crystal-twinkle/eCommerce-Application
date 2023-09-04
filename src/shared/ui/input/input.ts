@@ -1,4 +1,4 @@
-import ElementBuilder from '../../lib/element-builder';
+import ElementBuilder, { IElementEvent } from '../../lib/element-builder';
 import CommonBuilderWrapper from '../../lib/common-builder-wrapper';
 import { ValidationParams } from '../../lib/validate/validation-params';
 import './input.scss';
@@ -7,13 +7,11 @@ import checkValidator from '../../lib/validate/check-validaror';
 interface IInputConfig {
   type?: string;
   placeholder?: string;
+  value?: string;
   name?: string;
-}
-
-interface IInputConfig {
-  type?: string;
-  placeholder?: string;
-  name?: string;
+  styleClass?: string;
+  event?: IElementEvent;
+  settings?: { [id: string]: string };
 }
 
 export default class Input extends CommonBuilderWrapper {
@@ -26,14 +24,27 @@ export default class Input extends CommonBuilderWrapper {
     this.config = config;
     this.builder = new ElementBuilder({
       tag: 'input',
-      styleClass: 'input',
+      styleClass: `input ${config.styleClass || ''}`,
       tagSettings: {
         type: config.type || 'text',
+        ...(config.settings || {}),
       },
     });
+    if (config.event) {
+      this.builder.setEventHandler(config.event);
+    }
+    if (config.placeholder) {
+      this.builder.setTagSettings({
+        placeholder: config.placeholder,
+      });
+    }
+    if (config.value) {
+      this.builder.setTagSettings({
+        value: config.value,
+      });
+    }
     if (config.name) {
       this.builder.setTagSettings({
-        placeholder: config.placeholder || '',
         name: config.name,
         autocomplete: 'off',
       });
@@ -49,6 +60,14 @@ export default class Input extends CommonBuilderWrapper {
       this.builder.setEventHandler({ type: 'input', callback: this.showErrorMessage });
       this.builder.setEventHandler({ type: 'input', callback: this.checkInput.bind(this) });
     }
+  }
+
+  public setEventHandler(event: IElementEvent): void {
+    this.builder.setEventHandler(event);
+  }
+
+  public setValue(value: string): void {
+    (this.builder.getElement() as HTMLInputElement).value = value;
   }
 
   protected showErrorMessage() {
@@ -67,5 +86,10 @@ export default class Input extends CommonBuilderWrapper {
 
   getElement(): HTMLInputElement {
     return this.builder.getElement() as HTMLInputElement;
+  }
+
+  public setTagSettings(tagSettings: { [id: string]: string }): Input {
+    this.builder.setTagSettings(tagSettings);
+    return this;
   }
 }

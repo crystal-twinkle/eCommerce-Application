@@ -1,3 +1,4 @@
+import { Customer } from '@commercetools/platform-sdk';
 import OverviewPage from '../pages/overview-page';
 import Header from '../features/header/header';
 import { IRouterLink } from '../shared/lib/router/router';
@@ -5,12 +6,14 @@ import { ID_SELECTOR, Page } from '../shared/lib/router/pages';
 import NotFoundPage from '../pages/not-found-page';
 import LoginPage from '../pages/login-page';
 import ProductPage from '../pages/product-page';
+import UserPage from '../pages/user-page';
 import Main from '../features/main/main';
 import RegisterPage from '../pages/register-page';
 import ShowcasesPage from '../pages/showcases/showcases-page';
 import Footer from '../features/footer/footer';
 import ProductsListPage from '../pages/products-list-page/products-list-page';
-import apiRoot from './client-builder/api-root';
+import store from './store';
+import UserApi from '../entities/user/userApi';
 
 export default class App {
   private header: Header;
@@ -18,16 +21,15 @@ export default class App {
   private footer: Footer;
 
   constructor() {
-    console.log(document.cookie);
-    apiRoot
-      .me()
-      .get()
-      .execute()
-      .then(() => console.log('!!!!'));
-
     this.header = new Header();
     this.main = new Main();
     this.footer = new Footer();
+
+    if (localStorage.getItem('token_store')) {
+      UserApi.getUser().then((data: Customer) => store.setUser(data));
+    } else {
+      store.setUser(null);
+    }
 
     document.body.append(this.header.getElement(), this.main.getElement(), this.footer.getElement());
   }
@@ -47,7 +49,7 @@ export default class App {
         },
       },
       {
-        path: `${Page.PRODUCT}/${ID_SELECTOR}`,
+        path: `${Page.PRODUCTS}/${ID_SELECTOR}`,
         callback: (id: string) => {
           this.main.setContent([new ProductPage(id).getElement()]);
         },
@@ -74,6 +76,12 @@ export default class App {
         path: Page.NOT_FOUND,
         callback: () => {
           this.main.setContent([new NotFoundPage().getElement()]);
+        },
+      },
+      {
+        path: Page.USER_PROFILE,
+        callback: () => {
+          this.main.setContent([new UserPage().getElement()]);
         },
       },
     ];

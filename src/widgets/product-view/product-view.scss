@@ -1,0 +1,66 @@
+@import '../../colors';
+
+.product-view {
+  &__title {
+    padding: 60px 0;
+    color: $black-1;
+    font-family: Roboto;
+    font-size: 34px;
+    font-style: normal;
+    font-weight: 300;
+  }
+
+  &__content {
+    min-height: 575px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  &__slider-wrapper {
+    width: 49%;
+  }
+
+  &__details {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 10%;
+    padding-left: 9.4%;
+    margin: 0;
+  }
+
+  &__price {
+    padding-bottom: 10px;
+    color: $black-1;
+    font-family: Roboto;
+    font-size: 34px;
+    font-style: normal;
+    font-weight: 300;
+
+    &_cross-out {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    &_discounted {
+      color: red;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    gap: 5%;
+  }
+
+  &__description {
+    padding: 10px 0;
+    max-width: 490px;
+    color: $medium-gray;
+    font-family: Roboto;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+  }
+}

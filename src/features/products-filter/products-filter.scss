@@ -1,2 +1,32 @@
 .products-filter {
+  width: fit-content;
+  padding-right: 16px;
+
+  & input {
+    font-size: 14px;
+
+    &::placeholder {
+      font-size: 14px;
+    }
+  }
+
+  & > *:not(:last-child) {
+    margin-bottom: 8px;
+  }
+
+  &__field-title {
+    margin-bottom: 4px;
+  }
+
+  &__price {
+    &-input {
+      width: 45%;
+
+      &-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+  }
 }

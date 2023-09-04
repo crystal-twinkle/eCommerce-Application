@@ -1,18 +1,12 @@
-import countryDropdown from '../../../features/authorization/ui/country-dropdown';
+import countryDropdown from '../../../features/authorization/country-dropdown';
+
+const postalCodeMap: Map<string, RegExp> = new Map<string, RegExp>([
+  ['US', /^\d{5}(-\d{4})?$/],
+  ['Canada', /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/],
+]);
 
 export default function validatePostalCode(checkPostalCode: string): boolean {
-  const countryDropdownText: string = countryDropdown?.getSelectedItem()?.content;
-  let postalCodePattern: RegExp;
-
-  if (countryDropdownText === 'USA' || countryDropdownText === 'Canada') {
-    if (countryDropdownText === 'USA') {
-      postalCodePattern = /^\d{5}(-\d{4})?$/;
-    }
-    if (countryDropdownText === 'Canada') {
-      postalCodePattern = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
-    }
-    return postalCodePattern.test(checkPostalCode);
-  }
-
-  return false;
+  const countryDropdownText: string = countryDropdown?.getSelectedText();
+  const postalCodePattern: RegExp = postalCodeMap.get(countryDropdownText);
+  return postalCodePattern ? postalCodePattern.test(checkPostalCode) : false;
 }

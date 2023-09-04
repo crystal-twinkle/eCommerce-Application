@@ -1,9 +1,9 @@
-import RegistrationFormView from '../features/authorization/ui/registration-form';
+import RegistrationFormView from '../features/authorization/registration-form';
 import ViewBuilder from '../shared/lib/view-builder';
 
 export default class RegisterPage extends ViewBuilder {
   constructor() {
-    super('page register-page');
+    super('page form-page');
   }
 
   public configureView(): HTMLElement[] {

@@ -1,0 +1,15 @@
+.empty-view {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  position: relative;
+
+  &__icon {
+    width: 50px;
+  }
+
+  &__message {
+    margin-left: 10px;
+  }
+}

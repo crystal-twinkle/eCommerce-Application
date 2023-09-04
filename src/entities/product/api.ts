@@ -1,23 +1,63 @@
-import Api from '../api';
-import { Product } from './models';
-import ListResponse from '../models';
-import ApiNames from '../../shared/lib/api-factory/api-names';
+import {
+  ProductProjection,
+  ProductProjectionPagedQueryResponse,
+} from '@commercetools/platform-sdk/dist/declarations/src/generated/models/product';
+import { CategoryPagedQueryResponse } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/category';
+import { Category, Product } from '@commercetools/platform-sdk';
+import {
+  ClientResponse,
+  QueryParam,
+} from '@commercetools/platform-sdk/dist/declarations/src/generated/shared/utils/common-types';
+import flowFactory from '../../app/api-flow/flow-factory';
+import { IProductsFilterParams } from './model';
 
-export default class ProductAPI extends Api {
-  constructor() {
-    super(ApiNames.PRODUCTS);
+export default class ProductApi {
+  public static async getProductProjections(
+    filterParams: IProductsFilterParams = {},
+    sort: string[] = [],
+    search?: string,
+  ): Promise<ProductProjection[]> {
+    const queryArgs: Record<string, QueryParam> = {
+      priceCurrency: 'USD',
+      priceCountry: 'US',
+      fuzzy: true,
+    };
+
+    if (filterParams.categoryId) {
+      queryArgs.filter = `categories.id:"${filterParams.categoryId}"`;
+    }
+    if (filterParams.price) {
+      queryArgs['filter.query'] = `variants.price.centAmount:range ${filterParams.price}`;
+    }
+    if (search && search !== '') {
+      queryArgs['text.en-US'] = search;
+    }
+    if (sort.length) {
+      queryArgs.sort = sort;
+    }
+
+    const response: ClientResponse<ProductProjectionPagedQueryResponse> = await flowFactory.clientCredentialsFlow
+      .productProjections()
+      .search()
+      .get({ queryArgs })
+      .execute();
+    return response.body.results;
   }
 
-  public getProducts = async (): Promise<ListResponse<Product>> => {
-    const res = await fetch(`${this.baseApiUrl}/products`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-      redirect: 'follow',
-    });
+  public static async getProduct(ID: string): Promise<Product> {
+    const response: ClientResponse<Product> = await flowFactory.clientCredentialsFlow
+      .products()
+      .withId({ ID })
+      .get()
+      .execute();
+    return response.body;
+  }
 
-    return res.json();
-  };
+  public static async getCategories(): Promise<Category[]> {
+    const response: ClientResponse<CategoryPagedQueryResponse> = await flowFactory.clientCredentialsFlow
+      .categories()
+      .get()
+      .execute();
+    return response.body.results;
+  }
 }

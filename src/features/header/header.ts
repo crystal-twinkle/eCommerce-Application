@@ -5,7 +5,6 @@ import Button from '../../shared/ui/button/button';
 import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
 import UserHeaderButton from '../user-header-button/user-header-button';
 import appRouter from '../../shared/lib/router/router';
-import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
 import { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/models';
 
 export default class Header extends CommonBuilderWrapper {
@@ -42,6 +41,7 @@ export default class Header extends CommonBuilderWrapper {
       icon: { name: 'heart', position: ButtonIconPosition.LEFT },
       size: ButtonSize.SMALL,
     });
+
     const cartButton = new Button({
       callback: () => {},
       type: ButtonType.CIRCLE_WITHOUT_BORDER,

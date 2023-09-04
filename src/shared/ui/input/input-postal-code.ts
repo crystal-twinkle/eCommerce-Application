@@ -1,11 +1,12 @@
 import Input from './input';
-import countryDropdown from '../../../features/authorization/ui/country-dropdown';
+import countryDropdown from '../../../features/authorization/country-dropdown';
 
 export default class InputPostalCode extends Input {
-  constructor() {
+  constructor(config?: { placeholder?: string; value?: string }) {
     super({
       type: 'text',
-      placeholder: 'PostalCode',
+      placeholder: config?.placeholder || 'PostalCode',
+      value: config?.value,
       name: 'postalCode',
     });
     this.showErrorMessage = this.showErrorMessage.bind(this);
@@ -15,11 +16,11 @@ export default class InputPostalCode extends Input {
   }
 
   protected showErrorMessage() {
-    const countryDropdownText: string = countryDropdown?.getSelectedItem()?.content;
-    if (countryDropdownText !== 'USA' && countryDropdownText !== 'Canada') {
+    const countryDropdownText: string = countryDropdown?.getSelectedText();
+    if (countryDropdownText !== 'US' && countryDropdownText !== 'Canada') {
       this.message.setContent('Select country');
     }
-    if (countryDropdownText === 'USA') {
+    if (countryDropdownText === 'US') {
       this.message.setContent('The format for the USA should be like "12345"');
     }
     if (countryDropdownText === 'Canada') {

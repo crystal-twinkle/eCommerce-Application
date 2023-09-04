@@ -1,16 +1,18 @@
-import ElementBuilder from '../shared/lib/element-builder';
+import ViewBuilder from '../shared/lib/view-builder';
+import ProductView from '../widgets/product-view/product-view';
 
-export default class ProductPage {
-  private builder: ElementBuilder;
-
+export default class ProductPage extends ViewBuilder {
   constructor(private id: string) {
-    this.builder = new ElementBuilder({
-      tag: 'div',
-      content: id,
-    });
+    super('page product-page');
   }
 
-  public getElement(): HTMLElement {
-    return this.builder.getElement();
+  public configureView(): HTMLElement[] {
+    const productView = new ProductView();
+
+    return [productView.getElement()];
+  }
+
+  public buildView(): void {
+    this.view.getElement().append(...this.configureView());
   }
 }

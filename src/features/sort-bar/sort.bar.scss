@@ -1,0 +1,44 @@
+@import '../../colors';
+
+.sort-bar {
+  display: flex;
+  justify-content: space-between;
+  font-weight: normal;
+  padding-top: 20px;
+  padding-bottom: 20px;
+
+  @media (max-width: 590px) {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  & input {
+    font-size: 14px;
+
+    &::placeholder {
+      font-size: 14px;
+    }
+  }
+
+  &__title {
+    color: $gray-1;
+  }
+
+  &__search {
+    display: flex;
+    align-items: center;
+
+    &-icon {
+      display: inline-block;
+      margin-right: 8px;
+      width: 20px;
+      height: 20px;
+      background-image: url('../../shared/assets/icons/search.svg');
+    }
+  }
+
+  &__button {
+    color: $black-1;
+    width: 100px;
+  }
+}

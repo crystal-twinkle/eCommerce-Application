@@ -1,8 +1,9 @@
 import ElementBuilder from '../../shared/lib/element-builder';
 import Button from '../../shared/ui/button/button';
 import './showcases.scss';
-import Dropdown, { DropdownType, IDropdownItem } from '../../shared/ui/dropdown/dropdown';
 import { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/models';
+import Dropdown from '../../shared/ui/dropdown/dropdown';
+import { DropdownType, IDropdownItem } from '../../shared/ui/dropdown/models';
 
 export default class ShowcasesPage {
   private builder: ElementBuilder;
