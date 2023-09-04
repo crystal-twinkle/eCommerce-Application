@@ -18,6 +18,7 @@ export default class ProductsFilter extends CommonBuilderWrapper {
   private priceTo: number;
   private priceFromInput: Input;
   private priceToInput: Input;
+  private allCategoryId: string;
 
   constructor(private filterCallback: (params: IProductsFilterParams) => void) {
     super();
@@ -43,8 +44,11 @@ export default class ProductsFilter extends CommonBuilderWrapper {
       items: [],
       callback: (selectedItem: IDropdownItem) => {
         if (this.filterParams.categoryId !== selectedItem.value) {
-          this.filterParams.categoryId = (selectedItem.data as Category).key !== 'all' ? selectedItem.value : null;
-          this.filterCallback(this.filterParams);
+          this.filterParams.categoryId = selectedItem.value;
+          this.filterCallback({
+            ...this.filterParams,
+            categoryId: selectedItem.value === this.allCategoryId ? null : selectedItem.value,
+          });
         }
       },
     });
@@ -78,13 +82,19 @@ export default class ProductsFilter extends CommonBuilderWrapper {
           this.priceFromTimeout = setTimeout(() => {
             this.priceFrom = value;
             this.updatePriceFilterParam();
-            this.filterCallback(this.filterParams);
+            this.filterCallback({
+              ...this.filterParams,
+              categoryId: this.filterParams.categoryId === this.allCategoryId ? null : this.filterParams.categoryId,
+            });
           }, this.INPUT_TIMEOUT);
         } else {
           this.priceFrom = null;
           this.priceFromInput.setValue('');
           this.updatePriceFilterParam();
-          this.filterCallback(this.filterParams);
+          this.filterCallback({
+            ...this.filterParams,
+            categoryId: this.filterParams.categoryId === this.allCategoryId ? null : this.filterParams.categoryId,
+          });
         }
       },
     });
@@ -105,13 +115,19 @@ export default class ProductsFilter extends CommonBuilderWrapper {
           this.priceToTimeout = setTimeout(() => {
             this.priceTo = value;
             this.updatePriceFilterParam();
-            this.filterCallback(this.filterParams);
+            this.filterCallback({
+              ...this.filterParams,
+              categoryId: this.filterParams.categoryId === this.allCategoryId ? null : this.filterParams.categoryId,
+            });
           }, this.INPUT_TIMEOUT);
         } else {
           this.priceTo = null;
           this.priceToInput.setValue('');
           this.updatePriceFilterParam();
-          this.filterCallback(this.filterParams);
+          this.filterCallback({
+            ...this.filterParams,
+            categoryId: this.filterParams.categoryId === this.allCategoryId ? null : this.filterParams.categoryId,
+          });
         }
       },
     });
@@ -136,10 +152,17 @@ export default class ProductsFilter extends CommonBuilderWrapper {
   };
 
   public setCategories = (categories: Category[]): void => {
-    this.categoriesField.setItems(
-      categories.map((category: Category) => ({ content: category.name['en-US'], value: category.id, data: category })),
-      0,
-    );
+    const preparedCategories: IDropdownItem[] = [];
+    let allCategoryIndex: number = 0;
+    categories.forEach((category: Category, index: number) => {
+      preparedCategories.push({ content: category.name['en-US'], value: category.id, data: category });
+      if (category.key === 'all') {
+        allCategoryIndex = index;
+        this.allCategoryId = category.id;
+        this.filterParams.categoryId = category.id;
+      }
+    });
+    this.categoriesField.setItems(preparedCategories, allCategoryIndex);
   };
 
   public getFilterParams(): IProductsFilterParams {

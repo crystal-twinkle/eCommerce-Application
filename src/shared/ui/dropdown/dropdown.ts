@@ -8,8 +8,11 @@ export default class Dropdown extends CommonBuilderWrapper {
   private selectedItem: IDropdownItem;
   private items: IDropdownItem[];
   private itemsBuilder: ElementBuilder;
+  private itemsWrapperBuilder: ElementBuilder;
   private textBuilder: ElementBuilder;
   private arrowBuilder: ElementBuilder;
+  private button: ElementBuilder;
+  private opened: boolean;
 
   constructor(private config: IDropdownConfig) {
     super();
@@ -21,11 +24,15 @@ export default class Dropdown extends CommonBuilderWrapper {
       styleClass: `dropdown ${config.styleClass || ''}`,
     });
 
-    const button = new ElementBuilder({
+    this.button = new ElementBuilder({
       tag: 'button',
       styleClass: `dropdown-button _${config.type || ''}`,
       tagSettings: {
         type: 'button',
+      },
+      event: {
+        type: 'click',
+        callback: this.itemsVisibleChange,
       },
     });
     this.textBuilder = new ElementBuilder({
@@ -37,7 +44,7 @@ export default class Dropdown extends CommonBuilderWrapper {
       styleClass: 'dropdown-arrow',
       content: iconsFactory.get('arrow-up'),
     });
-    button.append([this.textBuilder.getElement(), this.arrowBuilder.getElement()]);
+    this.button.append([this.textBuilder.getElement(), this.arrowBuilder.getElement()]);
 
     this.itemsBuilder = new ElementBuilder({
       tag: 'ul',
@@ -47,9 +54,30 @@ export default class Dropdown extends CommonBuilderWrapper {
         callback: this.selectItem,
       },
     });
-    this.setItems(config.items);
-    this.builder.append([button.getElement(), this.itemsBuilder.getElement()]);
+    this.itemsWrapperBuilder = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'dropdown-list__wrapper',
+      event: {
+        type: 'click',
+        callback: this.itemsVisibleChange,
+      },
+    });
+
+    this.setItems(config.items, config.selectedItemIndex);
+    this.builder.append([this.button.getElement()]);
   }
+
+  private itemsVisibleChange = (): void => {
+    this.opened = !this.opened;
+    if (this.opened) {
+      this.builder.addStyleClass('_active');
+      this.builder.append([this.itemsBuilder.getElement(), this.itemsWrapperBuilder.getElement()]);
+    } else {
+      this.builder.removeStyleClass('_active');
+      this.builder.setContent();
+      this.builder.append([this.button.getElement()]);
+    }
+  };
 
   private selectItem = (event: Event): void => {
     const htmlItemData: DOMStringMap = (event.srcElement as HTMLElement).dataset;
@@ -57,6 +85,7 @@ export default class Dropdown extends CommonBuilderWrapper {
     this.textBuilder.setContent(this.selectedItem.content);
     this.textBuilder.setStyleClass();
     this.config.callback?.(this.selectedItem);
+    this.itemsVisibleChange();
   };
 
   public getSelectedItem(): IDropdownItem {
@@ -71,7 +100,7 @@ export default class Dropdown extends CommonBuilderWrapper {
     return this.textBuilder.getElement().textContent;
   }
 
-  public setItems(items: IDropdownItem[], selectedItemIndex?: number): void {
+  public setItems = (items: IDropdownItem[], selectedItemIndex?: number): void => {
     this.items = items;
     this.selectedItem = typeof selectedItemIndex === 'number' ? this.items[selectedItemIndex] : null;
 
@@ -91,5 +120,5 @@ export default class Dropdown extends CommonBuilderWrapper {
         }).getElement();
       }),
     );
-  }
+  };
 }

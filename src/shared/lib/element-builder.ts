@@ -40,6 +40,16 @@ export default class ElementBuilder {
     return this;
   }
 
+  public addStyleClass(value: string = ''): ElementBuilder {
+    this.element.classList.add(value);
+    return this;
+  }
+
+  public removeStyleClass(value: string = ''): ElementBuilder {
+    this.element.classList.remove(value);
+    return this;
+  }
+
   public setEventHandler(event: IElementEvent): ElementBuilder {
     if (event) {
       this.element.addEventListener(event.type, event.callback);
