@@ -45,10 +45,7 @@ export default class ProductsFilter extends CommonBuilderWrapper {
       callback: (selectedItem: IDropdownItem) => {
         if (this.filterParams.categoryId !== selectedItem.value) {
           this.filterParams.categoryId = selectedItem.value;
-          this.filterCallback({
-            ...this.filterParams,
-            categoryId: selectedItem.value === this.allCategoryId ? null : selectedItem.value,
-          });
+          this.filterCallback(this.getFilterParams());
         }
       },
     });
@@ -82,19 +79,13 @@ export default class ProductsFilter extends CommonBuilderWrapper {
           this.priceFromTimeout = setTimeout(() => {
             this.priceFrom = value;
             this.updatePriceFilterParam();
-            this.filterCallback({
-              ...this.filterParams,
-              categoryId: this.filterParams.categoryId === this.allCategoryId ? null : this.filterParams.categoryId,
-            });
+            this.filterCallback(this.getFilterParams());
           }, this.INPUT_TIMEOUT);
         } else {
           this.priceFrom = null;
           this.priceFromInput.setValue('');
           this.updatePriceFilterParam();
-          this.filterCallback({
-            ...this.filterParams,
-            categoryId: this.filterParams.categoryId === this.allCategoryId ? null : this.filterParams.categoryId,
-          });
+          this.filterCallback(this.getFilterParams());
         }
       },
     });
@@ -115,19 +106,13 @@ export default class ProductsFilter extends CommonBuilderWrapper {
           this.priceToTimeout = setTimeout(() => {
             this.priceTo = value;
             this.updatePriceFilterParam();
-            this.filterCallback({
-              ...this.filterParams,
-              categoryId: this.filterParams.categoryId === this.allCategoryId ? null : this.filterParams.categoryId,
-            });
+            this.filterCallback(this.getFilterParams());
           }, this.INPUT_TIMEOUT);
         } else {
           this.priceTo = null;
           this.priceToInput.setValue('');
           this.updatePriceFilterParam();
-          this.filterCallback({
-            ...this.filterParams,
-            categoryId: this.filterParams.categoryId === this.allCategoryId ? null : this.filterParams.categoryId,
-          });
+          this.filterCallback(this.getFilterParams());
         }
       },
     });
@@ -165,7 +150,10 @@ export default class ProductsFilter extends CommonBuilderWrapper {
     this.categoriesField.setItems(preparedCategories, allCategoryIndex);
   };
 
-  public getFilterParams(): IProductsFilterParams {
-    return this.filterParams;
-  }
+  public getFilterParams = (): IProductsFilterParams => {
+    return {
+      ...this.filterParams,
+      categoryId: this.filterParams.categoryId === this.allCategoryId ? null : this.filterParams.categoryId,
+    };
+  };
 }
