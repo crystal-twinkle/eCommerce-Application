@@ -41,6 +41,8 @@ export default class UserProfile extends CommonBuilderWrapper {
   private newPassword: PasswordInput | undefined;
   private modalShipAddressElems: HTMLInputElement[];
   private modalBillAddressElems: HTMLInputElement[];
+  private infoShipAddress: Address;
+  private infoBillAddress: Address;
 
   constructor() {
     super();
@@ -165,17 +167,16 @@ export default class UserProfile extends CommonBuilderWrapper {
 
   protected addressFill(): void {
     const addressElems: HTMLInputElement[] = [];
-    let infoShipAddress: Address;
-    let infoBillAddress: Address;
     this.data.addresses.forEach((e) => {
       if (this.data.shippingAddressIds[0] === e.id) {
-        infoShipAddress = e;
+        this.infoShipAddress = e;
       }
       if (this.data.billingAddressIds[0] === e.id) {
-        infoBillAddress = e;
+        this.infoBillAddress = e;
       }
     });
-    if (infoShipAddress?.key) {
+
+    if (this.data.shippingAddressIds[0]) {
       const shipAddress = new ElementBuilder({
         tag: 'div',
         styleClass: 'user__address',
@@ -183,14 +184,14 @@ export default class UserProfile extends CommonBuilderWrapper {
       });
       addressElems.push(
         ...addAddress(
-          [infoShipAddress.city, infoShipAddress.streetName, infoShipAddress.postalCode],
+          [this.infoShipAddress.city, this.infoShipAddress.streetName, this.infoShipAddress.postalCode],
           shipAddress,
           'Shipping Address',
         ),
       );
       this.addresses.append([shipAddress.getElement()]);
 
-      if (infoBillAddress?.key) {
+      if (this.data.billingAddressIds[0]) {
         const billAddress = new ElementBuilder({
           tag: 'div',
           styleClass: 'user__address',
@@ -198,7 +199,7 @@ export default class UserProfile extends CommonBuilderWrapper {
         });
         addressElems.push(
           ...addAddress(
-            [infoBillAddress.city, infoBillAddress.streetName, infoBillAddress.postalCode],
+            [this.infoBillAddress.city, this.infoBillAddress.streetName, this.infoBillAddress.postalCode],
             billAddress,
             'Billing Address',
           ),
@@ -379,18 +380,18 @@ export default class UserProfile extends CommonBuilderWrapper {
 
   protected async changeAddressInfo(): Promise<void> {
     if (this.resultsCheckbox.shipDefault && !this.resultsCheckbox.shipDelete) {
-      this.actionsAddress.push({ action: 'setDefaultShippingAddress', addressId: this.data.addresses[0].id });
+      this.actionsAddress.push({ action: 'setDefaultShippingAddress', addressId: this.infoShipAddress.id });
     }
     if (!this.resultsCheckbox.shipDefault && this.resultsCheckbox.shipDelete) {
-      this.actionsAddress.push({ action: 'removeShippingAddressId', addressId: this.data.addresses[0].id });
-      this.actionsAddress.push({ action: 'removeAddress', addressId: this.data.addresses[0].id });
+      this.actionsAddress.push({ action: 'removeShippingAddressId', addressId: this.infoShipAddress.id });
+      this.actionsAddress.push({ action: 'removeAddress', addressId: this.infoShipAddress.id });
     }
     if (this.resultsCheckbox.billDefault && !this.resultsCheckbox.billDelete) {
-      this.actionsAddress.push({ action: 'setDefaultBillingAddress', addressId: this.data.addresses[1].id });
+      this.actionsAddress.push({ action: 'setDefaultBillingAddress', addressId: this.infoBillAddress.id });
     }
     if (!this.resultsCheckbox.billDefault && this.resultsCheckbox.billDelete) {
-      this.actionsAddress.push({ action: 'removeBillingAddressId', addressId: this.data.addresses[1].id });
-      this.actionsAddress.push({ action: 'removeAddress', addressId: this.data.addresses[1].id });
+      this.actionsAddress.push({ action: 'removeBillingAddressId', addressId: this.infoBillAddress.id });
+      this.actionsAddress.push({ action: 'removeAddress', addressId: this.infoBillAddress.id });
     }
     try {
       const result = await flowFactory
