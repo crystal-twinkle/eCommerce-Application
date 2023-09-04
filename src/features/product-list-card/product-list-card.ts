@@ -74,7 +74,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
       text: 'Details',
       callback: () => appRouter.navigate(`${Page.PRODUCTS}/${data.id}`),
     });
-
+    detailsButton.getElement().classList.add('product-list-card__details-button');
     const info = new ElementBuilder({
       tag: 'div',
       styleClass: 'product-list-card__row',
