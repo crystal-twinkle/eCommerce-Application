@@ -133,7 +133,9 @@ export default class ProductsFilter extends CommonBuilderWrapper {
 
   private updatePriceFilterParam = (): void => {
     this.filterParams.price =
-      !this.priceFrom && !this.priceTo ? null : `(${this.priceFrom || '*'} to ${this.priceTo || '*'})`;
+      !this.priceFrom && !this.priceTo
+        ? null
+        : `(${this.priceFrom ? this.priceFrom * 100 : '*'} to ${this.priceTo ? this.priceTo * 100 : '*'})`;
   };
 
   public setCategories = (categories: Category[]): void => {
