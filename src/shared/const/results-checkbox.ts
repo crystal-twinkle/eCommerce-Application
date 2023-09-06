@@ -4,8 +4,6 @@ export interface IResultsCheckbox {
   shipAsBill?: boolean;
   shipDelete?: boolean;
   billDelete?: boolean;
-  shipDefaultExist?: boolean;
-  billDefaultExist?: boolean;
   shipUse?: boolean;
   billUse?: boolean;
   [key: string]: boolean;

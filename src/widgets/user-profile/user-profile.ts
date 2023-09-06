@@ -32,17 +32,18 @@ export default class UserProfile extends CommonBuilderWrapper {
 
   private id: string;
   private callbackEditAddress: () => void;
-  private callbackAddAddress: () => void;
+  private modalAddresses: () => void;
+  private saveNewAddress: () => void;
   private addresses: ElementBuilder;
   private data: Customer;
   private checkboxes: { call: (parameter: string, content: string) => HTMLElement };
   private modalInfo: ElementBuilder;
   private currentPassword: PasswordInput | undefined;
   private newPassword: PasswordInput | undefined;
-  private modalShipAddressElems: HTMLInputElement[];
-  private modalBillAddressElems: HTMLInputElement[];
   private infoShipAddress: Address;
   private infoBillAddress: Address;
+  private modalShipAddressElems: HTMLInputElement[];
+  private modalBillAddressElems: HTMLInputElement[];
 
   constructor() {
     super();
@@ -59,8 +60,9 @@ export default class UserProfile extends CommonBuilderWrapper {
       billDelete: false,
       shipUse: false,
       billUse: false,
+      shipDefaultNew: false,
+      billDefaultNew: false,
     };
-    this.checkboxes = addCheckbox(this.resultsCheckbox);
 
     this.editAddressButton = new Button({
       type: ButtonType.DEFAULT_COLORED,
@@ -72,7 +74,7 @@ export default class UserProfile extends CommonBuilderWrapper {
       type: ButtonType.DEFAULT_COLORED,
       text: 'Add address',
       styleClass: 'user__btn',
-      callback: () => this.callbackAddAddress(),
+      callback: () => this.modalAddresses(),
     }).getElement();
     this.changePasswordButton = new Button({
       type: ButtonType.DEFAULT_COLORED,
@@ -98,11 +100,12 @@ export default class UserProfile extends CommonBuilderWrapper {
     this.addresses.setContent();
     const updateData = data as Customer;
     if (data) {
+      this.checkboxes = addCheckbox(this.resultsCheckbox);
       this.actionsAddress = [];
-      this.modalShipAddressElems = [];
-      this.modalBillAddressElems = [];
       this.data = updateData;
       this.id = updateData.id;
+      this.modalBillAddressElems = [];
+      this.modalShipAddressElems = [];
       this.addressFill();
       this.builder.append([
         this.userInfo(),
@@ -190,22 +193,21 @@ export default class UserProfile extends CommonBuilderWrapper {
         ),
       );
       this.addresses.append([shipAddress.getElement()]);
-
-      if (this.data.billingAddressIds[0]) {
-        const billAddress = new ElementBuilder({
-          tag: 'div',
-          styleClass: 'user__address',
-          id: 'userBillAddressExist',
-        });
-        addressElems.push(
-          ...addAddress(
-            [this.infoBillAddress.city, this.infoBillAddress.streetName, this.infoBillAddress.postalCode],
-            billAddress,
-            'Billing Address',
-          ),
-        );
-        this.addresses.append([billAddress.getElement()]);
-      }
+    }
+    if (this.data.billingAddressIds[0]) {
+      const billAddress = new ElementBuilder({
+        tag: 'div',
+        styleClass: 'user__address',
+        id: 'userBillAddressExist',
+      });
+      addressElems.push(
+        ...addAddress(
+          [this.infoBillAddress.city, this.infoBillAddress.streetName, this.infoBillAddress.postalCode],
+          billAddress,
+          'Billing Address',
+        ),
+      );
+      this.addresses.append([billAddress.getElement()]);
     }
     this.addInputStyle(addressElems);
 
@@ -215,12 +217,7 @@ export default class UserProfile extends CommonBuilderWrapper {
         this.modalAddress();
         this.changeInputStyle(addressElems);
       } else if (addressElems.every((elem) => checkValidator(elem))) {
-        if (this.resultsCheckbox.shipUse && this.modalShipAddressElems.every((elem) => checkValidator(elem))) {
-          this.addNewAddress(this.modalShipAddressElems, 'shipUse');
-        }
-        if (this.resultsCheckbox.billUse && this.modalBillAddressElems.every((elem) => checkValidator(elem))) {
-          this.addNewAddress(this.modalBillAddressElems, 'billUse');
-        }
+        this.saveNewAddress();
         this.changeAddressInfo();
       }
     };
@@ -261,7 +258,7 @@ export default class UserProfile extends CommonBuilderWrapper {
     this.addresses.prepend([countryDropdown.getElement()]);
     let elementsAdded = false;
     if (!userShipAddressExist || !userBillAddressExist) {
-      this.callbackAddAddress = () => {
+      this.modalAddresses = () => {
         const modalShipAddress = new ElementBuilder({
           tag: 'div',
           styleClass: 'user__address',
@@ -306,6 +303,14 @@ export default class UserProfile extends CommonBuilderWrapper {
             }
           },
         });
+        this.saveNewAddress = () => {
+          if (this.resultsCheckbox.shipUse && this.modalShipAddressElems.every((elem) => checkValidator(elem))) {
+            this.addNewAddress(this.modalShipAddressElems, 'shipUse');
+          }
+          if (this.resultsCheckbox.billUse && this.modalBillAddressElems.every((elem) => checkValidator(elem))) {
+            this.addNewAddress(this.modalBillAddressElems, 'billUse');
+          }
+        };
         if (!elementsAdded) {
           this.modalInfo.append([modalShipAddress.getElement(), modalBillAddress.getElement(), modalOk.getElement()]);
           elementsAdded = true;
@@ -336,7 +341,6 @@ export default class UserProfile extends CommonBuilderWrapper {
       if (this.resultsCheckbox.shipDefaultNew) {
         this.actionsAddress.push({ action: 'setDefaultShippingAddress', addressKey });
       }
-      this.actionsAddress.push({ action: 'addShippingAddressId', addressKey });
     }
     if (whatUse === 'billUse') {
       this.actionsAddress.push({ action: 'addBillingAddressId', addressKey });
@@ -393,6 +397,7 @@ export default class UserProfile extends CommonBuilderWrapper {
       this.actionsAddress.push({ action: 'removeBillingAddressId', addressId: this.infoBillAddress.id });
       this.actionsAddress.push({ action: 'removeAddress', addressId: this.infoBillAddress.id });
     }
+    console.log(this.actionsAddress);
     try {
       const result = await flowFactory
         .getWorkingFlow()
