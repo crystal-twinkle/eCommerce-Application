@@ -447,9 +447,10 @@ export default class UserProfile extends CommonBuilderWrapper {
           .execute();
 
         if (result.statusCode === 200) {
+          localStorage.removeItem('token_store');
           new RequestMessage().updateUser();
-          appRouter.navigate(Page.USER_PROFILE);
-          store.setUser(result.body);
+          appRouter.navigate(Page.LOGIN);
+          store.setUser(null);
         }
       } catch (e) {
         new RequestMessage().showWithText('The given current password does not match.');

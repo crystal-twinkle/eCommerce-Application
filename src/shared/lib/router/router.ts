@@ -36,14 +36,9 @@ export class Router {
     const request: IParseUrl = this.parseURL(url);
     const pathForFind = request.resource === '' ? request.path : `${request.path}/${ID_SELECTOR}`;
 
-    const route =
-      // eslint-disable-next-line no-nested-ternary
-      localStorage.getItem('token_store') && (url === Page.LOGIN || url === Page.REGISTRATION)
-        ? this.overviewLink
-        : !localStorage.getItem('token_store') && url === Page.USER_PROFILE
-        ? this.routes.find((item: IRouterLink) => item.path === 'login')
-        : this.routes.find((item: IRouterLink) => item.path === pathForFind) || this.notFoundRouterLink;
-
+    const route = this.isDisabledRoute(url)
+      ? this.overviewLink
+      : this.routes.find((item: IRouterLink) => item.path === pathForFind) || this.notFoundRouterLink;
     if (route === this.notFoundRouterLink) {
       window.history.pushState({}, '', route.path || '/');
     } else if (browserChangeEvent === NavigateType.DEFAULT) {
