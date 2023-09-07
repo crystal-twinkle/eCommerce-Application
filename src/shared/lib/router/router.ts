@@ -35,10 +35,10 @@ export class Router {
   public navigate(url: string, browserChangeEvent: NavigateType = NavigateType.DEFAULT): void {
     const request: IParseUrl = this.parseURL(url);
     const pathForFind = request.resource === '' ? request.path : `${request.path}/${ID_SELECTOR}`;
+
     const route = this.isDisabledRoute(url)
       ? this.overviewLink
       : this.routes.find((item: IRouterLink) => item.path === pathForFind) || this.notFoundRouterLink;
-
     if (route === this.notFoundRouterLink) {
       window.history.pushState({}, '', route.path || '/');
     } else if (browserChangeEvent === NavigateType.DEFAULT) {
