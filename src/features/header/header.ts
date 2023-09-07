@@ -30,6 +30,14 @@ export default class Header extends CommonBuilderWrapper {
         src: '../../assets/icons/logo.svg',
       },
     });
+    const catalogButton = new Button({
+      text: 'Catalog',
+      callback: () => {
+        appRouter.navigate(Page.PRODUCTS);
+      },
+      type: ButtonType.DEFAULT_WITHOUT_BORDER,
+    }).getElement();
+    catalogButton.style.width = '90px';
     const navigation = new ElementBuilder({
       tag: 'nav',
     });
@@ -51,7 +59,7 @@ export default class Header extends CommonBuilderWrapper {
     cartButton.setBadge(4);
 
     navigation.append([userHeaderButton.getElement(), favoritesButton.getElement(), cartButton.getElement()]);
-    container.append([logo.getElement(), navigation.getElement()]);
+    container.append([logo.getElement(), catalogButton, navigation.getElement()]);
 
     this.builder.append([container.getElement()]);
   }
