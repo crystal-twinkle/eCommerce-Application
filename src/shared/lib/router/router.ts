@@ -40,7 +40,7 @@ export class Router {
       // eslint-disable-next-line no-nested-ternary
       localStorage.getItem('token_store') && (url === Page.LOGIN || url === Page.REGISTRATION)
         ? this.overviewLink
-        : url === Page.USER_PROFILE
+        : !localStorage.getItem('token_store') && url === Page.USER_PROFILE
         ? this.routes.find((item: IRouterLink) => item.path === 'login')
         : this.routes.find((item: IRouterLink) => item.path === pathForFind) || this.notFoundRouterLink;
 
