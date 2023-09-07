@@ -33,7 +33,6 @@ export default class UserProfile extends CommonBuilderWrapper {
   private id: string;
   private callbackEditAddress: () => void;
   private modalAddresses: () => void;
-  private saveNewAddress: () => void;
   private addresses: ElementBuilder;
   private data: Customer;
   private checkboxes: { call: (parameter: string, content: string) => HTMLElement };
@@ -217,7 +216,12 @@ export default class UserProfile extends CommonBuilderWrapper {
         this.modalAddress();
         this.changeInputStyle(addressElems);
       } else if (addressElems.every((elem) => checkValidator(elem))) {
-        this.saveNewAddress();
+        if (this.resultsCheckbox.shipUse && this.modalShipAddressElems.every((elem) => checkValidator(elem))) {
+          this.addNewAddress(this.modalShipAddressElems, 'shipUse');
+        }
+        if (this.resultsCheckbox.billUse && this.modalBillAddressElems.every((elem) => checkValidator(elem))) {
+          this.addNewAddress(this.modalBillAddressElems, 'billUse');
+        }
         this.changeAddressInfo();
       }
     };
@@ -303,14 +307,6 @@ export default class UserProfile extends CommonBuilderWrapper {
             }
           },
         });
-        this.saveNewAddress = () => {
-          if (this.resultsCheckbox.shipUse && this.modalShipAddressElems.every((elem) => checkValidator(elem))) {
-            this.addNewAddress(this.modalShipAddressElems, 'shipUse');
-          }
-          if (this.resultsCheckbox.billUse && this.modalBillAddressElems.every((elem) => checkValidator(elem))) {
-            this.addNewAddress(this.modalBillAddressElems, 'billUse');
-          }
-        };
         if (!elementsAdded) {
           this.modalInfo.append([modalShipAddress.getElement(), modalBillAddress.getElement(), modalOk.getElement()]);
           elementsAdded = true;
