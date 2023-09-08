@@ -14,6 +14,7 @@ import Footer from '../features/footer/footer';
 import ProductsListPage from '../pages/products-list-page/products-list-page';
 import store from './store';
 import UserApi from '../entities/user/userApi';
+import AboutUsPage from '../pages/about-us';
 
 export default class App {
   private header: Header;
@@ -82,6 +83,12 @@ export default class App {
         path: Page.USER_PROFILE,
         callback: () => {
           this.main.setContent([new UserPage().getElement()]);
+        },
+      },
+      {
+        path: Page.ABOUT_US,
+        callback: () => {
+          this.main.setContent([new AboutUsPage().getElement()]);
         },
       },
     ];
