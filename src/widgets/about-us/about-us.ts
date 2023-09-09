@@ -12,7 +12,13 @@ export default class AboutUs extends ViewBuilder {
       tag: 'div',
       styleClass: 'about-us',
     });
-    aboutUs.append([this.aboutUsIntroduction(), this.aboutSiarhei(), this.aboutKrystina(), this.aboutRoman()]);
+    aboutUs.append([
+      this.aboutUsIntroduction(),
+      this.aboutSiarhei(),
+      this.aboutKrystina(),
+      this.aboutRoman(),
+      this.rsSchoolLogo(),
+    ]);
     return [aboutUs.getElement()];
   }
 
@@ -58,6 +64,7 @@ export default class AboutUs extends ViewBuilder {
       tag: 'a',
       content: dataName,
       tagSettings: {
+        target: 'blank',
         href,
       },
     }).getElement();
@@ -92,5 +99,15 @@ export default class AboutUs extends ViewBuilder {
     const aboutRomanText = `<strong> Job </strong> : Woodworker. <br> <strong> BIO </strong> Roman is the driving force behind our product's technical excellence. His strategic thinking and leadership have been instrumental in shaping our success.<br> <strong> A story from Roman's life: </strong> it was a day of heavy rain in the city where Roman lived. He was sitting at home when he heard the meowing of kittens coming from the basement. 
     He went downstairs and saw that the basement was filled with water. In the end, Roman not only saved the kittens but also secured them a safe and loving place to call home.`;
     return this.aboutMember('Roman Kravchenko', aboutRomanText, 'https://github.com/gemer31');
+  }
+
+  public rsSchoolLogo(): HTMLElement {
+    return new ElementBuilder({
+      tag: 'a',
+      styleClass: 'rsSchool-logo',
+      tagSettings: {
+        href: 'https://rs.school/js/',
+      },
+    }).getElement();
   }
 }
