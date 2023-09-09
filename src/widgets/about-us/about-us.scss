@@ -1,0 +1,62 @@
+@import '../../../src/shared/assets/style/flex-column';
+
+.about-us {
+  @extend %flex-column;
+  gap: 20px;
+  font-weight: 400;
+
+  &__member {
+    @extend %flex-column;
+
+    h3 {
+      font-weight: 800;
+      font-size: 20px;
+    }
+
+    span {
+      max-width: 700px;
+    }
+  }
+
+  &__introduction {
+    line-height: 1.5;
+  }
+
+  &__contribution {
+    @extend %flex-column;
+    line-height: 1.5;
+    gap: 10px;
+  }
+
+  &__bio-wrap {
+    display: flex;
+    @media (max-width: 800px) {
+      flex-direction: column;
+    }
+  }
+
+  &__img {
+    min-width: 370px;
+    min-height: 250px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-right: 30px;
+
+    &[data-photo='Siarhei'] {
+      background-image: url('../../shared/assets/images/maple.jpg');
+    }
+
+    &[data-photo='Krystsina'] {
+      background-image: url('../../shared/assets/images/dracaena_draco.jpeg');
+    }
+
+    &[data-photo='Roman'] {
+      background-image: url('../../shared/assets/images/oak.jpg');
+    }
+
+    @media (max-width: 800px) {
+      min-width: 300px;
+      min-height: 150px;
+    }
+  }
+}
