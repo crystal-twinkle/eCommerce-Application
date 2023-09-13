@@ -6,6 +6,7 @@ import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
 import UserHeaderButton from '../user-header-button/user-header-button';
 import appRouter from '../../shared/lib/router/router';
 import { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/models';
+import CartApi from '../../entities/cart/cart';
 
 export default class Header extends CommonBuilderWrapper {
   constructor() {
@@ -51,7 +52,23 @@ export default class Header extends CommonBuilderWrapper {
     });
 
     const cartButton = new Button({
-      callback: () => {},
+      callback: async () => {
+        if (localStorage.getItem('token_store')) {
+          try {
+            console.log('custom: ', await CartApi.getCustomerCart());
+          } catch (err) {
+            console.log("Cart hasn't been created yet");
+          }
+        } else {
+          try {
+            console.log('anon: ', await CartApi.getAnonymousCart());
+          } catch (err) {
+            console.log("Cart hasn't been created yet");
+          }
+        }
+
+        console.log(await CartApi.getAllCarts());
+      },
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
       icon: { name: 'shopping-bag', position: ButtonIconPosition.LEFT },
       size: ButtonSize.SMALL,
