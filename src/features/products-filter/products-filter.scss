@@ -1,6 +1,17 @@
+@import '../../colors';
+
 .products-filter {
   width: fit-content;
   padding-right: 16px;
+
+  @media (max-width: 590px) {
+    background-color: $primary;
+    position: sticky;
+    top: 105px;
+    width: 100%;
+    z-index: 5;
+    padding: 0;
+  }
 
   & input {
     font-size: 14px;
@@ -28,5 +39,23 @@
         align-items: center;
       }
     }
+  }
+
+  &__empty-area {
+    height: 100%;
+
+    @media (max-width: 590px) {
+      display: none;
+    }
+  }
+
+  &__categories {
+    position: sticky;
+    top: 75px;
+  }
+
+  &__prices {
+    position: sticky;
+    top: 130px;
   }
 }
