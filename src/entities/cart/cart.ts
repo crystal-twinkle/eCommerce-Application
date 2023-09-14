@@ -1,6 +1,7 @@
-import { Cart, CartPagedQueryResponse, ClientResponse, Customer } from '@commercetools/platform-sdk';
+import { Cart, CartPagedQueryResponse, ClientResponse } from '@commercetools/platform-sdk';
 import flowFactory from '../../app/api-flow/flow-factory';
 import UserApi from '../user/userApi';
+import store from '../../app/store';
 
 export default class CartApi {
   public static async createCart(): Promise<string> {
@@ -29,15 +30,9 @@ export default class CartApi {
 
   public static async addItemToCart(productId: string): Promise<void> {
     const cartID: string = localStorage.getItem('cartID') || (await this.createCart());
+    const cartVersion: number = store.cart.version;
 
-    let cartVersion: number;
-    if (localStorage.getItem('cartID')) {
-      cartVersion = (await this.getAnonymousCart()).body.version;
-    } else {
-      cartVersion = (await this.getCustomerCart()).body.version;
-    }
-
-    await flowFactory.clientCredentialsFlow
+    const response = await flowFactory.clientCredentialsFlow
       .carts()
       .withId({ ID: cartID })
       .post({
@@ -52,11 +47,12 @@ export default class CartApi {
         },
       })
       .execute();
+    store.setCart(response.body);
   }
 
   public static async deleteCustomerCart(): Promise<ClientResponse<Cart>> {
-    const customerId = (await UserApi.getUser()).id;
-    const response = await flowFactory.clientCredentialsFlow
+    const customerId = store.user.id;
+    return flowFactory.clientCredentialsFlow
       .carts()
       .withId({ ID: customerId })
       .delete({
@@ -65,33 +61,27 @@ export default class CartApi {
         },
       })
       .execute();
-    return response;
   }
 
   public static async getCustomerCart(): Promise<ClientResponse<Cart>> {
-    const customerId = (await UserApi.getUser()).id;
-    const response = await flowFactory.clientCredentialsFlow.carts().withCustomerId({ customerId }).get().execute();
-    return response;
+    const customerId = store.user.id;
+    return flowFactory.clientCredentialsFlow.carts().withCustomerId({ customerId }).get().execute();
   }
 
   public static async getAnonymousCart(): Promise<ClientResponse<Cart>> {
     const cartID = localStorage.getItem('cartID');
-    const response = await flowFactory.clientCredentialsFlow.carts().withId({ ID: cartID }).get().execute();
-    return response;
+    return flowFactory.clientCredentialsFlow.carts().withId({ ID: cartID }).get().execute();
   }
 
   public static async getAllCarts(): Promise<ClientResponse<CartPagedQueryResponse>> {
-    const response = await flowFactory.clientCredentialsFlow
+    return flowFactory.clientCredentialsFlow
       .carts()
       .get({ queryArgs: { limit: 100 } })
       .execute();
-    return response;
   }
 
   public static async setCustomerID(customerId: string): Promise<void> {
     const cartID: string = localStorage.getItem('cartID');
-    const cartVersion: number = (await this.getAnonymousCart()).body.version;
-
     await flowFactory.clientCredentialsFlow
       .carts()
       .withId({ ID: cartID })
@@ -103,9 +93,29 @@ export default class CartApi {
               customerId,
             },
           ],
-          version: cartVersion,
+          version: store.cart.version,
         },
       })
       .execute();
+  }
+
+  public static async addDiscountCode(code: string = 'emp15'): Promise<Cart> {
+    const response: ClientResponse<Cart> = await flowFactory.clientCredentialsFlow
+      .carts()
+      .withId({ ID: store.user.id })
+      .post({
+        body: {
+          actions: [
+            {
+              action: 'addDiscountCode',
+              code,
+            },
+          ],
+          version: store.cart.version,
+        },
+      })
+      .execute();
+    store.cart = response.body;
+    return response.body;
   }
 }
