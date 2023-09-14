@@ -16,6 +16,7 @@ import store from './store';
 import UserApi from '../entities/user/userApi';
 import AboutUsPage from '../pages/about-us';
 import CartApi from '../entities/cart/cart';
+import CartPage from '../pages/cart-page';
 
 export default class App {
   private header: Header;
@@ -28,10 +29,17 @@ export default class App {
     this.footer = new Footer();
 
     if (localStorage.getItem('token_store')) {
-      UserApi.getUser().then((data: Customer) => store.setUser(data));
-      CartApi.getCustomerCart().then((data: ClientResponse<Cart>) => store.setCart(data.body));
+      UserApi.getUser()
+        .then((data: Customer) => store.setUser(data))
+        .then(() => {
+          if (localStorage.getItem('cartID')) {
+            CartApi.getCustomerCart().then((data: ClientResponse<Cart>) => store.setCart(data.body));
+          }
+        });
     } else {
-      CartApi.getAnonymousCart().then((data: ClientResponse<Cart>) => store.setCart(data.body));
+      if (localStorage.getItem('cartID')) {
+        CartApi.getAnonymousCart().then((data: ClientResponse<Cart>) => store.setCart(data.body));
+      }
       store.setUser(null);
     }
 
@@ -92,6 +100,12 @@ export default class App {
         path: Page.ABOUT_US,
         callback: () => {
           this.main.setContent([new AboutUsPage().getElement()]);
+        },
+      },
+      {
+        path: Page.CART,
+        callback: () => {
+          this.main.setContent([new CartPage().getElement()]);
         },
       },
     ];

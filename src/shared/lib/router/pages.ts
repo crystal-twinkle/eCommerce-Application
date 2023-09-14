@@ -7,6 +7,7 @@ export enum Page {
   SHOWCASES = 'showcases',
   USER_PROFILE = 'user-profile',
   ABOUT_US = 'about-us',
+  CART = 'cart',
 }
 
 export const ID_SELECTOR = '{id}';

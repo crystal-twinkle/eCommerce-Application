@@ -10,6 +10,7 @@ class Store {
   };
   public setCart = (newDada: Cart): void => {
     this.cart = newDada;
+    eventBus.publish(EventBusActions.UPDATE_CART, this.cart);
   };
 }
 
