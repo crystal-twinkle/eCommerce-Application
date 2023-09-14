@@ -110,6 +110,9 @@ export default class ProductView extends ViewBuilder {
     });
 
     const likeButton = new Button({
+      callback: async () => {
+        CartApi.removeItemFromCart(this.id);
+      },
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
       size: ButtonSize.SMALL,
       icon: {
@@ -118,7 +121,30 @@ export default class ProductView extends ViewBuilder {
       },
     });
 
-    buttonContainer.append([toCartButton.getElement(), likeButton.getElement()]);
+    const plusButton = new Button({
+      callback: async () => {
+        CartApi.changeQuantity(this.id, 'plus');
+      },
+      type: ButtonType.CIRCLE,
+      size: ButtonSize.SMALL,
+      text: '+',
+    });
+
+    const minusButton = new Button({
+      callback: async () => {
+        CartApi.changeQuantity(this.id, 'minus');
+      },
+      type: ButtonType.CIRCLE,
+      size: ButtonSize.SMALL,
+      text: '-',
+    });
+
+    buttonContainer.append([
+      toCartButton.getElement(),
+      likeButton.getElement(),
+      plusButton.getElement(),
+      minusButton.getElement(),
+    ]);
 
     const descriptionContainer = new ElementBuilder({
       tag: 'div',
