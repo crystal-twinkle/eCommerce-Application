@@ -15,6 +15,7 @@ import store from '../../app/store';
 import RequestMessage from '../request-message/request-message';
 import { Mutable } from '../../shared/const/mutable';
 import { IResultsCheckbox } from '../../shared/const/results-checkbox';
+import CartApi from '../../entities/cart/cart';
 
 export default class RegistrationFormView extends ViewBuilder {
   constructor() {
@@ -240,6 +241,8 @@ export default class RegistrationFormView extends ViewBuilder {
                 .execute();
               new RequestMessage().createSuccess();
               store.setUser(loginResult.body.customer);
+              await CartApi.setCustomerID(loginResult.body.customer.id);
+              localStorage.removeItem('cartID');
               appRouter.navigate(Page.OVERVIEW);
             }
           } catch (e) {
