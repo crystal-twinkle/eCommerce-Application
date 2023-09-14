@@ -66,8 +66,6 @@ export default class Header extends CommonBuilderWrapper {
             console.log("Cart hasn't been created yet");
           }
         }
-
-        console.log(await CartApi.getAllCarts());
       },
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
       icon: { name: 'shopping-bag', position: ButtonIconPosition.LEFT },
