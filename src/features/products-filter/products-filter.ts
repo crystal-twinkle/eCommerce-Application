@@ -28,22 +28,12 @@ export default class ProductsFilter extends CommonBuilderWrapper {
       styleClass: 'products-filter',
     });
 
-    // const emptyArea = new ElementBuilder({
-    //   // need for sticky elements
-    //   tag: 'div',
-    //   styleClass: 'products-filter__empty-area',
-    // });
-    this.builder.append([
-      this.getCategoriesField().getElement(),
-      this.getPriceField().getElement(),
-      // emptyArea.getElement(),
-    ]);
+    this.builder.append([this.getCategoriesField().getElement(), this.getPriceField().getElement()]);
   }
 
   private getCategoriesField(): ElementBuilder {
     const catalogFieldBuilder = new ElementBuilder({
       tag: 'div',
-      styleClass: 'products-filter__categories',
     });
     const fieldName = new ElementBuilder({
       tag: 'div',
@@ -67,7 +57,6 @@ export default class ProductsFilter extends CommonBuilderWrapper {
   private getPriceField(): ElementBuilder {
     const priceFieldBuilder = new ElementBuilder({
       tag: 'div',
-      styleClass: 'products-filter__prices',
     });
     const fieldName = new ElementBuilder({
       tag: 'div',

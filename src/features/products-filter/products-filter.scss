@@ -12,7 +12,7 @@
     top: 105px;
     width: 100%;
     z-index: 5;
-    padding: 0;
+    padding: 0 0 10px;
   }
 
   & input {
@@ -50,14 +50,4 @@
       display: none;
     }
   }
-
-  //&__categories {
-  //  position: sticky;
-  //  top: 75px;
-  //}
-  //
-  //&__prices {
-  //  position: sticky;
-  //  top: 130px;
-  //}
 }

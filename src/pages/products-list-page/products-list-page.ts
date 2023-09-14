@@ -43,6 +43,7 @@ export default class ProductsListPage extends ViewBuilder {
 
     const filterWrapper = new ElementBuilder({
       tag: 'div',
+      styleClass: 'products-list-page__filter',
     });
     const filterEmptyArea = new ElementBuilder({
       tag: 'div',

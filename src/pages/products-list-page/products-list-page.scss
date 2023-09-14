@@ -1,10 +1,16 @@
 .products-list-page {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin: 20px 0 14px;
 
-  &__filter-empty-area {
-    height: 100%;
+  &__filter {
+    position: sticky;
+    top: 105px;
+    z-index: 10;
+
+    &-empty-area {
+      height: 100%;
+    }
   }
 
   @media (max-width: 590px) {
