@@ -1,4 +1,4 @@
-import { Customer } from '@commercetools/platform-sdk';
+import { Customer, Cart, ClientResponse } from '@commercetools/platform-sdk';
 import OverviewPage from '../pages/overview-page';
 import Header from '../features/header/header';
 import { IRouterLink } from '../shared/lib/router/router';
@@ -15,6 +15,7 @@ import ProductsListPage from '../pages/products-list-page/products-list-page';
 import store from './store';
 import UserApi from '../entities/user/userApi';
 import AboutUsPage from '../pages/about-us';
+import CartApi from '../entities/cart/cart';
 
 export default class App {
   private header: Header;
@@ -27,8 +28,17 @@ export default class App {
     this.footer = new Footer();
 
     if (localStorage.getItem('token_store')) {
-      UserApi.getUser().then((data: Customer) => store.setUser(data));
+      UserApi.getUser()
+        .then((data: Customer) => store.setUser(data))
+        .then(() => {
+          if (localStorage.getItem('cartID')) {
+            CartApi.getCustomerCart().then((data: ClientResponse<Cart>) => store.setCart(data.body));
+          }
+        });
     } else {
+      if (localStorage.getItem('cartID')) {
+        CartApi.getAnonymousCart().then((data: ClientResponse<Cart>) => store.setCart(data.body));
+      }
       store.setUser(null);
     }
 
@@ -89,6 +99,12 @@ export default class App {
         path: Page.ABOUT_US,
         callback: () => {
           this.main.setContent([new AboutUsPage().getElement()]);
+        },
+      },
+      {
+        path: Page.CART,
+        callback: () => {
+          // this.main.setContent([new CartPage().getElement()]);
         },
       },
     ];

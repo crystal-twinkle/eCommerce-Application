@@ -1,3 +1,4 @@
+import { Cart } from '@commercetools/platform-sdk';
 import ElementBuilder from '../../shared/lib/element-builder';
 import { Page } from '../../shared/lib/router/pages';
 import './header.scss';
@@ -6,7 +7,7 @@ import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
 import UserHeaderButton from '../user-header-button/user-header-button';
 import appRouter from '../../shared/lib/router/router';
 import { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/button/models';
-import CartApi from '../../entities/cart/cart';
+import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
 
 export default class Header extends CommonBuilderWrapper {
   constructor() {
@@ -53,27 +54,13 @@ export default class Header extends CommonBuilderWrapper {
 
     const cartButton = new Button({
       callback: async () => {
-        if (localStorage.getItem('token_store')) {
-          try {
-            console.log('custom: ', await CartApi.getCustomerCart());
-          } catch (err) {
-            console.log("Cart hasn't been created yet");
-          }
-        } else {
-          try {
-            console.log('anon: ', await CartApi.getAnonymousCart());
-          } catch (err) {
-            console.log("Cart hasn't been created yet");
-          }
-        }
-
-        // console.log(await CartApi.getAllCarts());
+        appRouter.navigate(Page.CART);
       },
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
       icon: { name: 'shopping-bag', position: ButtonIconPosition.LEFT },
       size: ButtonSize.SMALL,
     });
-    cartButton.setBadge(4);
+    eventBus.subscribe(EventBusActions.UPDATE_CART, (data) => cartButton.setBadge((data as Cart)?.lineItems.length));
 
     navigation.append([userHeaderButton.getElement(), favoritesButton.getElement(), cartButton.getElement()]);
     container.append([logo.getElement(), aboutUsButton, navigation.getElement()]);

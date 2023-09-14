@@ -1,7 +1,6 @@
 export enum EventBusActions {
-  LOGIN = 'login',
-  REGISTER = 'register',
   UPDATE_USER = 'update-user',
+  UPDATE_CART = 'update-cart',
 }
 
 class EventBus {

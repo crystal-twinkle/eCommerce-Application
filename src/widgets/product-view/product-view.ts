@@ -7,7 +7,6 @@ import Button from '../../shared/ui/button/button';
 import { ButtonSize, ButtonType, ButtonIconPosition } from '../../shared/ui/button/models';
 import Slider from '../../features/slider/slider';
 import CartApi from '../../entities/cart/cart';
-import UserApi from '../../entities/user/userApi';
 import ProductApi from '../../entities/product/api';
 
 export default class ProductView extends ViewBuilder {
@@ -99,7 +98,7 @@ export default class ProductView extends ViewBuilder {
 
     const toCartButton = new Button({
       callback: async () => {
-        CartApi.addItemToCart(this.id);
+        await CartApi.addItemToCart(this.id);
       },
       type: ButtonType.DEFAULT,
       text: 'Add to cart',

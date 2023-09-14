@@ -43,7 +43,10 @@ export default class LoginForm extends ViewBuilder {
               .execute();
             store.setUser(result.body.customer);
             await CartApi.setCustomerID(result.body.customer.id);
-            localStorage.removeItem('cartID');
+            if (localStorage.getItem('cartID')) {
+              await CartApi.setCustomerID(result.body.customer.id);
+              localStorage.removeItem('cartID');
+            }
 
             new RequestMessage().logSuccess();
             appRouter.navigate(Page.OVERVIEW);
