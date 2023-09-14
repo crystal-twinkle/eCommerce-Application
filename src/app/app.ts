@@ -31,9 +31,7 @@ export default class App {
       UserApi.getUser()
         .then((data: Customer) => store.setUser(data))
         .then(() => {
-          if (localStorage.getItem('cartID')) {
-            CartApi.getCustomerCart().then((data: ClientResponse<Cart>) => store.setCart(data.body));
-          }
+          CartApi.getCustomerCart().then((data: ClientResponse<Cart>) => store.setCart(data.body));
         });
     } else {
       if (localStorage.getItem('cartID')) {

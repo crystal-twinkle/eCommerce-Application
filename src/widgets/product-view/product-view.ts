@@ -8,6 +8,7 @@ import { ButtonSize, ButtonType, ButtonIconPosition } from '../../shared/ui/butt
 import Slider from '../../features/slider/slider';
 import CartApi from '../../entities/cart/cart';
 import ProductApi from '../../entities/product/api';
+import store from '../../app/store';
 
 export default class ProductView extends ViewBuilder {
   private slider: Slider;
@@ -112,17 +113,14 @@ export default class ProductView extends ViewBuilder {
       callback: async () => {
         CartApi.removeItemFromCart(this.id);
       },
-      type: ButtonType.CIRCLE_WITHOUT_BORDER,
-      size: ButtonSize.SMALL,
-      icon: {
-        name: 'heart',
-        position: ButtonIconPosition.LEFT,
-      },
+      type: ButtonType.DEFAULT,
+      size: ButtonSize.MEDIUM,
+      text: 'remove item from cart',
     });
 
     const plusButton = new Button({
       callback: async () => {
-        CartApi.changeQuantity(this.id, 'plus');
+        CartApi.changeQuantity(this.id, 'increase');
       },
       type: ButtonType.CIRCLE,
       size: ButtonSize.SMALL,
@@ -131,11 +129,20 @@ export default class ProductView extends ViewBuilder {
 
     const minusButton = new Button({
       callback: async () => {
-        CartApi.changeQuantity(this.id, 'minus');
+        CartApi.changeQuantity(this.id, 'decrease');
       },
       type: ButtonType.CIRCLE,
       size: ButtonSize.SMALL,
       text: '-',
+    });
+
+    const emptyButton = new Button({
+      callback: async () => {
+        CartApi.clearCart();
+      },
+      type: ButtonType.DEFAULT,
+      size: ButtonSize.SMALL,
+      text: 'Clear Cart',
     });
 
     buttonContainer.append([
@@ -143,6 +150,7 @@ export default class ProductView extends ViewBuilder {
       likeButton.getElement(),
       plusButton.getElement(),
       minusButton.getElement(),
+      emptyButton.getElement(),
     ]);
 
     const descriptionContainer = new ElementBuilder({
