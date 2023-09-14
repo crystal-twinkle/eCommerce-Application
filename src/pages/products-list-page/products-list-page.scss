@@ -3,6 +3,10 @@
   justify-content: space-between;
   margin-bottom: 14px;
 
+  &__filter-empty-area {
+    height: 100%;
+  }
+
   @media (max-width: 590px) {
     flex-direction: column;
     align-items: center;

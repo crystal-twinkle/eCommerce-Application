@@ -41,7 +41,6 @@ export default class ProductApi {
     if (sort.length) {
       queryArgs.sort = sort;
     }
-
     const response: ClientResponse<ProductProjectionPagedQueryResponse> = await flowFactory.clientCredentialsFlow
       .productProjections()
       .search()

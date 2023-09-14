@@ -1,11 +1,12 @@
 import './product-view.scss';
-import { DiscountedPrice, Price, Product } from '@commercetools/platform-sdk';
+import { Price, Product } from '@commercetools/platform-sdk';
 import ElementBuilder from '../../shared/lib/element-builder';
 import ViewBuilder from '../../shared/lib/view-builder';
 import PageTitle from '../../features/page-title/page-title';
 import Button from '../../shared/ui/button/button';
 import { ButtonSize, ButtonType, ButtonIconPosition } from '../../shared/ui/button/models';
 import Slider from '../../features/slider/slider';
+import CartApi from '../../entities/cart/cart';
 import ProductApi from '../../entities/product/api';
 
 export default class ProductView extends ViewBuilder {
@@ -13,7 +14,6 @@ export default class ProductView extends ViewBuilder {
   private id: string;
   private data: Product;
   private price: Price;
-  private disountedPrice: DiscountedPrice;
 
   constructor() {
     super('product-view');
@@ -97,6 +97,9 @@ export default class ProductView extends ViewBuilder {
     });
 
     const toCartButton = new Button({
+      callback: async () => {
+        await CartApi.addItemToCart(this.id);
+      },
       type: ButtonType.DEFAULT,
       text: 'Add to cart',
       icon: {

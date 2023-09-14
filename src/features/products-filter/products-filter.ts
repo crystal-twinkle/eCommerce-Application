@@ -28,15 +28,15 @@ export default class ProductsFilter extends CommonBuilderWrapper {
       styleClass: 'products-filter',
     });
 
-    const emptyArea = new ElementBuilder({
-      // need for sticky elements
-      tag: 'div',
-      styleClass: 'products-filter__empty-area',
-    });
+    // const emptyArea = new ElementBuilder({
+    //   // need for sticky elements
+    //   tag: 'div',
+    //   styleClass: 'products-filter__empty-area',
+    // });
     this.builder.append([
       this.getCategoriesField().getElement(),
       this.getPriceField().getElement(),
-      emptyArea.getElement(),
+      // emptyArea.getElement(),
     ]);
   }
 

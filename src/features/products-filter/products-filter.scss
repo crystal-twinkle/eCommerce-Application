@@ -3,6 +3,8 @@
 .products-filter {
   width: fit-content;
   padding-right: 16px;
+  position: sticky;
+  top: 75px;
 
   @media (max-width: 590px) {
     background-color: $primary;
@@ -49,13 +51,13 @@
     }
   }
 
-  &__categories {
-    position: sticky;
-    top: 75px;
-  }
-
-  &__prices {
-    position: sticky;
-    top: 130px;
-  }
+  //&__categories {
+  //  position: sticky;
+  //  top: 75px;
+  //}
+  //
+  //&__prices {
+  //  position: sticky;
+  //  top: 130px;
+  //}
 }

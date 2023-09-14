@@ -40,7 +40,16 @@ export default class ProductsListPage extends ViewBuilder {
       tag: 'section',
       styleClass: 'products-list-page',
     });
-    productsView.append([this.productsFilter.getElement(), this.productsList.getElement()]);
+
+    const filterWrapper = new ElementBuilder({
+      tag: 'div',
+    });
+    const filterEmptyArea = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'products-list-page__filter-empty-area',
+    });
+    filterWrapper.append([this.productsFilter.getElement(), filterEmptyArea.getElement()]);
+    productsView.append([filterWrapper.getElement(), this.productsList.getElement()]);
 
     return [this.sortBarView.getElement(), productsView.getElement()];
   }

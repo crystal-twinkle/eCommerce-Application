@@ -8,6 +8,7 @@ import checkValidator from '../../shared/lib/validate/check-validaror';
 import flowFactory from '../../app/api-flow/flow-factory';
 import store from '../../app/store';
 import RequestMessage from '../request-message/request-message';
+import CartApi from '../../entities/cart/cart';
 
 export default class LoginForm extends ViewBuilder {
   constructor() {
@@ -41,6 +42,11 @@ export default class LoginForm extends ViewBuilder {
               .post({ body: { email: emailLogin.getElement().value, password: passwordLogin.value } })
               .execute();
             store.setUser(result.body.customer);
+            await CartApi.setCustomerID(result.body.customer.id);
+            if (localStorage.getItem('cartID')) {
+              await CartApi.setCustomerID(result.body.customer.id);
+              localStorage.removeItem('cartID');
+            }
 
             new RequestMessage().logSuccess();
             appRouter.navigate(Page.OVERVIEW);
