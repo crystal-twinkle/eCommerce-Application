@@ -102,4 +102,27 @@ export default class CartApi {
       })
       .execute();
   }
+
+  public static async addDiscountCode(code: string = 'emp15'): Promise<Cart> {
+    const cartID: string = localStorage.getItem('cartID');
+    const cartVersion: number = (await this.getAnonymousCart()).body.version;
+
+    const response: ClientResponse<Cart> = await flowFactory.clientCredentialsFlow
+      .carts()
+      .withId({ ID: cartID })
+      .post({
+        body: {
+          actions: [
+            {
+              action: 'addDiscountCode',
+              code,
+            },
+          ],
+          version: cartVersion,
+        },
+      })
+      .execute();
+    store.cart = response.body;
+    return response.body;
+  }
 }
