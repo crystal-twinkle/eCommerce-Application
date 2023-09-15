@@ -24,6 +24,7 @@ export default class CartApi {
       .execute();
 
     const cartID: string = response.body.id;
+    store.setCart(response.body);
     localStorage.setItem('cartID', cartID);
     return cartID;
   }
