@@ -14,4 +14,17 @@
     font-size: 1rem;
     color: $gray-1;
   }
+
+  &_cart-page {
+    position: relative;
+  }
+
+  &_cart-page::after {
+    width: 34px;
+    height: 34px;
+    position: absolute;
+    left: 70px;
+    content: '';
+    background-image: url('../../shared/assets/icons/clarity_shopping-bag-line.svg');
+  }
 }
