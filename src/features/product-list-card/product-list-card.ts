@@ -7,8 +7,9 @@ import { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/butt
 import './product-list-card.scss';
 import appRouter from '../../shared/lib/router/router';
 import { Page } from '../../shared/lib/router/pages';
-import CartApi from '../../entities/cart/cart';
+import CartApi from '../../entities/cart/cart-api';
 import store from '../../app/store';
+import getPrice from '../../shared/lib/getPrice';
 
 export default class ProductListCard extends CommonBuilderWrapper {
   private price: Price;
@@ -18,7 +19,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
 
   constructor(private data: ProductProjection) {
     super();
-
+    this.price = this.data.masterVariant.prices[0];
     this.builder = new ElementBuilder({
       tag: 'div',
       styleClass: 'product-list-card',
@@ -39,7 +40,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
     const price = new ElementBuilder({
       tag: 'div',
       styleClass: 'product-list-card__price',
-      content: `${this.getPrice()}`,
+      content: `${getPrice(this.price)}`,
     });
     priceContainer.append([price.getElement()]);
     const description = new ElementBuilder({
@@ -51,7 +52,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
       const descountedPrice = new ElementBuilder({
         tag: 'div',
         styleClass: 'product-view__price',
-        content: `${this.getPrice(true)}`,
+        content: `${getPrice(this.price, true)}`,
       });
 
       priceContainer.prepend([descountedPrice.getElement()]);

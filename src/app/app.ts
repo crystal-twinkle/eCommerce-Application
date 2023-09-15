@@ -1,4 +1,4 @@
-import { Customer, Cart, ClientResponse } from '@commercetools/platform-sdk';
+import { Cart, ClientResponse, Customer } from '@commercetools/platform-sdk';
 import OverviewPage from '../pages/overview-page';
 import Header from '../features/header/header';
 import { IRouterLink } from '../shared/lib/router/router';
@@ -16,7 +16,8 @@ import UserApi from '../entities/user/userApi';
 import ElementBuilder from '../shared/lib/element-builder';
 import eventBus, { EventBusActions } from '../shared/lib/event-bus';
 import AboutUsPage from '../pages/about-us';
-import CartApi from '../entities/cart/cart';
+import CartPage from '../pages/cart-page';
+import CartApi from '../entities/cart/cart-api';
 
 export default class App {
   private readonly SCROLL_END_OFFSET: number = 150;
@@ -30,17 +31,18 @@ export default class App {
     this.header = new Header();
     this.main = new Main();
     this.footer = new Footer();
-
     if (localStorage.getItem('token_store')) {
       UserApi.getUser()
         .then((data: Customer) => store.setUser(data))
         .then(() => {
-          CartApi.getCustomerCart().then((data: ClientResponse<Cart>) => store.setCart(data.body));
+          localStorage.getItem('cartID')
+            ? CartApi.getCustomerCart().then((response: ClientResponse<Cart>) => store.setCart(response.body))
+            : store.setCart(null);
         });
     } else {
-      if (localStorage.getItem('cartID')) {
-        CartApi.getAnonymousCart().then((data: ClientResponse<Cart>) => store.setCart(data.body));
-      }
+      localStorage.getItem('cartID')
+        ? CartApi.getAnonymousCart().then((data: ClientResponse<Cart>) => store.setCart(data.body))
+        : store.setCart(null);
       store.setUser(null);
     }
 
@@ -115,16 +117,10 @@ export default class App {
           this.main.setContent([new AboutUsPage().getElement()]);
         },
       },
-      // {
-      //   path: Page.CART,
-      //   callback: () => {
-      //     this.main.setContent([new CartPage().getElement()]);
-      //   },
-      // },
       {
         path: Page.CART,
         callback: () => {
-          // this.main.setContent([new CartPage().getElement()]);
+          this.main.setContent([new CartPage().getElement()]);
         },
       },
     ];

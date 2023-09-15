@@ -26,7 +26,7 @@ export default class ProductsListPage extends ViewBuilder {
 
     eventBus.subscribe(EventBusActions.SCROLL_END, () => {
       if (!this.lazyLoadingInProgress && store.products?.total > store.products?.results?.length) {
-        this.offset++;
+        this.offset += this.offset;
         this.loadProducts();
       }
     });

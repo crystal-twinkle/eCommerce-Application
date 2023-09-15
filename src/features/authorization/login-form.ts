@@ -9,7 +9,7 @@ import checkValidator from '../../shared/lib/validate/check-validaror';
 import flowFactory from '../../app/api-flow/flow-factory';
 import store from '../../app/store';
 import RequestMessage from '../request-message/request-message';
-import CartApi from '../../entities/cart/cart';
+import CartApi from '../../entities/cart/cart-api';
 
 export default class LoginForm extends ViewBuilder {
   constructor() {

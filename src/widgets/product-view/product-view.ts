@@ -6,8 +6,9 @@ import PageTitle from '../../features/page-title/page-title';
 import Button from '../../shared/ui/button/button';
 import { ButtonSize, ButtonType, ButtonIconPosition } from '../../shared/ui/button/models';
 import Slider from '../../features/slider/slider';
-import CartApi from '../../entities/cart/cart';
+import CartApi from '../../entities/cart/cart-api';
 import ProductApi from '../../entities/product/api';
+import getPrice from '../../shared/lib/getPrice';
 import store from '../../app/store';
 
 export default class ProductView extends ViewBuilder {
@@ -41,25 +42,6 @@ export default class ProductView extends ViewBuilder {
     });
 
     return slides;
-  }
-
-  private getPrice(isDiscounted = false): string {
-    this.price = this.data.masterData.current.masterVariant.prices[0];
-    let centAmount: number = this.price.value.centAmount;
-
-    if (isDiscounted) {
-      centAmount = this.price.discounted.value.centAmount;
-    }
-
-    const fractionDigits: number = this.price.value.fractionDigits;
-    const currencyCode: string = this.price.value.currencyCode;
-    const shortPrice: number = centAmount / 10 ** fractionDigits;
-    const formatedPrice: string = new Intl.NumberFormat(`us-US`, {
-      style: 'currency',
-      currency: `${currencyCode}`,
-    }).format(shortPrice);
-
-    return formatedPrice;
   }
 
   private setButtons(): void {
@@ -96,10 +78,11 @@ export default class ProductView extends ViewBuilder {
       styleClass: 'product-view__price-container',
     });
 
+    this.price = this.data.masterData.current.masterVariant.prices[0];
     const price = new ElementBuilder({
       tag: 'div',
       styleClass: 'product-view__price',
-      content: `${this.getPrice()}`,
+      content: `${getPrice(this.price)}`,
     });
     priceContainer.append([price.getElement()]);
 
@@ -203,7 +186,7 @@ export default class ProductView extends ViewBuilder {
       const descountedPrice = new ElementBuilder({
         tag: 'div',
         styleClass: 'product-view__price',
-        content: `${this.getPrice(true)}`,
+        content: `${getPrice(this.price, true)}`,
       });
 
       priceContainer.prepend([descountedPrice.getElement()]);
