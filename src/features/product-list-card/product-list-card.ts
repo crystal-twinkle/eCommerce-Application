@@ -7,9 +7,14 @@ import { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/butt
 import './product-list-card.scss';
 import appRouter from '../../shared/lib/router/router';
 import { Page } from '../../shared/lib/router/pages';
+import CartApi from '../../entities/cart/cart';
+import store from '../../app/store';
 
 export default class ProductListCard extends CommonBuilderWrapper {
-  price: Price;
+  private price: Price;
+  private infoButtons: ElementBuilder;
+  private toCartButton: Button;
+  private removeButton: Button;
 
   constructor(private data: ProductProjection) {
     super();
@@ -61,13 +66,32 @@ export default class ProductListCard extends CommonBuilderWrapper {
         position: ButtonIconPosition.LEFT,
       },
     });
-    const toCartButton = new Button({
+    this.toCartButton = new Button({
+      callback: async () => {
+        await CartApi.addItemToCart(this.data.id);
+        this.toCartButton.getElement().remove();
+        this.setButtons();
+      },
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
       size: ButtonSize.SMALL,
       icon: {
         name: 'cart',
         position: ButtonIconPosition.LEFT,
       },
+    });
+    this.removeButton = new Button({
+      callback: async () => {
+        await CartApi.removeItemFromCart(this.data.id);
+        this.removeButton.getElement().remove();
+        this.setButtons();
+      },
+      type: ButtonType.CIRCLE_WITHOUT_BORDER,
+      size: ButtonSize.SMALL,
+      text: 'remove',
+      // icon: {
+      //   name: 'cart',
+      //   position: ButtonIconPosition.LEFT,
+      // },
     });
     const detailsButton = new Button({
       type: ButtonType.DEFAULT,
@@ -79,7 +103,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
       tag: 'div',
       styleClass: 'product-list-card__row',
     });
-    const infoButtons = new ElementBuilder({
+    this.infoButtons = new ElementBuilder({
       tag: 'div',
     });
     const details = new ElementBuilder({
@@ -87,11 +111,12 @@ export default class ProductListCard extends CommonBuilderWrapper {
       styleClass: 'product-list-card__row',
     });
 
-    infoButtons.append([likeButton.getElement(), toCartButton.getElement()]);
-    info.append([infoButtons.getElement(), priceContainer.getElement()]);
+    this.infoButtons.append([likeButton.getElement()]);
+    info.append([this.infoButtons.getElement(), priceContainer.getElement()]);
     details.append([detailsButton.getElement()]);
     this.builder.prepend([description.getElement()]);
     this.builder.append([img.getElement(), info.getElement(), details.getElement()]);
+    this.setButtons();
   }
 
   private getPrice(isDiscounted = false): string {
@@ -111,5 +136,13 @@ export default class ProductListCard extends CommonBuilderWrapper {
     }).format(shortPrice);
 
     return formatedPrice;
+  }
+
+  private setButtons(): void {
+    if (!store.cart.lineItems.find((item) => item.productId === this.data.id)) {
+      this.infoButtons.append([this.toCartButton.getElement()]);
+    } else {
+      this.infoButtons.append([this.removeButton.getElement()]);
+    }
   }
 }

@@ -15,6 +15,9 @@ export default class ProductView extends ViewBuilder {
   private id: string;
   private data: Product;
   private price: Price;
+  buttonContainer: ElementBuilder;
+  toCartButton: Button;
+  removeButton: Button;
 
   constructor() {
     super('product-view');
@@ -59,6 +62,14 @@ export default class ProductView extends ViewBuilder {
     return formatedPrice;
   }
 
+  private setButtons(): void {
+    if (!store.cart.lineItems.find((item) => item.productId === this.id)) {
+      this.buttonContainer.prepend([this.toCartButton.getElement()]);
+    } else {
+      this.buttonContainer.prepend([this.removeButton.getElement()]);
+    }
+  }
+
   public configureView(): HTMLElement[] {
     const pageTitle = new PageTitle(this.data.masterData.current.name['en-US']);
     pageTitle.getElement().classList.add('product-view__title');
@@ -92,14 +103,16 @@ export default class ProductView extends ViewBuilder {
     });
     priceContainer.append([price.getElement()]);
 
-    const buttonContainer = new ElementBuilder({
+    this.buttonContainer = new ElementBuilder({
       tag: 'div',
       styleClass: 'product-view__buttons',
     });
 
-    const toCartButton = new Button({
+    this.toCartButton = new Button({
       callback: async () => {
         await CartApi.addItemToCart(this.id);
+        this.toCartButton.getElement().remove();
+        this.setButtons();
       },
       type: ButtonType.DEFAULT,
       text: 'Add to cart',
@@ -109,13 +122,27 @@ export default class ProductView extends ViewBuilder {
       },
     });
 
-    const likeButton = new Button({
+    this.removeButton = new Button({
       callback: async () => {
-        CartApi.removeItemFromCart(this.id);
+        await CartApi.removeItemFromCart(this.data.id);
+        this.removeButton.getElement().remove();
+        this.setButtons();
       },
       type: ButtonType.DEFAULT,
-      size: ButtonSize.MEDIUM,
-      text: 'remove item from cart',
+      text: 'Remove from cart',
+      icon: {
+        name: 'cart',
+        position: ButtonIconPosition.RIGHT,
+      },
+    });
+
+    const likeButton = new Button({
+      type: ButtonType.CIRCLE_WITHOUT_BORDER,
+      size: ButtonSize.SMALL,
+      icon: {
+        name: 'heart',
+        position: ButtonIconPosition.LEFT,
+      },
     });
 
     const plusButton = new Button({
@@ -145,8 +172,7 @@ export default class ProductView extends ViewBuilder {
       text: 'Clear Cart',
     });
 
-    buttonContainer.append([
-      toCartButton.getElement(),
+    this.buttonContainer.append([
       likeButton.getElement(),
       plusButton.getElement(),
       minusButton.getElement(),
@@ -171,7 +197,7 @@ export default class ProductView extends ViewBuilder {
 
     descriptionContainer.append([descriptionHeading.getElement(), descrition.getElement()]);
 
-    details.append([priceContainer.getElement(), buttonContainer.getElement(), descriptionContainer.getElement()]);
+    details.append([priceContainer.getElement(), this.buttonContainer.getElement(), descriptionContainer.getElement()]);
 
     if (this.price.discounted) {
       const descountedPrice = new ElementBuilder({
@@ -195,6 +221,7 @@ export default class ProductView extends ViewBuilder {
       this.data = data;
       this.wrapper.getElement().append(...this.configureView());
       this.view.getElement().append(this.wrapper.getElement());
+      this.setButtons();
     });
   }
 }
