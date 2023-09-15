@@ -87,11 +87,10 @@ export default class ProductListCard extends CommonBuilderWrapper {
       },
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
       size: ButtonSize.SMALL,
-      text: 'remove',
-      // icon: {
-      //   name: 'cart',
-      //   position: ButtonIconPosition.LEFT,
-      // },
+      icon: {
+        name: 'remove',
+        position: ButtonIconPosition.LEFT,
+      },
     });
     const detailsButton = new Button({
       type: ButtonType.DEFAULT,
@@ -139,7 +138,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
   }
 
   private setButtons(): void {
-    if (!store.cart.lineItems.find((item) => item.productId === this.data.id)) {
+    if (!localStorage.getItem('cartID') || !store.cart.lineItems.find((item) => item.productId === this.data.id)) {
       this.infoButtons.append([this.toCartButton.getElement()]);
     } else {
       this.infoButtons.append([this.removeButton.getElement()]);

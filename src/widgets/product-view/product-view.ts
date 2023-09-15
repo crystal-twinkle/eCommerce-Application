@@ -63,7 +63,7 @@ export default class ProductView extends ViewBuilder {
   }
 
   private setButtons(): void {
-    if (!store.cart.lineItems.find((item) => item.productId === this.id)) {
+    if (!localStorage.getItem('cartID') || !store.cart.lineItems.find((item) => item.productId === this.id)) {
       this.buttonContainer.prepend([this.toCartButton.getElement()]);
     } else {
       this.buttonContainer.prepend([this.removeButton.getElement()]);
@@ -131,7 +131,7 @@ export default class ProductView extends ViewBuilder {
       type: ButtonType.DEFAULT,
       text: 'Remove from cart',
       icon: {
-        name: 'cart',
+        name: 'remove',
         position: ButtonIconPosition.RIGHT,
       },
     });
