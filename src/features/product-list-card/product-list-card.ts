@@ -7,13 +7,14 @@ import { ButtonIconPosition, ButtonSize, ButtonType } from '../../shared/ui/butt
 import './product-list-card.scss';
 import appRouter from '../../shared/lib/router/router';
 import { Page } from '../../shared/lib/router/pages';
+import getPrice from '../../shared/lib/getPrice';
 
 export default class ProductListCard extends CommonBuilderWrapper {
   price: Price;
 
   constructor(private data: ProductProjection) {
     super();
-
+    this.price = this.data.masterVariant.prices[0];
     this.builder = new ElementBuilder({
       tag: 'div',
       styleClass: 'product-list-card',
@@ -34,7 +35,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
     const price = new ElementBuilder({
       tag: 'div',
       styleClass: 'product-list-card__price',
-      content: `${this.getPrice()}`,
+      content: `${getPrice(this.price)}`,
     });
     priceContainer.append([price.getElement()]);
     const description = new ElementBuilder({
@@ -46,7 +47,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
       const descountedPrice = new ElementBuilder({
         tag: 'div',
         styleClass: 'product-view__price',
-        content: `${this.getPrice(true)}`,
+        content: `${getPrice(this.price, true)}`,
       });
 
       priceContainer.prepend([descountedPrice.getElement()]);
@@ -92,24 +93,5 @@ export default class ProductListCard extends CommonBuilderWrapper {
     details.append([detailsButton.getElement()]);
     this.builder.prepend([description.getElement()]);
     this.builder.append([img.getElement(), info.getElement(), details.getElement()]);
-  }
-
-  private getPrice(isDiscounted = false): string {
-    this.price = this.data.masterVariant.prices[0];
-    let centAmount: number = this.price.value.centAmount;
-
-    if (isDiscounted) {
-      centAmount = this.price.discounted.value.centAmount;
-    }
-
-    const fractionDigits: number = this.price.value.fractionDigits;
-    const currencyCode: string = this.price.value.currencyCode;
-    const shortPrice: number = centAmount / 10 ** fractionDigits;
-    const formatedPrice: string = new Intl.NumberFormat(`us-US`, {
-      style: 'currency',
-      currency: `${currencyCode}`,
-    }).format(shortPrice);
-
-    return formatedPrice;
   }
 }
