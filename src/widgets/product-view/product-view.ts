@@ -6,7 +6,7 @@ import PageTitle from '../../features/page-title/page-title';
 import Button from '../../shared/ui/button/button';
 import { ButtonSize, ButtonType, ButtonIconPosition } from '../../shared/ui/button/models';
 import Slider from '../../features/slider/slider';
-import CartApi from '../../entities/cart/cart';
+import CartApi from '../../entities/cart/cart-api';
 import ProductApi from '../../entities/product/api';
 import getPrice from '../../shared/lib/getPrice';
 

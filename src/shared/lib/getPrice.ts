@@ -1,7 +1,6 @@
 import { Price } from '@commercetools/platform-sdk';
 
 export default function getPrice(price: Price, isDiscounted = false): string {
-  console.log(price);
   let centAmount: number = price.value.centAmount;
 
   if (isDiscounted) {
