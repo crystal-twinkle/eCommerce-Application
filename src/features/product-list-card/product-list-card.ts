@@ -1,5 +1,5 @@
 import { ProductProjection } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/product';
-import { Price } from '@commercetools/platform-sdk';
+import { Cart, Price } from '@commercetools/platform-sdk';
 import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
 import ElementBuilder from '../../shared/lib/element-builder';
 import Button from '../../shared/ui/button/button';
@@ -10,6 +10,7 @@ import { Page } from '../../shared/lib/router/pages';
 import CartApi from '../../entities/cart/cart-api';
 import store from '../../app/store';
 import getPrice from '../../shared/lib/getPrice';
+import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
 
 export default class ProductListCard extends CommonBuilderWrapper {
   private price: Price;
@@ -71,7 +72,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
       callback: async () => {
         await CartApi.addItemToCart(this.data.id);
         this.toCartButton.getElement().remove();
-        this.setButtons();
+        this.setButtons(store.cart);
       },
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
       size: ButtonSize.SMALL,
@@ -84,7 +85,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
       callback: async () => {
         await CartApi.removeItemFromCart(this.data.id);
         this.removeButton.getElement().remove();
-        this.setButtons();
+        this.setButtons(store.cart);
       },
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
       size: ButtonSize.SMALL,
@@ -116,33 +117,20 @@ export default class ProductListCard extends CommonBuilderWrapper {
     details.append([detailsButton.getElement()]);
     this.builder.prepend([description.getElement()]);
     this.builder.append([img.getElement(), info.getElement(), details.getElement()]);
-    this.setButtons();
+    this.setButtons(store.cart);
+    eventBus.subscribe(EventBusActions.UPDATE_CART, (eventData) =>
+      eventData ? this.setButtons(eventData as Cart) : undefined,
+    );
   }
 
-  private getPrice(isDiscounted = false): string {
-    this.price = this.data.masterVariant.prices[0];
-    let centAmount: number = this.price.value.centAmount;
-
-    if (isDiscounted) {
-      centAmount = this.price.discounted.value.centAmount;
-    }
-
-    const fractionDigits: number = this.price.value.fractionDigits;
-    const currencyCode: string = this.price.value.currencyCode;
-    const shortPrice: number = centAmount / 10 ** fractionDigits;
-    const formatedPrice: string = new Intl.NumberFormat(`us-US`, {
-      style: 'currency',
-      currency: `${currencyCode}`,
-    }).format(shortPrice);
-
-    return formatedPrice;
-  }
-
-  private setButtons(): void {
-    if (!localStorage.getItem('cartID') || !store.cart.lineItems.find((item) => item.productId === this.data.id)) {
-      this.infoButtons.append([this.toCartButton.getElement()]);
-    } else {
-      this.infoButtons.append([this.removeButton.getElement()]);
+  private setButtons(cart: Cart): void {
+    if (cart) {
+      const findItems = cart?.lineItems?.find((item) => item.productId === this.data.id);
+      if (!findItems) {
+        this.infoButtons.append([this.toCartButton.getElement()]);
+      } else {
+        this.infoButtons.append([this.removeButton.getElement()]);
+      }
     }
   }
 }

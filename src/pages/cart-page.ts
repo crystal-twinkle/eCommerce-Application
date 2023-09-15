@@ -11,10 +11,10 @@ export default class CartPage extends ViewBuilder {
   constructor() {
     super('page cart-page');
     eventBus.subscribe(EventBusActions.UPDATE_CART, (data) => {
-      data ? this.cartList.setCards(data as Cart) : this.cartList.empty();
+      data ? this.cartList.setCart(data as Cart) : this.cartList.empty();
     });
     if (store.cart && localStorage.getItem('cartID')) {
-      this.cartList.setCards(store.cart);
+      this.cartList.setCart(store.cart);
     } else if (!localStorage.getItem('cartID')) {
       this.cartList.empty();
     }

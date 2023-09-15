@@ -22,12 +22,13 @@ export default class CartApi {
       .execute();
 
     store.setCart(response.body);
-    localStorage.setItem('cartID', store.cart.id);
+    localStorage.setItem('cartID', response.body.id);
     return store.cart.id;
   }
 
   public static async addItemToCart(productId: string): Promise<void> {
     const cartID: string = localStorage.getItem('cartID') || (await this.createCart());
+    console.log(store.cart);
     const cartVersion: number = store.cart.version;
 
     const response: ClientResponse<Cart> = await flowFactory.clientCredentialsFlow
@@ -134,7 +135,9 @@ export default class CartApi {
 
   public static async getCustomerCart(): Promise<ClientResponse<Cart>> {
     const customerId = store.user.id;
-    return flowFactory.clientCredentialsFlow.carts().withCustomerId({ customerId }).get().execute();
+    const result = await flowFactory.clientCredentialsFlow.carts().withCustomerId({ customerId }).get().execute();
+    localStorage.setItem('cartID', result.body.id);
+    return result;
   }
 
   public static async getAnonymousCart(): Promise<ClientResponse<Cart>> {

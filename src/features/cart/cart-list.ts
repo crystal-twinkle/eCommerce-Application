@@ -5,9 +5,9 @@ import Loader from '../../shared/ui/loader/loader';
 import EmptyView from '../../shared/ui/empty-view/empty-view';
 import CartListCard from './cart-list-card';
 import './cart.scss';
+import store from '../../app/store';
 
 export default class CartList extends CommonBuilderWrapper {
-  private cartCards: HTMLElement[];
   private loader: Loader;
   private emptyView: EmptyView;
 
@@ -22,14 +22,17 @@ export default class CartList extends CommonBuilderWrapper {
     });
   }
 
-  public setCards(cart: Cart): void {
+  public setCart(cart: Cart): void {
     this.builder.setContent();
     if (!cart.lineItems.length) {
       this.empty();
       return;
     }
-    this.cartCards = cart.lineItems.map((item: LineItem) => new CartListCard(item).getElement());
-    this.builder.append(this.cartCards);
+    this.builder.append(this.setCards());
+  }
+
+  public setCards(): HTMLElement[] {
+    return store.cart.lineItems.map((item: LineItem) => new CartListCard(item).getElement());
   }
 
   public empty(): void {
