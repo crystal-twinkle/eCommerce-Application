@@ -1,6 +1,7 @@
 export enum EventBusActions {
   UPDATE_USER = 'update-user',
   UPDATE_CART = 'update-cart',
+  SCROLL_END = 'scroll-end',
 }
 
 class EventBus {

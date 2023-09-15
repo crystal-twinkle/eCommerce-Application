@@ -17,4 +17,8 @@ export default class Loader extends CommonBuilderWrapper {
       ),
     ]);
   }
+
+  set visible(v: boolean) {
+    v ? this.builder.removeStyleClass('_hide') : this.builder.addStyleClass('_hide');
+  }
 }

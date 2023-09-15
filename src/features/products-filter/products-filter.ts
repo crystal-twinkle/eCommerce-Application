@@ -27,6 +27,7 @@ export default class ProductsFilter extends CommonBuilderWrapper {
       tag: 'div',
       styleClass: 'products-filter',
     });
+
     this.builder.append([this.getCategoriesField().getElement(), this.getPriceField().getElement()]);
   }
 

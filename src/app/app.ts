@@ -1,4 +1,4 @@
-import { Customer } from '@commercetools/platform-sdk';
+import { Customer, Cart, ClientResponse } from '@commercetools/platform-sdk';
 import OverviewPage from '../pages/overview-page';
 import Header from '../features/header/header';
 import { IRouterLink } from '../shared/lib/router/router';
@@ -9,18 +9,22 @@ import ProductPage from '../pages/product-page';
 import UserPage from '../pages/user-page';
 import Main from '../features/main/main';
 import RegisterPage from '../pages/register-page';
-import ShowcasesPage from '../pages/showcases/showcases-page';
 import Footer from '../features/footer/footer';
 import ProductsListPage from '../pages/products-list-page/products-list-page';
 import store from './store';
 import UserApi from '../entities/user/userApi';
+import ElementBuilder from '../shared/lib/element-builder';
+import eventBus, { EventBusActions } from '../shared/lib/event-bus';
 import AboutUsPage from '../pages/about-us';
 import CartPage from '../pages/cart-page';
 
 export default class App {
+  private readonly SCROLL_END_OFFSET: number = 150;
+
   private header: Header;
   private main: Main;
   private footer: Footer;
+  private lazyLoaderPointRiched: boolean;
 
   constructor() {
     this.header = new Header();
@@ -32,7 +36,25 @@ export default class App {
       store.setUser(null);
     }
 
-    document.body.append(this.header.getElement(), this.main.getElement(), this.footer.getElement());
+    const wrapper = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'dom-wrapper',
+    });
+    const wrapperEl: HTMLElement = wrapper.getElement();
+
+    wrapper.append([this.header.getElement(), this.main.getElement(), this.footer.getElement()]);
+    document.body.append(wrapper.getElement());
+
+    wrapperEl.onscroll = () => {
+      const scrollPosition: number = wrapperEl.scrollHeight - Math.ceil(wrapperEl.scrollTop + wrapperEl.clientHeight);
+      if (!this.lazyLoaderPointRiched && scrollPosition < this.SCROLL_END_OFFSET) {
+        eventBus.publish(EventBusActions.SCROLL_END);
+        this.lazyLoaderPointRiched = true;
+      }
+      if (scrollPosition >= this.SCROLL_END_OFFSET) {
+        this.lazyLoaderPointRiched = false;
+      }
+    };
   }
 
   public createRoutes(): IRouterLink[] {
@@ -59,12 +81,6 @@ export default class App {
         path: Page.LOGIN,
         callback: () => {
           this.main.setContent([new LoginPage().getElement()]);
-        },
-      },
-      {
-        path: Page.SHOWCASES,
-        callback: () => {
-          this.main.setContent([new ShowcasesPage().getElement()]);
         },
       },
       {
