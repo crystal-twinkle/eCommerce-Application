@@ -1,3 +1,4 @@
+import { ClientResponse, Cart } from '@commercetools/platform-sdk';
 import Form from '../../shared/ui/form/form';
 import ViewBuilder from '../../shared/lib/view-builder';
 import PasswordInput from '../../shared/ui/input/input-password';
@@ -42,11 +43,9 @@ export default class LoginForm extends ViewBuilder {
               .post({ body: { email: emailLogin.getElement().value, password: passwordLogin.value } })
               .execute();
             store.setUser(result.body.customer);
-            await CartApi.setCustomerID(result.body.customer.id);
-            if (localStorage.getItem('cartID')) {
-              await CartApi.setCustomerID(result.body.customer.id);
-              localStorage.removeItem('cartID');
-            }
+            await CartApi.mergeCarts();
+            CartApi.getCustomerCart().then((data: ClientResponse<Cart>) => store.setCart(data.body));
+            localStorage.removeItem('cartID');
 
             new RequestMessage().logSuccess();
             appRouter.navigate(Page.OVERVIEW);

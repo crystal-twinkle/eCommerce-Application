@@ -9,12 +9,16 @@ import Slider from '../../features/slider/slider';
 import CartApi from '../../entities/cart/cart-api';
 import ProductApi from '../../entities/product/api';
 import getPrice from '../../shared/lib/getPrice';
+import store from '../../app/store';
 
 export default class ProductView extends ViewBuilder {
   private slider: Slider;
   private id: string;
   private data: Product;
   private price: Price;
+  buttonContainer: ElementBuilder;
+  toCartButton: Button;
+  removeButton: Button;
 
   constructor() {
     super('product-view');
@@ -38,6 +42,14 @@ export default class ProductView extends ViewBuilder {
     });
 
     return slides;
+  }
+
+  private setButtons(): void {
+    if (!localStorage.getItem('cartID') || !store.cart.lineItems.find((item) => item.productId === this.id)) {
+      this.buttonContainer.prepend([this.toCartButton.getElement()]);
+    } else {
+      this.buttonContainer.prepend([this.removeButton.getElement()]);
+    }
   }
 
   public configureView(): HTMLElement[] {
@@ -74,19 +86,35 @@ export default class ProductView extends ViewBuilder {
     });
     priceContainer.append([price.getElement()]);
 
-    const buttonContainer = new ElementBuilder({
+    this.buttonContainer = new ElementBuilder({
       tag: 'div',
       styleClass: 'product-view__buttons',
     });
 
-    const toCartButton = new Button({
+    this.toCartButton = new Button({
       callback: async () => {
         await CartApi.addItemToCart(this.id);
+        this.toCartButton.getElement().remove();
+        this.setButtons();
       },
       type: ButtonType.DEFAULT,
       text: 'Add to cart',
       icon: {
         name: 'cart',
+        position: ButtonIconPosition.RIGHT,
+      },
+    });
+
+    this.removeButton = new Button({
+      callback: async () => {
+        await CartApi.removeItemFromCart(this.data.id);
+        this.removeButton.getElement().remove();
+        this.setButtons();
+      },
+      type: ButtonType.DEFAULT,
+      text: 'Remove from cart',
+      icon: {
+        name: 'remove',
         position: ButtonIconPosition.RIGHT,
       },
     });
@@ -100,7 +128,39 @@ export default class ProductView extends ViewBuilder {
       },
     });
 
-    buttonContainer.append([toCartButton.getElement(), likeButton.getElement()]);
+    const plusButton = new Button({
+      callback: async () => {
+        CartApi.changeQuantity(this.id, 'increase');
+      },
+      type: ButtonType.CIRCLE,
+      size: ButtonSize.SMALL,
+      text: '+',
+    });
+
+    const minusButton = new Button({
+      callback: async () => {
+        CartApi.changeQuantity(this.id, 'decrease');
+      },
+      type: ButtonType.CIRCLE,
+      size: ButtonSize.SMALL,
+      text: '-',
+    });
+
+    const emptyButton = new Button({
+      callback: async () => {
+        CartApi.clearCart();
+      },
+      type: ButtonType.DEFAULT,
+      size: ButtonSize.SMALL,
+      text: 'Clear Cart',
+    });
+
+    this.buttonContainer.append([
+      likeButton.getElement(),
+      plusButton.getElement(),
+      minusButton.getElement(),
+      emptyButton.getElement(),
+    ]);
 
     const descriptionContainer = new ElementBuilder({
       tag: 'div',
@@ -120,7 +180,7 @@ export default class ProductView extends ViewBuilder {
 
     descriptionContainer.append([descriptionHeading.getElement(), descrition.getElement()]);
 
-    details.append([priceContainer.getElement(), buttonContainer.getElement(), descriptionContainer.getElement()]);
+    details.append([priceContainer.getElement(), this.buttonContainer.getElement(), descriptionContainer.getElement()]);
 
     if (this.price.discounted) {
       const descountedPrice = new ElementBuilder({
@@ -144,6 +204,7 @@ export default class ProductView extends ViewBuilder {
       this.data = data;
       this.wrapper.getElement().append(...this.configureView());
       this.view.getElement().append(this.wrapper.getElement());
+      this.setButtons();
     });
   }
 }

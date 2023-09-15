@@ -1,6 +1,5 @@
-import { Cart, CartPagedQueryResponse, ClientResponse } from '@commercetools/platform-sdk';
+import { Cart, CartPagedQueryResponse, CartUpdateAction, ClientResponse, LineItem } from '@commercetools/platform-sdk';
 import flowFactory from '../../app/api-flow/flow-factory';
-import UserApi from '../user/userApi';
 import store from '../../app/store';
 
 export default class CartApi {
@@ -8,11 +7,10 @@ export default class CartApi {
     let customerId: string;
 
     if (localStorage.getItem('token_store')) {
-      const customer = await UserApi.getUser();
-      customerId = customer.id;
+      customerId = store.user.id;
     }
 
-    const response = await flowFactory.clientCredentialsFlow
+    const response: ClientResponse<Cart> = await flowFactory.clientCredentialsFlow
       .carts()
       .post({
         body: {
@@ -23,17 +21,16 @@ export default class CartApi {
       })
       .execute();
 
-    const cartID: string = response.body.id;
     store.setCart(response.body);
-    localStorage.setItem('cartID', cartID);
-    return cartID;
+    localStorage.setItem('cartID', store.cart.id);
+    return store.cart.id;
   }
 
   public static async addItemToCart(productId: string): Promise<void> {
     const cartID: string = localStorage.getItem('cartID') || (await this.createCart());
     const cartVersion: number = store.cart.version;
 
-    const response = await flowFactory.clientCredentialsFlow
+    const response: ClientResponse<Cart> = await flowFactory.clientCredentialsFlow
       .carts()
       .withId({ ID: cartID })
       .post({
@@ -51,17 +48,88 @@ export default class CartApi {
     store.setCart(response.body);
   }
 
-  public static async deleteCustomerCart(): Promise<ClientResponse<Cart>> {
-    const customerId = store.user.id;
-    return flowFactory.clientCredentialsFlow
+  public static async removeItemFromCart(productId: string): Promise<void> {
+    const cartID: string = store.cart.id;
+    const cartVersion: number = store.cart.version;
+    const lineItem: LineItem = store.cart.lineItems.find((item) => item.productId === productId);
+
+    if (lineItem) {
+      const lineItemId: string = lineItem.id;
+
+      const response: ClientResponse<Cart> = await flowFactory.clientCredentialsFlow
+        .carts()
+        .withId({ ID: cartID })
+        .post({
+          body: {
+            actions: [
+              {
+                action: 'removeLineItem',
+                lineItemId,
+              },
+            ],
+            version: cartVersion,
+          },
+        })
+        .execute();
+      store.setCart(response.body);
+    }
+  }
+
+  public static async clearCart(): Promise<void> {
+    const cartID: string = localStorage.getItem('cartID');
+    const cartVersion: number = store.cart.version;
+
+    const actions: CartUpdateAction[] = store.cart.lineItems.map((item) => ({
+      action: 'removeLineItem',
+      lineItemId: item.id,
+    }));
+
+    const response: ClientResponse<Cart> = await flowFactory.clientCredentialsFlow
       .carts()
-      .withId({ ID: customerId })
-      .delete({
-        queryArgs: {
-          version: 1,
+      .withId({ ID: cartID })
+      .post({
+        body: {
+          actions,
+          version: cartVersion,
         },
       })
       .execute();
+
+    store.setCart(response.body);
+  }
+
+  public static async changeQuantity(productId: string, action: 'increase' | 'decrease'): Promise<void> {
+    const cartID: string = store.cart.id;
+    const cartVersion: number = store.cart.version;
+    const lineItem: LineItem = store.cart.lineItems.find((item) => item.productId === productId);
+    if (lineItem) {
+      const lineItemId = lineItem.id;
+
+      let currentQuantity = lineItem.quantity;
+      if (action === 'increase') {
+        currentQuantity += 1;
+      } else {
+        currentQuantity -= 1;
+      }
+
+      const response: ClientResponse<Cart> = await flowFactory.clientCredentialsFlow
+        .carts()
+        .withId({ ID: cartID })
+        .post({
+          body: {
+            actions: [
+              {
+                action: 'changeLineItemQuantity',
+                lineItemId,
+                quantity: currentQuantity,
+              },
+            ],
+            version: cartVersion,
+          },
+        })
+        .execute();
+      store.setCart(response.body);
+    }
   }
 
   public static async getCustomerCart(): Promise<ClientResponse<Cart>> {
@@ -82,8 +150,9 @@ export default class CartApi {
   }
 
   public static async setCustomerID(customerId: string): Promise<void> {
-    const cartID: string = localStorage.getItem('cartID');
-    await flowFactory.clientCredentialsFlow
+    const cartID: string = store.cart.id;
+    const cartVersion: number = store.cart.version;
+    const response: ClientResponse<Cart> = await flowFactory.clientCredentialsFlow
       .carts()
       .withId({ ID: cartID })
       .post({
@@ -94,10 +163,31 @@ export default class CartApi {
               customerId,
             },
           ],
-          version: store.cart.version,
+          version: cartVersion,
         },
       })
       .execute();
+    store.setCart(response.body);
+  }
+
+  public static async mergeCarts(): Promise<void> {
+    const email: string = store.user.email;
+    const password: string = store.user.password;
+    await flowFactory.anonymousSessionFlow
+      .me()
+      .login()
+      .post({
+        body: {
+          email,
+          password,
+          activeCartSignInMode: 'MergeWithExistingCustomerCart',
+        },
+      })
+      .execute();
+  }
+
+  public static getTotalPrice(): number {
+    return store.cart.totalPrice.centAmount / 100;
   }
 
   public static async addDiscountCode(code: string = 'emp15'): Promise<Cart> {
