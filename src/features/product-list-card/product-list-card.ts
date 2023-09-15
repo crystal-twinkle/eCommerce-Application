@@ -70,7 +70,8 @@ export default class ProductListCard extends CommonBuilderWrapper {
     this.toCartButton = new Button({
       callback: async () => {
         await CartApi.addItemToCart(this.data.id);
-        this.toCartButton.getElement().remove();
+        // this.toCartButton.getElement().remove();
+        this.toCartButton.getElement().classList.add('button_disabled');
         this.setButtons();
       },
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
@@ -80,19 +81,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
         position: ButtonIconPosition.LEFT,
       },
     });
-    this.removeButton = new Button({
-      callback: async () => {
-        await CartApi.removeItemFromCart(this.data.id);
-        this.removeButton.getElement().remove();
-        this.setButtons();
-      },
-      type: ButtonType.CIRCLE_WITHOUT_BORDER,
-      size: ButtonSize.SMALL,
-      icon: {
-        name: 'remove',
-        position: ButtonIconPosition.LEFT,
-      },
-    });
+
     const detailsButton = new Button({
       type: ButtonType.DEFAULT,
       text: 'Details',
@@ -111,7 +100,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
       styleClass: 'product-list-card__row',
     });
 
-    this.infoButtons.append([likeButton.getElement()]);
+    this.infoButtons.append([likeButton.getElement(), this.toCartButton.getElement()]);
     info.append([this.infoButtons.getElement(), priceContainer.getElement()]);
     details.append([detailsButton.getElement()]);
     this.builder.prepend([description.getElement()]);
@@ -119,30 +108,11 @@ export default class ProductListCard extends CommonBuilderWrapper {
     this.setButtons();
   }
 
-  private getPrice(isDiscounted = false): string {
-    this.price = this.data.masterVariant.prices[0];
-    let centAmount: number = this.price.value.centAmount;
-
-    if (isDiscounted) {
-      centAmount = this.price.discounted.value.centAmount;
-    }
-
-    const fractionDigits: number = this.price.value.fractionDigits;
-    const currencyCode: string = this.price.value.currencyCode;
-    const shortPrice: number = centAmount / 10 ** fractionDigits;
-    const formatedPrice: string = new Intl.NumberFormat(`us-US`, {
-      style: 'currency',
-      currency: `${currencyCode}`,
-    }).format(shortPrice);
-
-    return formatedPrice;
-  }
-
   private setButtons(): void {
     if (!localStorage.getItem('cartID') || !store.cart.lineItems.find((item) => item.productId === this.data.id)) {
-      this.infoButtons.append([this.toCartButton.getElement()]);
+      this.toCartButton.getElement().classList.remove('button_disabled');
     } else {
-      this.infoButtons.append([this.removeButton.getElement()]);
+      this.toCartButton.getElement().classList.add('button_disabled');
     }
   }
 }
