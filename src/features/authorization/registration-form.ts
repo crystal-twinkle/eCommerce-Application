@@ -15,7 +15,7 @@ import store from '../../app/store';
 import RequestMessage from '../request-message/request-message';
 import { Mutable } from '../../shared/const/mutable';
 import { IResultsCheckbox } from '../../shared/const/results-checkbox';
-import CartApi from '../../entities/cart/cart';
+import CartApi from '../../entities/cart/cart-api';
 
 export default class RegistrationFormView extends ViewBuilder {
   constructor() {
