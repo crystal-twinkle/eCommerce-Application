@@ -24,6 +24,10 @@ export default class CartList extends CommonBuilderWrapper {
 
   public setCards(cart: Cart): void {
     this.builder.setContent();
+    if (!cart.lineItems.length) {
+      this.empty();
+      return;
+    }
     this.cartCards = cart.lineItems.map((item: LineItem) => new CartListCard(item).getElement());
     this.builder.append(this.cartCards);
   }
