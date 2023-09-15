@@ -1,0 +1,16 @@
+@import '../../../src/shared/assets/style/flex-column';
+
+.cart-list {
+  @extend %flex-column;
+  gap: 60px;
+
+  &-card {
+    display: flex;
+
+    &__img {
+      width: 178px;
+      height: 165px;
+      object-fit: cover;
+    }
+  }
+}

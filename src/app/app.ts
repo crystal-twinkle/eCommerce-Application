@@ -1,4 +1,4 @@
-import { Customer, Cart, ClientResponse } from '@commercetools/platform-sdk';
+import { Customer } from '@commercetools/platform-sdk';
 import OverviewPage from '../pages/overview-page';
 import Header from '../features/header/header';
 import { IRouterLink } from '../shared/lib/router/router';
@@ -15,7 +15,6 @@ import ProductsListPage from '../pages/products-list-page/products-list-page';
 import store from './store';
 import UserApi from '../entities/user/userApi';
 import AboutUsPage from '../pages/about-us';
-import CartApi from '../entities/cart/cart';
 import CartPage from '../pages/cart-page';
 
 export default class App {
@@ -27,19 +26,9 @@ export default class App {
     this.header = new Header();
     this.main = new Main();
     this.footer = new Footer();
-
     if (localStorage.getItem('token_store')) {
-      UserApi.getUser()
-        .then((data: Customer) => store.setUser(data))
-        .then(() => {
-          if (localStorage.getItem('cartID')) {
-            CartApi.getCustomerCart().then((data: ClientResponse<Cart>) => store.setCart(data.body));
-          }
-        });
+      UserApi.getUser().then((data: Customer) => store.setUser(data));
     } else {
-      if (localStorage.getItem('cartID')) {
-        CartApi.getAnonymousCart().then((data: ClientResponse<Cart>) => store.setCart(data.body));
-      }
       store.setUser(null);
     }
 
