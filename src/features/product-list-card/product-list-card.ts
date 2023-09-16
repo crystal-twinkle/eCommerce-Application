@@ -39,7 +39,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
     });
     const price = new ElementBuilder({
       tag: 'div',
-      styleClass: 'product-list-card__price',
+      styleClass: 'cart-list-card__price',
       content: `${getPrice(this.price)}`,
     });
     priceContainer.append([price.getElement()]);
@@ -51,12 +51,13 @@ export default class ProductListCard extends CommonBuilderWrapper {
     if (this.price.discounted) {
       const discountedPrice = new ElementBuilder({
         tag: 'div',
-        styleClass: 'product-view__price_discounted',
+        styleClass: 'product-view__price',
         content: `${getPrice(this.price, true)}`,
       });
 
       priceContainer.prepend([discountedPrice.getElement()]);
-      price.setStyleClass('product-view__price_cross-out');
+      discountedPrice.setStyleClass('product-list-card__price product-view__price_discounted');
+      price.setStyleClass('product-list-card__price product-view__price_cross-out');
     }
     const likeButton = new Button({
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
@@ -69,6 +70,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
     this.toCartButton = new Button({
       callback: async () => {
         await CartApi.addItemToCart(this.data.id);
+        this.toCartButton.getElement().classList.add('button_disabled');
         this.setButtons(store.cart);
       },
       type: ButtonType.CIRCLE_WITHOUT_BORDER,

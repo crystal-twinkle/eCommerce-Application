@@ -6,6 +6,11 @@ import './sort.bar.scss';
 import { SortButtonType, SortCriteria } from './sort-bar.models';
 import Input from '../../shared/ui/input/input';
 
+export enum SortChangeType {
+  SORT,
+  SEARCH,
+}
+
 export default class SortBar extends CommonBuilderWrapper {
   private readonly INPUT_TIMEOUT: number = 1000;
 
@@ -18,7 +23,9 @@ export default class SortBar extends CommonBuilderWrapper {
   private searchValue: string;
   private searchInput: Input;
 
-  constructor(private sortBarCallback: (sortParams: string[], searchValue: string) => void) {
+  constructor(
+    private sortBarCallback: (changeType: SortChangeType, sortParams: string[], searchValue: string) => void,
+  ) {
     super();
     this.sortParams = [];
     this.builder = new ElementBuilder({
@@ -46,7 +53,7 @@ export default class SortBar extends CommonBuilderWrapper {
         }
         clearTimeout(this.searchTimeout);
         this.searchTimeout = setTimeout(
-          () => this.sortBarCallback(this.sortParams, this.searchValue),
+          () => this.sortBarCallback(SortChangeType.SEARCH, this.sortParams, this.searchValue),
           this.INPUT_TIMEOUT,
         );
       },
@@ -110,7 +117,7 @@ export default class SortBar extends CommonBuilderWrapper {
         }
         button.setContent(content);
         this.sortParams = [`${type === SortButtonType.ALPHABET ? 'name.en-us' : 'price'} ${sortCriteria}`];
-        this.sortBarCallback(this.sortParams, this.searchValue);
+        this.sortBarCallback(SortChangeType.SORT, this.sortParams, this.searchValue);
       },
     });
     return button;

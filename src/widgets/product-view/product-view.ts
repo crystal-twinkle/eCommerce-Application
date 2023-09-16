@@ -1,5 +1,5 @@
 import './product-view.scss';
-import { Price, Product } from '@commercetools/platform-sdk';
+import { Cart, Price, Product } from '@commercetools/platform-sdk';
 import ElementBuilder from '../../shared/lib/element-builder';
 import ViewBuilder from '../../shared/lib/view-builder';
 import PageTitle from '../../features/page-title/page-title';
@@ -10,6 +10,7 @@ import CartApi from '../../entities/cart/cart-api';
 import ProductApi from '../../entities/product/api';
 import getPrice from '../../shared/lib/getPrice';
 import store from '../../app/store';
+import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
 
 export default class ProductView extends ViewBuilder {
   private slider: Slider;
@@ -44,11 +45,14 @@ export default class ProductView extends ViewBuilder {
     return slides;
   }
 
-  private setButtons(): void {
-    if (!localStorage.getItem('cartID') || !store.cart.lineItems.find((item) => item.productId === this.id)) {
-      this.buttonContainer.prepend([this.toCartButton.getElement()]);
-    } else {
-      this.buttonContainer.prepend([this.removeButton.getElement()]);
+  private setButtons(cart: Cart): void {
+    if (cart) {
+      const findItems = cart?.lineItems?.find((item) => item.productId === this.data.id);
+      if (!findItems) {
+        this.buttonContainer.prepend([this.toCartButton.getElement()]);
+      } else {
+        this.buttonContainer.prepend([this.removeButton.getElement()]);
+      }
     }
   }
 
@@ -95,7 +99,7 @@ export default class ProductView extends ViewBuilder {
       callback: async () => {
         await CartApi.addItemToCart(this.id);
         this.toCartButton.getElement().remove();
-        this.setButtons();
+        this.setButtons(store.cart);
       },
       type: ButtonType.DEFAULT,
       text: 'Add to cart',
@@ -109,7 +113,7 @@ export default class ProductView extends ViewBuilder {
       callback: async () => {
         await CartApi.removeItemFromCart(this.data.id);
         this.removeButton.getElement().remove();
-        this.setButtons();
+        this.setButtons(store.cart);
       },
       type: ButtonType.DEFAULT,
       text: 'Remove from cart',
@@ -172,7 +176,8 @@ export default class ProductView extends ViewBuilder {
       this.data = data;
       this.wrapper.getElement().append(...this.configureView());
       this.view.getElement().append(this.wrapper.getElement());
-      this.setButtons();
+      this.setButtons(store.cart);
+      eventBus.subscribe(EventBusActions.UPDATE_CART, (eventData) => this.setButtons(eventData as Cart));
     });
   }
 }

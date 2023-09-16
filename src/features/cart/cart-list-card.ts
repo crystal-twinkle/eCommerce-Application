@@ -6,12 +6,14 @@ import './cart.scss';
 import CartApi from '../../entities/cart/cart-api';
 import Button from '../../shared/ui/button/button';
 import { ButtonType, ButtonSize, ButtonIconPosition } from '../../shared/ui/button/models';
+import store from '../../app/store';
 
 export default class CartListCard extends CommonBuilderWrapper {
   price: Price;
 
   constructor(private data: LineItem) {
     super();
+    this.price = data.variant.prices[0];
 
     this.builder = new ElementBuilder({
       tag: 'div',
@@ -30,6 +32,30 @@ export default class CartListCard extends CommonBuilderWrapper {
       tag: 'div',
       styleClass: 'cart-list-card__details',
     });
+
+    const priceContainer = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'product-view__price-container',
+    });
+
+    const price = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'cart-list-card__price',
+      content: `${getPrice(this.price)}`,
+    });
+    priceContainer.append([price.getElement()]);
+
+    if (this.price.discounted) {
+      const descountedPrice = new ElementBuilder({
+        tag: 'div',
+        styleClass: 'product-view__price',
+        content: `${getPrice(this.price, true)}`,
+      });
+
+      priceContainer.prepend([descountedPrice.getElement()]);
+      descountedPrice.setStyleClass('product-list-card__price cart-list-card__price product-view__price_discounted');
+      price.setStyleClass('product-list-card__price cart-list-card__price  product-view__price_cross-out');
+    }
 
     const heading = new ElementBuilder({
       tag: 'h3',
@@ -91,31 +117,15 @@ export default class CartListCard extends CommonBuilderWrapper {
       content: `Cost`,
     });
 
-    this.price = data.variant.prices[0];
-    const priceContainer = new ElementBuilder({
+    const cost = new ElementBuilder({
       tag: 'div',
-      styleClass: 'product-view__price-container',
+      styleClass: 'cart-list-card__cost',
+      content: `$${(data.totalPrice.centAmount / 100).toFixed(2)}`,
     });
-    const price = new ElementBuilder({
-      tag: 'div',
-      styleClass: 'cart-list__cost-container__price',
-      content: `${getPrice(this.price)}`,
-    });
-    priceContainer.append([price.getElement()]);
-    if (this.price.discounted) {
-      const discountedPrice = new ElementBuilder({
-        tag: 'div',
-        styleClass: 'cart-list__cost-container__price',
-        content: `${getPrice(this.price, true)}`,
-      });
-
-      priceContainer.prepend([discountedPrice.getElement()]);
-      price.getElement().classList.add('_cross-out');
-    }
-    costContainer.append([priceContainer.getElement()]);
+    costContainer.append([cost.getElement()]);
     quantityControls.append([minusButton.getElement(), itemQuantity.getElement(), plusButton.getElement()]);
 
-    details.append([heading.getElement(), buttonContainer.getElement()]);
+    details.append([heading.getElement(), priceContainer.getElement(), buttonContainer.getElement()]);
     this.builder.append([img.getElement(), details.getElement(), costContainer.getElement()]);
   }
 }
