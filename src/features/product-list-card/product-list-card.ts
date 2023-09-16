@@ -16,7 +16,6 @@ export default class ProductListCard extends CommonBuilderWrapper {
   private price: Price;
   private infoButtons: ElementBuilder;
   private toCartButton: Button;
-  private removeButton: Button;
 
   constructor(private data: ProductProjection) {
     super();
@@ -115,9 +114,9 @@ export default class ProductListCard extends CommonBuilderWrapper {
     if (cart) {
       const findItems = cart?.lineItems?.find((item) => item.productId === this.data.id);
       if (!findItems) {
-        this.infoButtons.append([this.toCartButton.getElement()]);
+        this.toCartButton.getElement().classList.remove('button_disabled');
       } else {
-        this.infoButtons.append([this.removeButton.getElement()]);
+        this.toCartButton.getElement().classList.add('button_disabled');
       }
     }
   }
