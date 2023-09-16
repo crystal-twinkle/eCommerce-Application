@@ -128,39 +128,7 @@ export default class ProductView extends ViewBuilder {
       },
     });
 
-    const plusButton = new Button({
-      callback: async () => {
-        CartApi.changeQuantity(this.id, 'increase');
-      },
-      type: ButtonType.CIRCLE,
-      size: ButtonSize.SMALL,
-      text: '+',
-    });
-
-    const minusButton = new Button({
-      callback: async () => {
-        CartApi.changeQuantity(this.id, 'decrease');
-      },
-      type: ButtonType.CIRCLE,
-      size: ButtonSize.SMALL,
-      text: '-',
-    });
-
-    const emptyButton = new Button({
-      callback: async () => {
-        CartApi.clearCart();
-      },
-      type: ButtonType.DEFAULT,
-      size: ButtonSize.SMALL,
-      text: 'Clear Cart',
-    });
-
-    this.buttonContainer.append([
-      likeButton.getElement(),
-      plusButton.getElement(),
-      minusButton.getElement(),
-      emptyButton.getElement(),
-    ]);
+    this.buttonContainer.append([likeButton.getElement()]);
 
     const descriptionContainer = new ElementBuilder({
       tag: 'div',
