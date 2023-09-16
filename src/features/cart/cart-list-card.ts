@@ -40,7 +40,7 @@ export default class CartListCard extends CommonBuilderWrapper {
 
     const price = new ElementBuilder({
       tag: 'div',
-      styleClass: 'product-list-card__price',
+      styleClass: 'cart-list-card__price',
       content: `${getPrice(this.price)}`,
     });
     priceContainer.append([price.getElement()]);
@@ -53,8 +53,8 @@ export default class CartListCard extends CommonBuilderWrapper {
       });
 
       priceContainer.prepend([descountedPrice.getElement()]);
-      descountedPrice.setStyleClass('product-list-card__price product-view__price_discounted');
-      price.setStyleClass('product-list-card__price product-view__price_cross-out');
+      descountedPrice.setStyleClass('product-list-card__price cart-list-card__price product-view__price_discounted');
+      price.setStyleClass('product-list-card__price cart-list-card__price  product-view__price_cross-out');
     }
 
     const heading = new ElementBuilder({

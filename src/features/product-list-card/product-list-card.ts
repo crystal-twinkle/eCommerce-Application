@@ -38,7 +38,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
     });
     const price = new ElementBuilder({
       tag: 'div',
-      styleClass: 'product-list-card__price',
+      styleClass: 'cart-list-card__price',
       content: `${getPrice(this.price)}`,
     });
     priceContainer.append([price.getElement()]);
@@ -103,7 +103,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
     details.append([detailsButton.getElement()]);
     this.builder.prepend([description.getElement()]);
     this.builder.append([img.getElement(), info.getElement(), details.getElement()]);
-    this.setButtons();
+    // this.setButtons();
   }
 
   private setButtons(): void {
