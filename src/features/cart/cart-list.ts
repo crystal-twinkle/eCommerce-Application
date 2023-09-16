@@ -14,7 +14,6 @@ import { ButtonType } from '../../shared/ui/button/models';
 export default class CartList extends CommonBuilderWrapper {
   private loader: Loader;
   private emptyView: EmptyView;
-  private priceList: ElementBuilder;
 
   constructor() {
     super();
@@ -23,11 +22,7 @@ export default class CartList extends CommonBuilderWrapper {
 
     this.builder = new ElementBuilder({
       tag: 'div',
-      styleClass: 'cart-list',
-    });
-    this.priceList = new ElementBuilder({
-      tag: 'div',
-      styleClass: 'cart-list__cost-container _list',
+      styleClass: 'cart-page',
     });
   }
 
@@ -38,7 +33,12 @@ export default class CartList extends CommonBuilderWrapper {
       return;
     }
     const cartCards: HTMLElement[] = cart.lineItems.map((item: LineItem) => new CartListCard(item).getElement());
-    this.builder.append(cartCards);
+    const cartList = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'cart-list',
+    });
+
+    cartList.append(cartCards);
     const clearButton = new Button({
       callback: async () => {
         await CartApi.clearCart();
@@ -48,7 +48,7 @@ export default class CartList extends CommonBuilderWrapper {
       text: 'Clear Cart',
     });
     clearButton.getElement().classList.add('cart-list__button', '_clear');
-    this.builder.getElement().after(this.setPriceList(), clearButton.getElement());
+    this.builder.append([cartList.getElement(), this.setPriceList(), clearButton.getElement()]);
   }
 
   public setPriceList(): HTMLElement {
@@ -90,8 +90,12 @@ export default class CartList extends CommonBuilderWrapper {
       priceContainer.prepend([preDiscountedPrice.getElement()]);
     }
     costContainer.append([priceContainer.getElement()]);
-    this.priceList.append([this.setPromo(), costContainer.getElement()]);
-    return this.priceList.getElement();
+    const priceList = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'cart-list__cost-container _list',
+    });
+    priceList.append([this.setPromo(), costContainer.getElement()]);
+    return priceList.getElement();
   }
 
   public setPromo(): HTMLElement {
@@ -122,7 +126,6 @@ export default class CartList extends CommonBuilderWrapper {
 
   public empty(): void {
     this.builder.setContent();
-    this.priceList.setContent();
     this.builder.append([this.emptyView.getElement()]);
   }
 }
