@@ -1,4 +1,5 @@
 @import '../../../src/shared/assets/style/flex-column';
+@import '../../colors.scss';
 
 .cart-list {
   @extend %flex-column;
@@ -12,5 +13,47 @@
       height: 165px;
       object-fit: cover;
     }
+  }
+
+  &__cost-container {
+    height: 70px;
+    width: 105px;
+    @extend %flex-column;
+    justify-content: space-between;
+    font-size: 20px;
+
+    &_total {
+      width: 178px;
+      height: auto;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: last baseline;
+      padding-bottom: 30px;
+    }
+  }
+
+  &__whitelist {
+    @extend %flex-column;
+  }
+
+  &__cost {
+    color: $purple-2;
+    font-family: Roboto;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  &__promocode {
+    max-width: 500px;
+    min-width: 300px;
+    box-sizing: border-box;
+    padding: 11px 16px;
+    margin: 4px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    font-size: 16px;
+    width: 100%;
   }
 }
