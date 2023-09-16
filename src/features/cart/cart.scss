@@ -70,6 +70,10 @@
     &._clear {
       width: 178px;
     }
+
+    &._apply {
+      margin: -15px auto 0;
+    }
   }
 
   &__cost-container {
@@ -79,7 +83,9 @@
 
     &._list {
       gap: 20px;
-      padding-bottom: 20px;
+      padding: 5px;
+      margin-bottom: 20px;
+      border: 1px solid black;
     }
 
     &._cost {
@@ -97,17 +103,18 @@
       gap: 10px;
       width: 105px;
     }
+  }
 
-    &__price {
-      color: $purple-2;
-      font-size: 32px;
-      font-style: normal;
-      font-weight: 600;
+  &__price {
+    color: $purple-2;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
 
-      &._cross-out {
-        text-decoration: line-through;
-        color: gray;
-      }
+    &._cross-out {
+      font-size: 20px;
+      text-decoration: line-through;
+      color: gray;
     }
   }
 

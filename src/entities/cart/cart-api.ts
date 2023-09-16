@@ -1,4 +1,11 @@
-import { Cart, CartPagedQueryResponse, CartUpdateAction, ClientResponse, LineItem } from '@commercetools/platform-sdk';
+import {
+  Cart,
+  CartPagedQueryResponse,
+  CartUpdateAction,
+  ClientResponse,
+  CustomerSignInResult,
+  LineItem,
+} from '@commercetools/platform-sdk';
 import flowFactory from '../../app/api-flow/flow-factory';
 import store from '../../app/store';
 
@@ -172,10 +179,10 @@ export default class CartApi {
     store.setCart(response.body);
   }
 
-  public static async mergeCarts(): Promise<void> {
+  public static async mergeCarts(): Promise<ClientResponse<CustomerSignInResult>> {
     const email: string = store.user.email;
     const password: string = store.user.password;
-    await flowFactory.anonymousSessionFlow
+    return flowFactory.anonymousSessionFlow
       .me()
       .login()
       .post({

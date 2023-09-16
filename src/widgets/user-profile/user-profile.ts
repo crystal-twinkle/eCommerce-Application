@@ -22,6 +22,7 @@ import { Page } from '../../shared/lib/router/pages';
 import PasswordInput from '../../shared/ui/input/input-password';
 import Form from '../../shared/ui/form/form';
 import Loader from '../../shared/ui/loader/loader';
+import UserApi from '../../entities/user/userApi';
 
 export default class UserProfile extends CommonBuilderWrapper {
   private readonly resultsCheckbox: IResultsCheckbox;
@@ -348,26 +349,17 @@ export default class UserProfile extends CommonBuilderWrapper {
 
   protected async editInfo(inputs: HTMLInputElement[]): Promise<void> {
     const [firstname, lastname, email, dob] = inputs;
+    const actions: CustomerUpdateAction[] = [
+      {
+        action: 'setDateOfBirth',
+        dateOfBirth: dob.value,
+      },
+      { action: 'setFirstName', firstName: firstname.value },
+      { action: 'setLastName', lastName: lastname.value },
+      { action: 'changeEmail', email: email.value },
+    ];
     try {
-      const result = await flowFactory
-        .getWorkingFlow()
-        .customers()
-        .withId({ ID: this.id })
-        .post({
-          body: {
-            version: this.data.version,
-            actions: [
-              {
-                action: 'setDateOfBirth',
-                dateOfBirth: dob.value,
-              },
-              { action: 'setFirstName', firstName: firstname.value },
-              { action: 'setLastName', lastName: lastname.value },
-              { action: 'changeEmail', email: email.value },
-            ],
-          },
-        })
-        .execute();
+      const result = await UserApi.changeUserInfo(actions);
       if (result.statusCode === 200) {
         appRouter.navigate(Page.USER_PROFILE);
         store.setUser(result.body);
@@ -393,19 +385,9 @@ export default class UserProfile extends CommonBuilderWrapper {
       this.actionsAddress.push({ action: 'removeBillingAddressId', addressId: this.infoBillAddress.id });
       this.actionsAddress.push({ action: 'removeAddress', addressId: this.infoBillAddress.id });
     }
-    console.log(this.actionsAddress);
     try {
-      const result = await flowFactory
-        .getWorkingFlow()
-        .customers()
-        .withId({ ID: this.id })
-        .post({
-          body: {
-            version: this.data.version,
-            actions: this.actionsAddress,
-          },
-        })
-        .execute();
+      const result = await UserApi.changeUserInfo(this.actionsAddress);
+
       if (result.statusCode === 200) {
         new RequestMessage().updateUser();
         appRouter.navigate(Page.USER_PROFILE);

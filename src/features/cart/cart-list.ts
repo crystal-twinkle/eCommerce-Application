@@ -62,31 +62,20 @@ export default class CartList extends CommonBuilderWrapper {
       tag: 'div',
       styleClass: 'cart-list__cost-container _cost _price',
     });
-
     const totalPriceValue = Number((store.cart.totalPrice.centAmount / 100).toFixed(2));
     const totalPrice = new ElementBuilder({
       tag: 'div',
-      styleClass: 'cart-list__cost-container__price',
+      styleClass: 'cart-list__price',
       content: `${totalPriceValue}`,
     });
     priceContainer.append([totalPrice.getElement()]);
     if (store.cart.discountCodes.length) {
-      let sum = 0;
-      store.cart.lineItems.forEach((e) => {
-        if (e.price?.discounted) {
-          sum += Number(e.price.discounted.value.centAmount);
-        } else {
-          sum += Number(e.price.value.centAmount);
-        }
-      });
       const preDiscountedPrice = new ElementBuilder({
         tag: 'div',
-        styleClass: 'product-view__price_discounted',
-        content: `${sum / 100}`,
+        styleClass: 'cart-list__price _cross-out',
+        content: `${(totalPriceValue * 1.17654).toFixed(2)}`,
       });
 
-      preDiscountedPrice.setStyleClass('product-view__price_cross-out');
-      totalPrice.setStyleClass('product-view__price_discounted');
       priceContainer.prepend([preDiscountedPrice.getElement()]);
     }
     costContainer.append([priceContainer.getElement()]);
@@ -94,11 +83,11 @@ export default class CartList extends CommonBuilderWrapper {
       tag: 'div',
       styleClass: 'cart-list__cost-container _list',
     });
-    priceList.append([this.setPromo(), costContainer.getElement()]);
+    priceList.append([...this.setPromo(), costContainer.getElement()]);
     return priceList.getElement();
   }
 
-  public setPromo(): HTMLElement {
+  public setPromo(): (HTMLInputElement | HTMLElement)[] {
     const promocode = new Input({
       styleClass: 'cart-list__promocode',
       placeholder: 'Promo code',
@@ -107,21 +96,33 @@ export default class CartList extends CommonBuilderWrapper {
         callback: (event) => {
           if (event instanceof KeyboardEvent) {
             if (event.code === 'Enter') {
-              CartApi.addDiscountCode(promocode.getElement().value)
-                .then((data) => {
-                  if (!data.discountCodes.length) {
-                    store.setCart(data);
-                  } else {
-                    promocode.setErrorMessage('Promo code has been applied');
-                  }
-                })
-                .catch(() => promocode.setErrorMessage('Invalid promo code'));
+              this.addPromocode(promocode);
             }
           }
         },
       },
     });
-    return promocode.getElement();
+    const applyButton = new Button({
+      callback: async () => {
+        this.addPromocode(promocode);
+      },
+      type: ButtonType.DEFAULT,
+      text: 'Apply',
+    });
+    applyButton.getElement().classList.add('cart-list__button', '_apply');
+    return [promocode.getElement(), applyButton.getElement()];
+  }
+
+  private addPromocode(promocode: Input) {
+    CartApi.addDiscountCode(promocode.getElement().value)
+      .then((data) => {
+        if (!data.discountCodes.length) {
+          store.setCart(data);
+        } else {
+          promocode.setErrorMessage('Promo code has been applied');
+        }
+      })
+      .catch(() => promocode.setErrorMessage('Invalid promo code'));
   }
 
   public empty(): void {

@@ -6,7 +6,6 @@ import './cart.scss';
 import CartApi from '../../entities/cart/cart-api';
 import Button from '../../shared/ui/button/button';
 import { ButtonType, ButtonSize, ButtonIconPosition } from '../../shared/ui/button/models';
-import store from '../../app/store';
 
 export default class CartListCard extends CommonBuilderWrapper {
   price: Price;
@@ -119,7 +118,7 @@ export default class CartListCard extends CommonBuilderWrapper {
 
     const cost = new ElementBuilder({
       tag: 'div',
-      styleClass: 'cart-list-card__cost',
+      styleClass: 'cart-list__price',
       content: `$${(data.totalPrice.centAmount / 100).toFixed(2)}`,
     });
     costContainer.append([cost.getElement()]);
