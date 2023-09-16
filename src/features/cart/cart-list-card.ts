@@ -98,18 +98,19 @@ export default class CartListCard extends CommonBuilderWrapper {
     });
     const price = new ElementBuilder({
       tag: 'div',
+      styleClass: 'cart-list__cost-container__price',
       content: `${getPrice(this.price)}`,
     });
     priceContainer.append([price.getElement()]);
     if (this.price.discounted) {
       const discountedPrice = new ElementBuilder({
         tag: 'div',
-        styleClass: 'product-view__price_discounted cart-list__cost-container__price',
+        styleClass: 'cart-list__cost-container__price',
         content: `${getPrice(this.price, true)}`,
       });
 
       priceContainer.prepend([discountedPrice.getElement()]);
-      price.getElement().classList.add('product-view__price_cross-out');
+      price.getElement().classList.add('_cross-out');
     }
     costContainer.append([priceContainer.getElement()]);
     quantityControls.append([minusButton.getElement(), itemQuantity.getElement(), plusButton.getElement()]);
