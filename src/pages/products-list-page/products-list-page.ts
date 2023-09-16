@@ -21,6 +21,7 @@ export default class ProductsListPage extends ViewBuilder {
     super('page main-page');
     this.offset = 0;
     this.limit = 10;
+    store.setProducts(null);
     this.loadProducts();
     ProductApi.getCategories().then(this.productsFilter.setCategories);
 
