@@ -103,7 +103,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
     details.append([detailsButton.getElement()]);
     this.builder.prepend([description.getElement()]);
     this.builder.append([img.getElement(), info.getElement(), details.getElement()]);
-    // this.setButtons();
+    this.setButtons();
   }
 
   private setButtons(): void {
