@@ -4,10 +4,10 @@
 .cart-list {
   @extend %flex-column;
   padding-bottom: 30px;
+  gap: 60px;
 
   &-card {
     width: 85%;
-    padding-bottom: 60px;
     display: flex;
     flex-wrap: wrap;
 
@@ -27,7 +27,7 @@
 
     &__heading {
       color: $black-1;
-      font-size: 16px;
+      font-size: 20px;
       font-style: normal;
       font-weight: 600;
     }
@@ -35,22 +35,7 @@
     &__button-container {
       @extend %flex-column;
       justify-content: space-between;
-      height: 60%;
-    }
-
-    &__button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 26px;
-
-      &_remove {
-        max-width: 120px;
-      }
-
-      &_clear {
-        width: 178px;
-      }
+      height: 70%;
     }
 
     &__quantity-controls {
@@ -68,20 +53,45 @@
     }
   }
 
+  &__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+
+    &._remove {
+      max-width: 120px;
+    }
+
+    &._clear {
+      width: 178px;
+      margin: 0 auto 20px;
+    }
+  }
+
   &__cost-container {
     width: 300px;
     @extend %flex-column;
     font-size: 20px;
 
     &._list {
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    &._cost {
       justify-content: space-between;
       width: auto;
       flex-direction: row;
       align-items: last baseline;
-      padding-bottom: 30px;
+
+      &._price {
+        gap: 8px;
+      }
     }
 
     &._card {
+      gap: 10px;
       width: 105px;
     }
 

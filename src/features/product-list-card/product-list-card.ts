@@ -49,15 +49,14 @@ export default class ProductListCard extends CommonBuilderWrapper {
       content: data.name?.['en-US'],
     });
     if (this.price.discounted) {
-      const descountedPrice = new ElementBuilder({
+      const discountedPrice = new ElementBuilder({
         tag: 'div',
-        styleClass: 'product-view__price',
+        styleClass: 'product-view__price_discounted',
         content: `${getPrice(this.price, true)}`,
       });
 
-      priceContainer.prepend([descountedPrice.getElement()]);
-      descountedPrice.setStyleClass('product-list-card__price product-view__price_discounted');
-      price.setStyleClass('product-list-card__price product-view__price_cross-out');
+      priceContainer.prepend([discountedPrice.getElement()]);
+      price.setStyleClass('product-view__price_cross-out');
     }
     const likeButton = new Button({
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
@@ -70,7 +69,6 @@ export default class ProductListCard extends CommonBuilderWrapper {
     this.toCartButton = new Button({
       callback: async () => {
         await CartApi.addItemToCart(this.data.id);
-        this.toCartButton.getElement().remove();
         this.setButtons(store.cart);
       },
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
@@ -105,9 +103,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
     this.builder.prepend([description.getElement()]);
     this.builder.append([img.getElement(), info.getElement(), details.getElement()]);
     this.setButtons(store.cart);
-    eventBus.subscribe(EventBusActions.UPDATE_CART, (eventData) =>
-      eventData ? this.setButtons(eventData as Cart) : undefined,
-    );
+    eventBus.subscribe(EventBusActions.UPDATE_CART, (eventData) => this.setButtons(eventData as Cart));
   }
 
   private setButtons(cart: Cart): void {

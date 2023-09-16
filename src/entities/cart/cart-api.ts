@@ -28,7 +28,6 @@ export default class CartApi {
 
   public static async addItemToCart(productId: string): Promise<void> {
     const cartID: string = localStorage.getItem('cartID') || (await this.createCart());
-    console.log(store.cart);
     const cartVersion: number = store.cart.version;
 
     const response: ClientResponse<Cart> = await flowFactory.clientCredentialsFlow
@@ -189,14 +188,10 @@ export default class CartApi {
       .execute();
   }
 
-  public static getTotalPrice(): number {
-    return store.cart.totalPrice.centAmount / 100;
-  }
-
   public static async addDiscountCode(code: string = 'emp15'): Promise<Cart> {
     const response: ClientResponse<Cart> = await flowFactory.clientCredentialsFlow
       .carts()
-      .withId({ ID: store.user.id })
+      .withId({ ID: store.cart.id })
       .post({
         body: {
           actions: [
@@ -209,7 +204,6 @@ export default class CartApi {
         },
       })
       .execute();
-    store.cart = response.body;
     return response.body;
   }
 }
