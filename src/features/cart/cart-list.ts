@@ -12,9 +12,9 @@ import CartApi from '../../entities/cart/cart-api';
 import { ButtonType } from '../../shared/ui/button/models';
 
 export default class CartList extends CommonBuilderWrapper {
+  private cartCards: HTMLElement[];
   private loader: Loader;
   private emptyView: EmptyView;
-  private cartCards: HTMLElement[];
   private costContainer: ElementBuilder;
   private cost: ElementBuilder;
   private clearButton: Button;

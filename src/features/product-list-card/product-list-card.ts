@@ -81,19 +81,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
         position: ButtonIconPosition.LEFT,
       },
     });
-    this.removeButton = new Button({
-      callback: async () => {
-        await CartApi.removeItemFromCart(this.data.id);
-        this.removeButton.getElement().remove();
-        this.setButtons(store.cart);
-      },
-      type: ButtonType.CIRCLE_WITHOUT_BORDER,
-      size: ButtonSize.SMALL,
-      icon: {
-        name: 'remove',
-        position: ButtonIconPosition.LEFT,
-      },
-    });
+
     const detailsButton = new Button({
       type: ButtonType.DEFAULT,
       text: 'Details',
@@ -112,7 +100,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
       styleClass: 'product-list-card__row',
     });
 
-    this.infoButtons.append([likeButton.getElement()]);
+    this.infoButtons.append([likeButton.getElement(), this.toCartButton.getElement()]);
     info.append([this.infoButtons.getElement(), priceContainer.getElement()]);
     details.append([detailsButton.getElement()]);
     this.builder.prepend([description.getElement()]);

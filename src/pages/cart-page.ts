@@ -4,6 +4,7 @@ import ElementBuilder from '../shared/lib/element-builder';
 import CartList from '../features/cart/cart-list';
 import store from '../app/store';
 import eventBus, { EventBusActions } from '../shared/lib/event-bus';
+import PageTitle from '../features/page-title/page-title';
 
 export default class CartPage extends ViewBuilder {
   private cartList: CartList;
@@ -21,12 +22,16 @@ export default class CartPage extends ViewBuilder {
   }
 
   public configureView(): HTMLElement[] {
+    const pageTitle = new PageTitle('Cart');
+    pageTitle.getElement().classList.add('title_cart-page');
+    pageTitle.getElement().classList.add('product-view__title');
     this.cartList = new CartList();
     const cartView = new ElementBuilder({
       tag: 'section',
       styleClass: 'cart-list-page',
     });
-    cartView.append([this.cartList.getElement()]);
+
+    cartView.append([pageTitle.getElement(), this.cartList.getElement()]);
 
     return [cartView.getElement()];
   }
