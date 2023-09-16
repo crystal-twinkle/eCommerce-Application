@@ -6,7 +6,6 @@ import './cart.scss';
 import CartApi from '../../entities/cart/cart-api';
 import Button from '../../shared/ui/button/button';
 import { ButtonType, ButtonSize, ButtonIconPosition } from '../../shared/ui/button/models';
-import store from '../../app/store';
 
 export default class CartListCard extends CommonBuilderWrapper {
   price: Price;
@@ -30,12 +29,6 @@ export default class CartListCard extends CommonBuilderWrapper {
     const details = new ElementBuilder({
       tag: 'div',
       styleClass: 'cart-list-card__details',
-    });
-
-    const price = new ElementBuilder({
-      tag: 'div',
-      styleClass: 'cart-list-card__price',
-      content: `${getPrice(data.variant.prices[0])}`,
     });
 
     const heading = new ElementBuilder({
@@ -70,7 +63,7 @@ export default class CartListCard extends CommonBuilderWrapper {
 
     const minusButton = new Button({
       callback: async () => {
-        CartApi.changeQuantity(data.productId, 'decrease');
+        await CartApi.changeQuantity(data.productId, 'decrease');
       },
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
       size: ButtonSize.SMALL,
@@ -94,19 +87,20 @@ export default class CartListCard extends CommonBuilderWrapper {
 
     const costContainer = new ElementBuilder({
       tag: 'div',
-      styleClass: 'cart-list-card__cost-container',
+      styleClass: 'cart-list__cost-container _card',
       content: `Cost`,
     });
 
-    const cost = new ElementBuilder({
+    const price = new ElementBuilder({
       tag: 'div',
-      styleClass: 'cart-list-card__cost',
-      content: `$${(data.totalPrice.centAmount / 100).toFixed(2)}`,
+      styleClass: 'cart-list__cost-container__price',
+      content: `${getPrice(data.variant.prices[0])}`,
     });
-    costContainer.append([cost.getElement()]);
+
+    costContainer.append([price.getElement()]);
     quantityControls.append([minusButton.getElement(), itemQuantity.getElement(), plusButton.getElement()]);
 
-    details.append([heading.getElement(), price.getElement(), buttonContainer.getElement()]);
+    details.append([heading.getElement(), buttonContainer.getElement()]);
     this.builder.append([img.getElement(), details.getElement(), costContainer.getElement()]);
   }
 }

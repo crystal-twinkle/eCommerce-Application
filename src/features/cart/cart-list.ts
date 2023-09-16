@@ -12,13 +12,9 @@ import CartApi from '../../entities/cart/cart-api';
 import { ButtonType } from '../../shared/ui/button/models';
 
 export default class CartList extends CommonBuilderWrapper {
-  private cartCards: HTMLElement[];
   private loader: Loader;
   private emptyView: EmptyView;
-  private costContainer: ElementBuilder;
-  private cost: ElementBuilder;
-  private clearButton: Button;
-  private whitelist: ElementBuilder;
+  private priceList: ElementBuilder;
 
   constructor() {
     super();
@@ -29,9 +25,9 @@ export default class CartList extends CommonBuilderWrapper {
       tag: 'div',
       styleClass: 'cart-list',
     });
-    this.whitelist = new ElementBuilder({
+    this.priceList = new ElementBuilder({
       tag: 'div',
-      styleClass: 'cart-list__whitelist',
+      styleClass: 'cart-list__cost-container',
     });
   }
 
@@ -41,32 +37,34 @@ export default class CartList extends CommonBuilderWrapper {
       this.empty();
       return;
     }
-    this.cartCards = cart.lineItems.map((item: LineItem) => new CartListCard(item).getElement());
-
-    this.costContainer = new ElementBuilder({
-      tag: 'div',
-      styleClass: 'cart-list-card__cost-container cart-list-card__cost-container_total',
-      content: `Total:`,
-    });
-
-    this.cost = new ElementBuilder({
-      tag: 'div',
-      styleClass: 'cart-list-card__cost',
-      content: `$${(store.cart.totalPrice.centAmount / 100).toFixed(2)}`,
-    });
-    this.costContainer.append([this.cost.getElement()]);
-
-    this.clearButton = new Button({
+    const cartCards: HTMLElement[] = cart.lineItems.map((item: LineItem) => new CartListCard(item).getElement());
+    this.builder.append(cartCards);
+    const clearButton = new Button({
       callback: async () => {
-        CartApi.clearCart();
+        await CartApi.clearCart();
       },
       type: ButtonType.DEFAULT,
       text: 'Clear Cart',
     });
-    this.clearButton.getElement().classList.add('cart-list-card__button_clear');
-    this.builder.append(this.cartCards);
-    this.whitelist.append([this.setPromo(), this.costContainer.getElement(), this.clearButton.getElement()]);
-    this.builder.getElement().after(this.whitelist.getElement());
+    clearButton.getElement().classList.add('cart-list-card__button_clear');
+    this.builder.getElement().after(this.setPriceList(), clearButton.getElement());
+  }
+
+  public setPriceList(): HTMLElement {
+    const costContainer = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'cart-list__cost-container _list',
+      content: `Total:`,
+    });
+
+    const totalPrice = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'cart-list__cost-container__price',
+      content: `$${(store.cart.totalPrice.centAmount / 100).toFixed(2)}`,
+    });
+    costContainer.append([totalPrice.getElement()]);
+    this.priceList.append([this.setPromo(), costContainer.getElement()]);
+    return this.priceList.getElement();
   }
 
   public setPromo(): HTMLElement {

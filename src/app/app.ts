@@ -35,13 +35,13 @@ export default class App {
       UserApi.getUser()
         .then((data: Customer) => store.setUser(data))
         .then(() => {
-          CartApi.getCustomerCart()
-            .then((response: ClientResponse<Cart>) => {
+          if (localStorage.getItem('cartID')) {
+            CartApi.getCustomerCart().then((response: ClientResponse<Cart>) => {
               store.setCart(response.body);
-            })
-            .catch(() => {
-              store.setCart(null);
             });
+          } else {
+            store.setUser(null);
+          }
         });
     } else {
       localStorage.getItem('cartID')
