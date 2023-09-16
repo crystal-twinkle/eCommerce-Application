@@ -188,7 +188,7 @@ export default class CartApi {
       .execute();
   }
 
-  public static async addDiscountCode(code: string = 'emp15'): Promise<Cart> {
+  public static async addDiscountCode(code: string): Promise<Cart> {
     const response: ClientResponse<Cart> = await flowFactory.clientCredentialsFlow
       .carts()
       .withId({ ID: store.cart.id })
