@@ -15,7 +15,6 @@ export default class ProductListCard extends CommonBuilderWrapper {
   private price: Price;
   private infoButtons: ElementBuilder;
   private toCartButton: Button;
-  private removeButton: Button;
 
   constructor(private data: ProductProjection) {
     super();
@@ -39,7 +38,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
     });
     const price = new ElementBuilder({
       tag: 'div',
-      styleClass: 'product-list-card__price',
+      styleClass: 'cart-list-card__price',
       content: `${getPrice(this.price)}`,
     });
     priceContainer.append([price.getElement()]);
@@ -70,7 +69,6 @@ export default class ProductListCard extends CommonBuilderWrapper {
     this.toCartButton = new Button({
       callback: async () => {
         await CartApi.addItemToCart(this.data.id);
-        // this.toCartButton.getElement().remove();
         this.toCartButton.getElement().classList.add('button_disabled');
         this.setButtons();
       },
@@ -105,7 +103,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
     details.append([detailsButton.getElement()]);
     this.builder.prepend([description.getElement()]);
     this.builder.append([img.getElement(), info.getElement(), details.getElement()]);
-    this.setButtons();
+    // this.setButtons();
   }
 
   private setButtons(): void {
