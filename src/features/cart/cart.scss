@@ -58,11 +58,6 @@
   }
 
   &__button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px;
-
     &._remove {
       max-width: 120px;
     }
