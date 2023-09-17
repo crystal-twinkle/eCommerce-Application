@@ -6,17 +6,14 @@ import EmptyView from '../../shared/ui/empty-view/empty-view';
 import CartListCard from './cart-list-card';
 import './cart.scss';
 import store from '../../app/store';
+import Input from '../../shared/ui/input/input';
 import Button from '../../shared/ui/button/button';
 import CartApi from '../../entities/cart/cart-api';
-import { ButtonSize, ButtonType } from '../../shared/ui/button/models';
+import { ButtonType } from '../../shared/ui/button/models';
 
 export default class CartList extends CommonBuilderWrapper {
-  private cartCards: HTMLElement[];
   private loader: Loader;
   private emptyView: EmptyView;
-  private clearButton: Button;
-  private costContainer: ElementBuilder;
-  private cost: ElementBuilder;
 
   constructor() {
     super();
@@ -25,40 +22,104 @@ export default class CartList extends CommonBuilderWrapper {
 
     this.builder = new ElementBuilder({
       tag: 'div',
-      styleClass: 'cart-list',
+      styleClass: 'cart-page',
     });
   }
 
-  public setCards(cart: Cart): void {
+  public setCart(cart: Cart): void {
     this.builder.setContent();
     if (!cart.lineItems.length) {
       this.empty();
       return;
     }
-    this.cartCards = cart.lineItems.map((item: LineItem) => new CartListCard(item).getElement());
-
-    this.costContainer = new ElementBuilder({
+    const cartCards: HTMLElement[] = cart.lineItems.map((item: LineItem) => new CartListCard(item).getElement());
+    const cartList = new ElementBuilder({
       tag: 'div',
-      styleClass: 'cart-list-card__cost-container cart-list-card__cost-container_total',
-      content: `Total:`,
+      styleClass: 'cart-list',
     });
 
-    this.cost = new ElementBuilder({
-      tag: 'div',
-      styleClass: 'cart-list-card__cost',
-      content: `$${(store.cart.totalPrice.centAmount / 100).toFixed(2)}`,
-    });
-    this.costContainer.append([this.cost.getElement()]);
-
-    this.clearButton = new Button({
+    cartList.append(cartCards);
+    const clearButton = new Button({
       callback: async () => {
-        CartApi.clearCart();
+        await CartApi.clearCart();
+        this.empty();
       },
       type: ButtonType.DEFAULT,
       text: 'Clear Cart',
     });
-    this.clearButton.getElement().classList.add('cart-list-card__button_clear');
-    this.builder.append([...this.cartCards, this.costContainer.getElement(), this.clearButton.getElement()]);
+    clearButton.getElement().classList.add('cart-list__button', '_clear');
+    this.builder.append([cartList.getElement(), this.setPriceList(), clearButton.getElement()]);
+  }
+
+  public setPriceList(): HTMLElement {
+    const costContainer = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'cart-list__cost-container _cost',
+      content: `Total:`,
+    });
+
+    const priceContainer = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'cart-list__cost-container _cost _price',
+    });
+    const totalPriceValue = Number((store.cart.totalPrice.centAmount / 100).toFixed(2));
+    const totalPrice = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'cart-list__price',
+      content: `${totalPriceValue}`,
+    });
+    priceContainer.append([totalPrice.getElement()]);
+    if (store.cart.discountCodes.length) {
+      const percentDiscount = 1.17654;
+      const preDiscountedPrice = new ElementBuilder({
+        tag: 'div',
+        styleClass: 'cart-list__price _cross-out',
+        content: `${(totalPriceValue * percentDiscount).toFixed(2)}`,
+      });
+
+      priceContainer.prepend([preDiscountedPrice.getElement()]);
+    }
+    costContainer.append([priceContainer.getElement()]);
+    const priceList = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'cart-list__cost-container _list',
+    });
+    priceList.append([...this.setPromo(), costContainer.getElement()]);
+    return priceList.getElement();
+  }
+
+  public setPromo(): (HTMLInputElement | HTMLElement)[] {
+    const promocode = new Input({
+      styleClass: 'cart-list__promocode',
+      placeholder: 'Promo code',
+      event: {
+        type: 'keypress',
+        callback: (event) => {
+          if (event instanceof KeyboardEvent && event.code === 'Enter') {
+            this.addPromocode(promocode);
+          }
+        },
+      },
+    });
+    const applyButton = new Button({
+      callback: async () => this.addPromocode(promocode),
+      type: ButtonType.DEFAULT,
+      text: 'Apply',
+    });
+    applyButton.getElement().classList.add('cart-list__button', '_apply');
+    return [promocode.getElement(), applyButton.getElement()];
+  }
+
+  private addPromocode(promocode: Input) {
+    CartApi.addDiscountCode(promocode.getElement().value)
+      .then((data) => {
+        if (!data.discountCodes.length) {
+          store.setCart(data);
+        } else {
+          promocode.setErrorMessage('Promo code has been applied');
+        }
+      })
+      .catch(() => promocode.setErrorMessage('Invalid promo code'));
   }
 
   public empty(): void {

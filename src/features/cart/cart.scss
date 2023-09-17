@@ -4,10 +4,14 @@
 .cart-list {
   @extend %flex-column;
   padding-bottom: 30px;
+  gap: 60px;
+
+  &-page {
+    padding-bottom: 50px;
+  }
 
   &-card {
     width: 85%;
-    padding-bottom: 60px;
     display: flex;
     flex-wrap: wrap;
 
@@ -15,7 +19,7 @@
       width: 178px;
       height: 165px;
       object-fit: cover;
-      box-shadow: 0px 4px 10px 0px $purple-1;
+      box-shadow: 0 4px 10px 0 $purple-1;
     }
 
     &__details {
@@ -27,36 +31,15 @@
 
     &__heading {
       color: $black-1;
-      font-family: Roboto;
-      font-size: 16px;
+      font-size: 20px;
       font-style: normal;
       font-weight: 600;
-    }
-
-    &__price {
-      font-family: Roboto-Medium;
-      font-weight: 500;
     }
 
     &__button-container {
       @extend %flex-column;
       justify-content: space-between;
-      height: 60%;
-    }
-
-    &__button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 26px;
-
-      &_remove {
-        max-width: 120px;
-      }
-
-      &_clear {
-        width: 178px;
-      }
+      height: 70%;
     }
 
     &__quantity-controls {
@@ -72,30 +55,71 @@
       display: flex;
       justify-content: space-between;
     }
+  }
 
-    &__cost-container {
-      height: 70px;
-      width: 105px;
-      @extend %flex-column;
+  &__button {
+    &._remove {
+      max-width: 120px;
+    }
+
+    &._clear {
+      width: 178px;
+    }
+
+    &._apply {
+      margin: -15px auto 0;
+    }
+  }
+
+  &__cost-container {
+    width: 300px;
+    @extend %flex-column;
+    font-size: 20px;
+
+    &._list {
+      gap: 20px;
+      padding: 5px;
+      margin-bottom: 20px;
+      border: 1px solid black;
+    }
+
+    &._cost {
       justify-content: space-between;
-      font-size: 20px;
+      width: auto;
+      flex-direction: row;
+      align-items: last baseline;
 
-      &_total {
-        width: 178px;
-        height: auto;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: last baseline;
-        padding-bottom: 30px;
+      &._price {
+        gap: 8px;
       }
     }
 
-    &__cost {
-      color: $purple-2;
-      font-family: Roboto;
-      font-size: 32px;
-      font-style: normal;
-      font-weight: 600;
+    &._card {
+      gap: 10px;
+      width: 105px;
     }
+  }
+
+  &__price {
+    color: $purple-2;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+
+    &._cross-out {
+      font-size: 20px;
+      text-decoration: line-through;
+      color: gray;
+    }
+  }
+
+  &__promocode {
+    box-sizing: border-box;
+    padding: 11px 16px;
+    margin: 4px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    font-size: 16px;
   }
 }

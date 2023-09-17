@@ -243,7 +243,6 @@ export default class RegistrationFormView extends ViewBuilder {
               store.setUser(result.body.customer);
               if (localStorage.getItem('cartID')) {
                 await CartApi.setCustomerID(result.body.customer.id);
-                localStorage.removeItem('cartID');
               }
               appRouter.navigate(Page.OVERVIEW);
             }

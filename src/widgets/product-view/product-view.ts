@@ -143,26 +143,26 @@ export default class ProductView extends ViewBuilder {
       content: 'Description',
     });
 
-    const descritionData = this.data.masterData.current.description['en-US'];
-    const descrition = new ElementBuilder({
+    const descriptionData = this.data.masterData.current.description['en-US'];
+    const description = new ElementBuilder({
       tag: 'p',
-      content: `${descritionData}`,
+      content: `${descriptionData}`,
       styleClass: 'product-view__description',
     });
 
-    descriptionContainer.append([descriptionHeading.getElement(), descrition.getElement()]);
+    descriptionContainer.append([descriptionHeading.getElement(), description.getElement()]);
 
     details.append([priceContainer.getElement(), this.buttonContainer.getElement(), descriptionContainer.getElement()]);
 
     if (this.price.discounted) {
-      const descountedPrice = new ElementBuilder({
+      const discountedPrice = new ElementBuilder({
         tag: 'div',
         styleClass: 'product-view__price',
         content: `${getPrice(this.price, true)}`,
       });
 
-      priceContainer.prepend([descountedPrice.getElement()]);
-      descountedPrice.setStyleClass('product-view__price product-view__price_discounted');
+      priceContainer.prepend([discountedPrice.getElement()]);
+      discountedPrice.setStyleClass('product-view__price product-view__price_discounted');
       price.setStyleClass('product-view__price product-view__price_cross-out');
     }
 

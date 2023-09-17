@@ -1,5 +1,5 @@
 import { ProductProjection } from '@commercetools/platform-sdk/dist/declarations/src/generated/models/product';
-import { Price } from '@commercetools/platform-sdk';
+import { Cart, Price } from '@commercetools/platform-sdk';
 import CommonBuilderWrapper from '../../shared/lib/common-builder-wrapper';
 import ElementBuilder from '../../shared/lib/element-builder';
 import Button from '../../shared/ui/button/button';
@@ -10,6 +10,7 @@ import { Page } from '../../shared/lib/router/pages';
 import CartApi from '../../entities/cart/cart-api';
 import store from '../../app/store';
 import getPrice from '../../shared/lib/getPrice';
+import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
 
 export default class ProductListCard extends CommonBuilderWrapper {
   private price: Price;
@@ -48,14 +49,14 @@ export default class ProductListCard extends CommonBuilderWrapper {
       content: data.name?.['en-US'],
     });
     if (this.price.discounted) {
-      const descountedPrice = new ElementBuilder({
+      const discountedPrice = new ElementBuilder({
         tag: 'div',
         styleClass: 'product-view__price',
         content: `${getPrice(this.price, true)}`,
       });
 
-      priceContainer.prepend([descountedPrice.getElement()]);
-      descountedPrice.setStyleClass('product-list-card__price product-view__price_discounted');
+      priceContainer.prepend([discountedPrice.getElement()]);
+      discountedPrice.setStyleClass('product-list-card__price product-view__price_discounted');
       price.setStyleClass('product-list-card__price product-view__price_cross-out');
     }
     const likeButton = new Button({
@@ -70,7 +71,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
       callback: async () => {
         await CartApi.addItemToCart(this.data.id);
         this.toCartButton.getElement().classList.add('button_disabled');
-        this.setButtons();
+        this.setButtons(store.cart);
       },
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
       size: ButtonSize.SMALL,
@@ -103,14 +104,18 @@ export default class ProductListCard extends CommonBuilderWrapper {
     details.append([detailsButton.getElement()]);
     this.builder.prepend([description.getElement()]);
     this.builder.append([img.getElement(), info.getElement(), details.getElement()]);
-    this.setButtons();
+    this.setButtons(store.cart);
+    eventBus.subscribe(EventBusActions.UPDATE_CART, (eventData) => this.setButtons(eventData as Cart));
   }
 
-  private setButtons(): void {
-    if (!localStorage.getItem('cartID') || !store.cart.lineItems.find((item) => item.productId === this.data.id)) {
-      this.toCartButton.getElement().classList.remove('button_disabled');
-    } else {
-      this.toCartButton.getElement().classList.add('button_disabled');
+  private setButtons(cart: Cart): void {
+    if (cart) {
+      const findItems = cart?.lineItems?.find((item) => item.productId === this.data.id);
+      if (!findItems) {
+        this.toCartButton.getElement().classList.remove('button_disabled');
+      } else {
+        this.toCartButton.getElement().classList.add('button_disabled');
+      }
     }
   }
 }

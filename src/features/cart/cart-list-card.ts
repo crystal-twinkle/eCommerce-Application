@@ -6,7 +6,6 @@ import './cart.scss';
 import CartApi from '../../entities/cart/cart-api';
 import Button from '../../shared/ui/button/button';
 import { ButtonType, ButtonSize, ButtonIconPosition } from '../../shared/ui/button/models';
-import store from '../../app/store';
 
 export default class CartListCard extends CommonBuilderWrapper {
   price: Price;
@@ -79,23 +78,23 @@ export default class CartListCard extends CommonBuilderWrapper {
 
     const plusButton = new Button({
       callback: async () => {
-        CartApi.changeQuantity(data.productId, 'increase');
+        await CartApi.changeQuantity(data.productId, 'increase');
       },
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
       size: ButtonSize.SMALL,
       text: '+',
     });
-    plusButton.getElement().classList.add('cart-list-card__button');
+    plusButton.getElement().classList.add('cart-list__button');
 
     const minusButton = new Button({
       callback: async () => {
-        CartApi.changeQuantity(data.productId, 'decrease');
+        await CartApi.changeQuantity(data.productId, 'decrease');
       },
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
       size: ButtonSize.SMALL,
       text: '—',
     });
-    minusButton.getElement().classList.add('cart-list-card__button');
+    minusButton.getElement().classList.add('cart-list__button');
 
     const removeButton = new Button({
       callback: async () => {
@@ -108,18 +107,18 @@ export default class CartListCard extends CommonBuilderWrapper {
         position: ButtonIconPosition.LEFT,
       },
     });
-    removeButton.getElement().classList.add('cart-list-card__button_remove');
+    removeButton.getElement().classList.add('cart-list__button', '_remove');
     buttonContainer.append([quantityControls.getElement(), removeButton.getElement()]);
 
     const costContainer = new ElementBuilder({
       tag: 'div',
-      styleClass: 'cart-list-card__cost-container',
+      styleClass: 'cart-list__cost-container _card',
       content: `Cost`,
     });
 
     const cost = new ElementBuilder({
       tag: 'div',
-      styleClass: 'cart-list-card__cost',
+      styleClass: 'cart-list__price',
       content: `$${(data.totalPrice.centAmount / 100).toFixed(2)}`,
     });
     costContainer.append([cost.getElement()]);

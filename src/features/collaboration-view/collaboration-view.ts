@@ -121,12 +121,19 @@ export default class CollaborationView extends ViewBuilder {
       benefitsContent.getElement().append(benefitsItem.getElement());
     });
 
+    const forPromocode = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'collaboration-view__promocode',
+      content: 'Active promo code: emp15',
+    });
+
     return [
       collaborationHeading.getElement(),
       collaborationText.getElement(),
       collaborationContent.getElement(),
       subheading.getElement(),
       benefitsContent.getElement(),
+      forPromocode.getElement(),
     ];
   }
 }

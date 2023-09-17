@@ -1,4 +1,11 @@
-import { Cart, CartPagedQueryResponse, CartUpdateAction, ClientResponse, LineItem } from '@commercetools/platform-sdk';
+import {
+  Cart,
+  CartPagedQueryResponse,
+  CartUpdateAction,
+  ClientResponse,
+  CustomerSignInResult,
+  LineItem,
+} from '@commercetools/platform-sdk';
 import flowFactory from '../../app/api-flow/flow-factory';
 import store from '../../app/store';
 
@@ -22,7 +29,7 @@ export default class CartApi {
       .execute();
 
     store.setCart(response.body);
-    localStorage.setItem('cartID', store.cart.id);
+    localStorage.setItem('cartID', response.body.id);
     return store.cart.id;
   }
 
@@ -134,7 +141,9 @@ export default class CartApi {
 
   public static async getCustomerCart(): Promise<ClientResponse<Cart>> {
     const customerId = store.user.id;
-    return flowFactory.clientCredentialsFlow.carts().withCustomerId({ customerId }).get().execute();
+    const result = await flowFactory.clientCredentialsFlow.carts().withCustomerId({ customerId }).get().execute();
+    localStorage.setItem('cartID', result.body.id);
+    return result;
   }
 
   public static async getAnonymousCart(): Promise<ClientResponse<Cart>> {
@@ -170,10 +179,10 @@ export default class CartApi {
     store.setCart(response.body);
   }
 
-  public static async mergeCarts(): Promise<void> {
+  public static async mergeCarts(): Promise<ClientResponse<CustomerSignInResult>> {
     const email: string = store.user.email;
     const password: string = store.user.password;
-    await flowFactory.anonymousSessionFlow
+    return flowFactory.anonymousSessionFlow
       .me()
       .login()
       .post({
@@ -186,14 +195,10 @@ export default class CartApi {
       .execute();
   }
 
-  public static getTotalPrice(): number {
-    return store.cart.totalPrice.centAmount / 100;
-  }
-
-  public static async addDiscountCode(code: string = 'emp15'): Promise<Cart> {
+  public static async addDiscountCode(code: string): Promise<Cart> {
     const response: ClientResponse<Cart> = await flowFactory.clientCredentialsFlow
       .carts()
-      .withId({ ID: store.user.id })
+      .withId({ ID: store.cart.id })
       .post({
         body: {
           actions: [
@@ -206,7 +211,6 @@ export default class CartApi {
         },
       })
       .execute();
-    store.cart = response.body;
     return response.body;
   }
 }
