@@ -70,10 +70,11 @@ export default class CartList extends CommonBuilderWrapper {
     });
     priceContainer.append([totalPrice.getElement()]);
     if (store.cart.discountCodes.length) {
+      const percentDiscount = 1.17654;
       const preDiscountedPrice = new ElementBuilder({
         tag: 'div',
         styleClass: 'cart-list__price _cross-out',
-        content: `${(totalPriceValue * 1.17654).toFixed(2)}`,
+        content: `${(totalPriceValue * percentDiscount).toFixed(2)}`,
       });
 
       priceContainer.prepend([preDiscountedPrice.getElement()]);
@@ -94,18 +95,14 @@ export default class CartList extends CommonBuilderWrapper {
       event: {
         type: 'keypress',
         callback: (event) => {
-          if (event instanceof KeyboardEvent) {
-            if (event.code === 'Enter') {
-              this.addPromocode(promocode);
-            }
+          if (event instanceof KeyboardEvent && event.code === 'Enter') {
+            this.addPromocode(promocode);
           }
         },
       },
     });
     const applyButton = new Button({
-      callback: async () => {
-        this.addPromocode(promocode);
-      },
+      callback: async () => this.addPromocode(promocode),
       type: ButtonType.DEFAULT,
       text: 'Apply',
     });

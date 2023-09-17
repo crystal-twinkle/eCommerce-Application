@@ -70,11 +70,11 @@ export default class Input extends CommonBuilderWrapper {
     (this.builder.getElement() as HTMLInputElement).value = value;
   }
 
-  protected showErrorMessage() {
+  protected showErrorMessage(): void {
     this.builder.getElement().after(this.message.getElement());
   }
 
-  public setErrorMessage(text: string) {
+  public setErrorMessage(text: string): void {
     this.message.setContent(text).getElement();
     this.showErrorMessage();
   }

@@ -45,9 +45,6 @@ export default class LoginForm extends ViewBuilder {
               store.setUser(result.body.customer);
               if (localStorage.getItem('cartID')) {
                 await CartApi.setCustomerID(result.body.customer.id);
-                //   await CartApi.mergeCarts()
-                //     .then((data) => console.log(data))
-                //     .catch((e) => console.log(e));
               }
               new RequestMessage().logSuccess();
               appRouter.navigate(Page.OVERVIEW);
