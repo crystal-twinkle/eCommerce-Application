@@ -8,6 +8,7 @@ import checkValidator from '../../shared/lib/validate/check-validaror';
 import flowFactory from '../../app/api-flow/flow-factory';
 import store from '../../app/store';
 import RequestMessage from '../request-message/request-message';
+import CartApi from '../../entities/cart/cart-api';
 
 export default class LoginForm extends ViewBuilder {
   constructor() {
@@ -40,10 +41,14 @@ export default class LoginForm extends ViewBuilder {
               .login()
               .post({ body: { email: emailLogin.getElement().value, password: passwordLogin.value } })
               .execute();
-            store.setUser(result.body.customer);
-
-            new RequestMessage().logSuccess();
-            appRouter.navigate(Page.OVERVIEW);
+            if (result.statusCode === 200) {
+              store.setUser(result.body.customer);
+              if (localStorage.getItem('cartID')) {
+                await CartApi.setCustomerID(result.body.customer.id);
+              }
+              new RequestMessage().logSuccess();
+              appRouter.navigate(Page.OVERVIEW);
+            }
           } catch (e) {
             emailLogin.getElement().classList.add('input_invalid');
             emailLogin.wrongEmailMessage();

@@ -4,7 +4,6 @@
     "es2021": true,
     "node": true
   },
-
   "extends": [
     "eslint:recommended",
     "airbnb",
@@ -14,24 +13,27 @@
     "plugin:import/typescript",
     "plugin:prettier/recommended"
   ],
-
   "overrides": [],
-
   "parser": "@typescript-eslint/parser",
-
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module",
     "project": "./tsconfig.json"
   },
-
-  "plugins": ["import", "@typescript-eslint", "prettier"],
-
+  "plugins": [
+    "import",
+    "@typescript-eslint",
+    "prettier"
+  ],
   "rules": {
     "prettier/prettier": [
       "error",
-      { "endOfLine": "auto" }
+      {
+        "endOfLine": "auto"
+      }
     ],
+    "no-plusplus": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "no-console": "off",
     "no-unused-expressions": "off",

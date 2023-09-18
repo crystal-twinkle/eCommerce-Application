@@ -1,19 +1,25 @@
 import './product-view.scss';
-import { DiscountedPrice, Price, Product } from '@commercetools/platform-sdk';
+import { Cart, Price, Product } from '@commercetools/platform-sdk';
 import ElementBuilder from '../../shared/lib/element-builder';
 import ViewBuilder from '../../shared/lib/view-builder';
 import PageTitle from '../../features/page-title/page-title';
 import Button from '../../shared/ui/button/button';
 import { ButtonSize, ButtonType, ButtonIconPosition } from '../../shared/ui/button/models';
 import Slider from '../../features/slider/slider';
+import CartApi from '../../entities/cart/cart-api';
 import ProductApi from '../../entities/product/api';
+import getPrice from '../../shared/lib/getPrice';
+import store from '../../app/store';
+import eventBus, { EventBusActions } from '../../shared/lib/event-bus';
 
 export default class ProductView extends ViewBuilder {
   private slider: Slider;
   private id: string;
   private data: Product;
   private price: Price;
-  private disountedPrice: DiscountedPrice;
+  buttonContainer: ElementBuilder;
+  toCartButton: Button;
+  removeButton: Button;
 
   constructor() {
     super('product-view');
@@ -39,23 +45,15 @@ export default class ProductView extends ViewBuilder {
     return slides;
   }
 
-  private getPrice(isDiscounted = false): string {
-    this.price = this.data.masterData.current.masterVariant.prices[0];
-    let centAmount: number = this.price.value.centAmount;
-
-    if (isDiscounted) {
-      centAmount = this.price.discounted.value.centAmount;
+  private setButtons(cart: Cart): void {
+    if (cart) {
+      const findItems = cart?.lineItems?.find((item) => item.productId === this.data.id);
+      if (!findItems) {
+        this.buttonContainer.prepend([this.toCartButton.getElement()]);
+      } else {
+        this.buttonContainer.prepend([this.removeButton.getElement()]);
+      }
     }
-
-    const fractionDigits: number = this.price.value.fractionDigits;
-    const currencyCode: string = this.price.value.currencyCode;
-    const shortPrice: number = centAmount / 10 ** fractionDigits;
-    const formatedPrice: string = new Intl.NumberFormat(`us-US`, {
-      style: 'currency',
-      currency: `${currencyCode}`,
-    }).format(shortPrice);
-
-    return formatedPrice;
   }
 
   public configureView(): HTMLElement[] {
@@ -84,23 +82,43 @@ export default class ProductView extends ViewBuilder {
       styleClass: 'product-view__price-container',
     });
 
+    this.price = this.data.masterData.current.masterVariant.prices[0];
     const price = new ElementBuilder({
       tag: 'div',
       styleClass: 'product-view__price',
-      content: `${this.getPrice()}`,
+      content: `${getPrice(this.price)}`,
     });
     priceContainer.append([price.getElement()]);
 
-    const buttonContainer = new ElementBuilder({
+    this.buttonContainer = new ElementBuilder({
       tag: 'div',
       styleClass: 'product-view__buttons',
     });
 
-    const toCartButton = new Button({
+    this.toCartButton = new Button({
+      callback: async () => {
+        await CartApi.addItemToCart(this.id);
+        this.toCartButton.getElement().remove();
+        this.setButtons(store.cart);
+      },
       type: ButtonType.DEFAULT,
       text: 'Add to cart',
       icon: {
         name: 'cart',
+        position: ButtonIconPosition.RIGHT,
+      },
+    });
+
+    this.removeButton = new Button({
+      callback: async () => {
+        await CartApi.removeItemFromCart(this.data.id);
+        this.removeButton.getElement().remove();
+        this.setButtons(store.cart);
+      },
+      type: ButtonType.DEFAULT,
+      text: 'Remove from cart',
+      icon: {
+        name: 'remove',
         position: ButtonIconPosition.RIGHT,
       },
     });
@@ -114,7 +132,7 @@ export default class ProductView extends ViewBuilder {
       },
     });
 
-    buttonContainer.append([toCartButton.getElement(), likeButton.getElement()]);
+    this.buttonContainer.append([likeButton.getElement()]);
 
     const descriptionContainer = new ElementBuilder({
       tag: 'div',
@@ -125,26 +143,26 @@ export default class ProductView extends ViewBuilder {
       content: 'Description',
     });
 
-    const descritionData = this.data.masterData.current.description['en-US'];
-    const descrition = new ElementBuilder({
+    const descriptionData = this.data.masterData.current.description['en-US'];
+    const description = new ElementBuilder({
       tag: 'p',
-      content: `${descritionData}`,
+      content: `${descriptionData}`,
       styleClass: 'product-view__description',
     });
 
-    descriptionContainer.append([descriptionHeading.getElement(), descrition.getElement()]);
+    descriptionContainer.append([descriptionHeading.getElement(), description.getElement()]);
 
-    details.append([priceContainer.getElement(), buttonContainer.getElement(), descriptionContainer.getElement()]);
+    details.append([priceContainer.getElement(), this.buttonContainer.getElement(), descriptionContainer.getElement()]);
 
     if (this.price.discounted) {
-      const descountedPrice = new ElementBuilder({
+      const discountedPrice = new ElementBuilder({
         tag: 'div',
         styleClass: 'product-view__price',
-        content: `${this.getPrice(true)}`,
+        content: `${getPrice(this.price, true)}`,
       });
 
-      priceContainer.prepend([descountedPrice.getElement()]);
-      descountedPrice.setStyleClass('product-view__price product-view__price_discounted');
+      priceContainer.prepend([discountedPrice.getElement()]);
+      discountedPrice.setStyleClass('product-view__price product-view__price_discounted');
       price.setStyleClass('product-view__price product-view__price_cross-out');
     }
 
@@ -158,6 +176,8 @@ export default class ProductView extends ViewBuilder {
       this.data = data;
       this.wrapper.getElement().append(...this.configureView());
       this.view.getElement().append(this.wrapper.getElement());
+      this.setButtons(store.cart);
+      eventBus.subscribe(EventBusActions.UPDATE_CART, (eventData) => this.setButtons(eventData as Cart));
     });
   }
 }

@@ -43,17 +43,17 @@ export default class Input extends CommonBuilderWrapper {
         value: config.value,
       });
     }
+    this.message = new ElementBuilder({
+      tag: 'div',
+      styleClass: 'error-message',
+    });
     if (config.name) {
       this.builder.setTagSettings({
         name: config.name,
         autocomplete: 'off',
       });
 
-      this.message = new ElementBuilder({
-        tag: 'div',
-        styleClass: 'error-message',
-        content: ValidationParams[this.config.name].message,
-      });
+      this.message.setContent(ValidationParams[this.config.name].message).getElement();
 
       this.showErrorMessage = this.showErrorMessage.bind(this);
 
@@ -70,8 +70,13 @@ export default class Input extends CommonBuilderWrapper {
     (this.builder.getElement() as HTMLInputElement).value = value;
   }
 
-  protected showErrorMessage() {
+  protected showErrorMessage(): void {
     this.builder.getElement().after(this.message.getElement());
+  }
+
+  public setErrorMessage(text: string): void {
+    this.message.setContent(text).getElement();
+    this.showErrorMessage();
   }
 
   protected checkInput() {

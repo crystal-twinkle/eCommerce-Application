@@ -15,6 +15,7 @@ import store from '../../app/store';
 import RequestMessage from '../request-message/request-message';
 import { Mutable } from '../../shared/const/mutable';
 import { IResultsCheckbox } from '../../shared/const/results-checkbox';
+import CartApi from '../../entities/cart/cart-api';
 
 export default class RegistrationFormView extends ViewBuilder {
   constructor() {
@@ -228,7 +229,7 @@ export default class RegistrationFormView extends ViewBuilder {
               .execute();
             if (resultCreate.body.customer) {
               flowFactory.createPasswordFlow(emailReg.value, passwordReg.getElement().value);
-              const loginResult = await flowFactory.passwordFlow
+              const result = await flowFactory.passwordFlow
                 .me()
                 .login()
                 .post({
@@ -239,7 +240,10 @@ export default class RegistrationFormView extends ViewBuilder {
                 })
                 .execute();
               new RequestMessage().createSuccess();
-              store.setUser(loginResult.body.customer);
+              store.setUser(result.body.customer);
+              if (localStorage.getItem('cartID')) {
+                await CartApi.setCustomerID(result.body.customer.id);
+              }
               appRouter.navigate(Page.OVERVIEW);
             }
           } catch (e) {

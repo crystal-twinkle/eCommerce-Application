@@ -10,33 +10,36 @@ export default class ProductsList extends CommonBuilderWrapper {
   private productCards: HTMLElement[];
   private loader: Loader;
   private emptyView: EmptyView;
+  private productsList: ElementBuilder;
 
   constructor() {
     super();
-    this.loader = new Loader();
+    this.loader = new Loader('products-list-loader');
     this.emptyView = new EmptyView('No Products');
 
     this.builder = new ElementBuilder({
       tag: 'div',
+      styleClass: 'products-list-wrapper',
+    });
+    this.productsList = new ElementBuilder({
+      tag: 'div',
       styleClass: 'products-list',
     });
+    this.builder.append([this.productsList.getElement(), this.loader.getElement()]);
   }
 
   public setProducts(products: ProductProjection[]): void {
-    this.builder.getElement().textContent = '';
-    this.productCards = products.map((product: ProductProjection) => new ProductListCard(product).getElement());
-    this.builder.append(this.productCards);
+    this.productsList.setContent();
+
+    if (products.length) {
+      this.productCards = products.map((product: ProductProjection) => new ProductListCard(product).getElement());
+      this.productsList.append(this.productCards);
+    } else {
+      this.productsList.append([this.emptyView.getElement()]);
+    }
   }
 
   public showLoader(visible: boolean): void {
-    this.builder.setContent();
-
-    if (visible) {
-      this.builder.append([this.loader.getElement()]);
-    } else {
-      this.productCards?.length
-        ? this.builder.append(this.productCards)
-        : this.builder.append([this.emptyView.getElement()]);
-    }
+    this.loader.visible = visible;
   }
 }
