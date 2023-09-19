@@ -53,6 +53,8 @@ export default class ProductView extends ViewBuilder {
       } else {
         this.buttonContainer.prepend([this.removeButton.getElement()]);
       }
+    } else {
+      this.buttonContainer.prepend([this.toCartButton.getElement()]);
     }
   }
 
