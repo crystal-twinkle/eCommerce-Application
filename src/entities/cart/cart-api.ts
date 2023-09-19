@@ -211,6 +211,7 @@ export default class CartApi {
         },
       })
       .execute();
+    store.setCart(response.body);
     return response.body;
   }
 }
