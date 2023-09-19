@@ -62,11 +62,11 @@ export default class CartList extends CommonBuilderWrapper {
       tag: 'div',
       styleClass: 'cart-list__cost-container _cost _price',
     });
-    const totalPriceValue = Number((store.cart.totalPrice.centAmount / 100).toFixed(2));
+    const totalPriceValue = store.cart.totalPrice.centAmount / 100;
     const totalPrice = new ElementBuilder({
       tag: 'div',
       styleClass: 'cart-list__price',
-      content: `${totalPriceValue}`,
+      content: `$${totalPriceValue.toFixed(2)}`,
     });
     priceContainer.append([totalPrice.getElement()]);
     if (store.cart.discountCodes.length) {
@@ -74,7 +74,7 @@ export default class CartList extends CommonBuilderWrapper {
       const preDiscountedPrice = new ElementBuilder({
         tag: 'div',
         styleClass: 'cart-list__price _cross-out',
-        content: `${(totalPriceValue * percentDiscount).toFixed(2)}`,
+        content: `$${(totalPriceValue * percentDiscount).toFixed(2)}`,
       });
 
       priceContainer.prepend([preDiscountedPrice.getElement()]);
