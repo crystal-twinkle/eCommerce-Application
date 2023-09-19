@@ -1,6 +1,10 @@
 import CommonBuilderWrapper from '../../lib/common-builder-wrapper';
 import './empty-view.scss';
 import ElementBuilder from '../../lib/element-builder';
+import { Page } from '../../lib/router/pages';
+import appRouter from '../../lib/router/router';
+import Button from '../button/button';
+import { ButtonType, ButtonIconPosition, ButtonSize } from '../button/models';
 
 export default class EmptyView extends CommonBuilderWrapper {
   constructor(message?: string) {
@@ -23,6 +27,12 @@ export default class EmptyView extends CommonBuilderWrapper {
       tag: 'div',
       styleClass: 'empty-view',
     });
-    this.builder.append([icon.getElement(), text.getElement()]);
+
+    const toCatalogButton = new Button({
+      callback: () => appRouter.navigate(Page.PRODUCTS),
+      text: 'Catalog',
+      type: ButtonType.DEFAULT_WITHOUT_BORDER,
+    });
+    this.builder.append([icon.getElement(), text.getElement(), toCatalogButton.getElement()]);
   }
 }
