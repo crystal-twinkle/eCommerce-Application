@@ -40,9 +40,13 @@ export class Router {
       ? this.overviewLink
       : this.routes.find((item: IRouterLink) => item.path === pathForFind) || this.notFoundRouterLink;
     if (route === this.overviewLink || route === this.notFoundRouterLink) {
-      window.history.pushState({}, '', route.path || '/');
+      window.history.pushState({}, '', `/${route.path}` || '/');
     } else if (browserChangeEvent === NavigateType.DEFAULT) {
-      window.history.pushState({}, '', request.resource ? `${request.path}/${request.resource}` : route.path || '/');
+      window.history.pushState(
+        {},
+        '',
+        request.resource ? `${request.path}/${request.resource}` : `/${route.path}` || '/',
+      );
     }
     route.callback(request.resource);
   }
