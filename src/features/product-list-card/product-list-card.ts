@@ -16,6 +16,7 @@ export default class ProductListCard extends CommonBuilderWrapper {
   private price: Price;
   private infoButtons: ElementBuilder;
   private toCartButton: Button;
+  public loadingInProgress: boolean;
 
   constructor(private data: ProductProjection) {
     super();
@@ -69,9 +70,18 @@ export default class ProductListCard extends CommonBuilderWrapper {
     });
     this.toCartButton = new Button({
       callback: async () => {
-        await CartApi.addItemToCart(this.data.id);
-        this.toCartButton.getElement().classList.add('button_disabled');
-        this.setButtons(store.cart);
+        if (!this.loadingInProgress) {
+          this.loadingInProgress = true;
+          CartApi.addItemToCart(this.data.id)
+            .then(() => {
+              this.loadingInProgress = false;
+              this.toCartButton.getElement().classList.add('button_disabled');
+              this.setButtons(store.cart);
+            })
+            .catch(() => {
+              this.loadingInProgress = false;
+            });
+        }
       },
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
       size: ButtonSize.SMALL,
