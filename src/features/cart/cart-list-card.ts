@@ -8,7 +8,8 @@ import Button from '../../shared/ui/button/button';
 import { ButtonType, ButtonSize, ButtonIconPosition } from '../../shared/ui/button/models';
 
 export default class CartListCard extends CommonBuilderWrapper {
-  price: Price;
+  public price: Price;
+  public loadingInProgress: boolean;
 
   constructor(private data: LineItem) {
     super();
@@ -77,8 +78,17 @@ export default class CartListCard extends CommonBuilderWrapper {
     });
 
     const plusButton = new Button({
-      callback: async () => {
-        await CartApi.changeQuantity(data.productId, 'increase');
+      callback: () => {
+        if (!this.loadingInProgress) {
+          this.loadingInProgress = true;
+          CartApi.changeQuantity(data.productId, 'increase')
+            .then(() => {
+              this.loadingInProgress = false;
+            })
+            .catch(() => {
+              this.loadingInProgress = false;
+            });
+        }
       },
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
       size: ButtonSize.SMALL,
@@ -87,8 +97,17 @@ export default class CartListCard extends CommonBuilderWrapper {
     plusButton.getElement().classList.add('cart-list__button');
 
     const minusButton = new Button({
-      callback: async () => {
-        await CartApi.changeQuantity(data.productId, 'decrease');
+      callback: () => {
+        if (!this.loadingInProgress) {
+          this.loadingInProgress = true;
+          CartApi.changeQuantity(data.productId, 'decrease')
+            .then(() => {
+              this.loadingInProgress = false;
+            })
+            .catch(() => {
+              this.loadingInProgress = false;
+            });
+        }
       },
       type: ButtonType.CIRCLE_WITHOUT_BORDER,
       size: ButtonSize.SMALL,
@@ -97,8 +116,17 @@ export default class CartListCard extends CommonBuilderWrapper {
     minusButton.getElement().classList.add('cart-list__button');
 
     const removeButton = new Button({
-      callback: async () => {
-        await CartApi.removeItemFromCart(data.productId);
+      callback: () => {
+        if (!this.loadingInProgress) {
+          this.loadingInProgress = true;
+          CartApi.removeItemFromCart(data.productId)
+            .then(() => {
+              this.loadingInProgress = false;
+            })
+            .catch(() => {
+              this.loadingInProgress = false;
+            });
+        }
       },
       type: ButtonType.DEFAULT,
       text: 'Remove',
