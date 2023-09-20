@@ -20,6 +20,7 @@ export default class ProductView extends ViewBuilder {
   buttonContainer: ElementBuilder;
   toCartButton: Button;
   removeButton: Button;
+  public loadingInProgress: boolean;
 
   constructor() {
     super('product-view');
@@ -99,9 +100,18 @@ export default class ProductView extends ViewBuilder {
 
     this.toCartButton = new Button({
       callback: async () => {
-        await CartApi.addItemToCart(this.id);
-        this.toCartButton.getElement().remove();
-        this.setButtons(store.cart);
+        if (!this.loadingInProgress) {
+          this.loadingInProgress = true;
+          CartApi.addItemToCart(this.data.id)
+            .then(() => {
+              this.loadingInProgress = false;
+              this.toCartButton.getElement().remove();
+              this.setButtons(store.cart);
+            })
+            .catch(() => {
+              this.loadingInProgress = false;
+            });
+        }
       },
       type: ButtonType.DEFAULT,
       text: 'Add to cart',
@@ -113,9 +123,18 @@ export default class ProductView extends ViewBuilder {
 
     this.removeButton = new Button({
       callback: async () => {
-        await CartApi.removeItemFromCart(this.data.id);
-        this.removeButton.getElement().remove();
-        this.setButtons(store.cart);
+        if (!this.loadingInProgress) {
+          this.loadingInProgress = true;
+          CartApi.removeItemFromCart(this.data.id)
+            .then(() => {
+              this.loadingInProgress = false;
+              this.removeButton.getElement().remove();
+              this.setButtons(store.cart);
+            })
+            .catch(() => {
+              this.loadingInProgress = false;
+            });
+        }
       },
       type: ButtonType.DEFAULT,
       text: 'Remove from cart',
@@ -178,7 +197,9 @@ export default class ProductView extends ViewBuilder {
       this.data = data;
       this.wrapper.getElement().append(...this.configureView());
       this.view.getElement().append(this.wrapper.getElement());
-      this.setButtons(store.cart);
+      if (store.cart) {
+        this.setButtons(store.cart);
+      }
       eventBus.subscribe(EventBusActions.UPDATE_CART, (eventData) => this.setButtons(eventData as Cart));
     });
   }

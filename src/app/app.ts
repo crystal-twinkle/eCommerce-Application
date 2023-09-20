@@ -40,7 +40,7 @@ export default class App {
               store.setCart(response.body);
             });
           } else {
-            store.setUser(null);
+            store.setCart(null);
           }
         });
     } else {
