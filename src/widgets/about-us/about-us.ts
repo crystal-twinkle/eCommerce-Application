@@ -92,7 +92,7 @@ export default class AboutUs extends ViewBuilder {
   public aboutKrystina(): HTMLElement {
     const aboutKrystinaText = `<strong> Job </strong> : Actress. <br> <strong> BIO </strong> Krystina's coding prowess is legendary within the team. Her deep technical insights and commitment to excellence have been instrumental in shaping our product's core functionality.
     <br> <strong> A story from Krystina's life: </strong> One day, she was walking in the forest when she spotted a baby hedgehog in the grass. Christina noticed that a piece of plastic packaging was tangled in its quills. She carefully freed the hedgehog and discovered that it was trembling from fear and hunger. She made the decision to temporarily care for the hedgehog. After it grew older, Christina released it back into the forest.`;
-    return this.aboutMember('Krystsina Valadzko', aboutKrystinaText, 'https://github.com/kristalik8');
+    return this.aboutMember('Krystsina Valadzko', aboutKrystinaText, 'https://github.com/crystal-twinkle');
   }
 
   public aboutRoman(): HTMLElement {
