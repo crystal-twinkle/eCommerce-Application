@@ -1,0 +1,12 @@
+.blackout {
+  display: none;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(41, 41, 41, 0.6);
+
+  &_show {
+    z-index: 5;
+    display: block;
+  }
+}

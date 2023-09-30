@@ -1,0 +1,18 @@
+.products-list {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+
+  @media (max-width: 590px) {
+    justify-content: center;
+  }
+
+  &-wrapper {
+    width: 100%;
+  }
+
+  &-loader {
+    min-height: 75px;
+  }
+}

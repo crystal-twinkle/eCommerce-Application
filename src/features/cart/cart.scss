@@ -1,0 +1,125 @@
+@import '../../../src/shared/assets/style/flex-column';
+@import '../../colors.scss';
+
+.cart-list {
+  @extend %flex-column;
+  padding-bottom: 30px;
+  gap: 60px;
+
+  &-page {
+    padding-bottom: 50px;
+  }
+
+  &-card {
+    width: 85%;
+    display: flex;
+    flex-wrap: wrap;
+
+    &__img {
+      width: 178px;
+      height: 165px;
+      object-fit: cover;
+      box-shadow: 0 4px 10px 0 $purple-1;
+    }
+
+    &__details {
+      width: 50%;
+      padding-left: 5%;
+      @extend %flex-column;
+      justify-content: space-between;
+    }
+
+    &__heading {
+      color: $black-1;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 600;
+    }
+
+    &__button-container {
+      @extend %flex-column;
+      justify-content: space-between;
+      height: 70%;
+    }
+
+    &__quantity-controls {
+      max-width: 120px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 20px;
+      color: $purple-2;
+    }
+
+    &__quantity-controls {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  &__button {
+    &._remove {
+      max-width: 120px;
+    }
+
+    &._clear {
+      width: 178px;
+    }
+
+    &._apply {
+      margin: -15px auto 0;
+    }
+  }
+
+  &__cost-container {
+    width: 300px;
+    @extend %flex-column;
+    font-size: 20px;
+
+    &._list {
+      gap: 20px;
+      padding: 5px;
+      margin-bottom: 20px;
+      border: 1px solid black;
+    }
+
+    &._cost {
+      justify-content: space-between;
+      width: auto;
+      flex-direction: row;
+      align-items: last baseline;
+
+      &._price {
+        gap: 8px;
+      }
+    }
+
+    &._card {
+      gap: 10px;
+      width: 105px;
+    }
+  }
+
+  &__price {
+    color: $purple-2;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+
+    &._cross-out {
+      font-size: 20px;
+      text-decoration: line-through;
+      color: gray;
+    }
+  }
+
+  &__promocode {
+    box-sizing: border-box;
+    padding: 11px 16px;
+    margin: 4px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    font-size: 16px;
+  }
+}

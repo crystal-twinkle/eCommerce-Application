@@ -1,0 +1,30 @@
+@import '../../colors';
+
+.title {
+  font-weight: 400;
+  padding-top: 20px;
+  padding-bottom: 20px;
+
+  &__value {
+    font-size: 2rem;
+  }
+
+  &__option {
+    margin-left: 10px;
+    font-size: 1rem;
+    color: $gray-1;
+  }
+
+  &_cart-page {
+    position: relative;
+  }
+
+  &_cart-page::after {
+    width: 34px;
+    height: 34px;
+    position: absolute;
+    left: 70px;
+    content: '';
+    background-image: url('../../shared/assets/icons/clarity_shopping-bag-line.svg');
+  }
+}
