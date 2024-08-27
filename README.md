@@ -1,8 +1,6 @@
 # eCommerce Application
 
-It is final command project [RS School](https://rs.school) by team "JavaScript Wizards". Our platform is designed to assist users in exploring, finding, and purchasing a wide array of products. Whether you are searching for the latest tech gadgets, fashionable clothing, home essentials, or anything in between, our application offers a seamless shopping experience with a plethora of features to meet your needs.
-
-[Link on deploy](https://javascript-wizards.netlify.app/)
+ur platform is designed to assist users in exploring, finding, and purchasing a wide array of products. Whether you are searching for the latest tech gadgets, fashionable clothing, home essentials, or anything in between, our application offers a seamless shopping experience with a plethora of features to meet your needs.
 
 The app provides a seamless shopping experience with essential features such as:
 
